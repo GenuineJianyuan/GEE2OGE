@@ -1,0 +1,282 @@
+{
+  "success": true,
+  "step1": {
+    "task_goal": "Task decomposed into 7 steps: Winter-season image; Summer-season image; Code Execution; ...",
+    "workflow_steps": [
+      "Winter-season image",
+      "Summer-season image",
+      "Code Execution",
+      "Winter NDVI",
+      "Visualization parameters",
+      "Add layers to the map",
+      "Set the map center"
+    ],
+    "key_params": {
+      "datasets": [
+        "LANDSAT/LC08/C02/T1_TOA/LC08_119038_20230104",
+        "LANDSAT/LC08/C02/T1_TOA/LC08_119038_20220728"
+      ],
+      "bands": [
+        "B6",
+        "B3",
+        "B5",
+        "B4"
+      ],
+      "indices": [
+        "Winter_NDVI"
+      ],
+      "map_center": {
+        "lng": 120.5,
+        "lat": 32.0,
+        "zoom": 9
+      },
+      "operations": [
+        "Image",
+        "add",
+        "addLayer",
+        "divide",
+        "rename",
+        "select",
+        "setCenter",
+        "subtract"
+      ],
+      "variable_definitions": [
+        {
+          "variable": "winterImage",
+          "type": "ee.Image"
+        },
+        {
+          "variable": "summerImage",
+          "type": "ee.Image"
+        }
+      ]
+    },
+    "raw_snippets": [
+      {
+        "step_description": "Winter-season image",
+        "code_snippet": "var winterImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20230104');"
+      },
+      {
+        "step_description": "Summer-season image",
+        "code_snippet": "var summerImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20220728');"
+      },
+      {
+        "step_description": "Code Execution",
+        "code_snippet": "var winterRed = winterImage.select('B4');\nvar winterGreen = winterImage.select('B3');\nvar winterNir = winterImage.select('B5');\nvar winterSwir1 = winterImage.select('B6');"
+      },
+      {
+        "step_description": "Winter NDVI",
+        "code_snippet": "var winterNdviNumerator = winterNir.subtract(winterRed);\nvar winterNdviDenominator = winterNir.add(winterRed);\nvar winterNdvi = winterNdviNumerator.divide(winterNdviDenominator).rename('Winter_NDVI');"
+      },
+      {
+        "step_description": "Visualization parameters",
+        "code_snippet": "var vis = {\n  min: -1,\n  max: 1,\n  palette: ['blue', 'lightblue', 'green', 'yellow', 'red']\n};"
+      },
+      {
+        "step_description": "Add layers to the map",
+        "code_snippet": "Map.addLayer(winterNdvi, vis, 'Winter NDVI');"
+      },
+      {
+        "step_description": "Set the map center",
+        "code_snippet": "Map.setCenter(120.5, 32.0, 9);"
+      }
+    ]
+  },
+  "step2": {
+    "required_apis": [
+      [
+        "ee.Image"
+      ],
+      [
+        "ee.Image"
+      ],
+      [
+        "ee.Image.select"
+      ],
+      [
+        "ee.Image.add",
+        "ee.Image.divide",
+        "ee.Image.rename",
+        "ee.Image.subtract"
+      ],
+      [],
+      [
+        "Map.addLayer"
+      ],
+      [
+        "Map.setCenter"
+      ]
+    ],
+    "all_apis": [
+      "Map.addLayer",
+      "Map.setCenter",
+      "ee.Image",
+      "ee.Image.add",
+      "ee.Image.divide",
+      "ee.Image.rename",
+      "ee.Image.select",
+      "ee.Image.subtract"
+    ],
+    "api_count": 8
+  },
+  "step3": {
+    "match_details": [
+      {
+        "gee_api": "Map.addLayer",
+        "status": "matched",
+        "mapping_type": "one_to_one",
+        "oge_api": "getMap",
+        "has_python": false
+      },
+      {
+        "gee_api": "Map.setCenter",
+        "status": "matched",
+        "mapping_type": "one_to_one",
+        "oge_api": "oge.mapclient.centerMap",
+        "has_python": false
+      },
+      {
+        "gee_api": "ee.Image",
+        "status": "matched",
+        "mapping_type": "one_to_one",
+        "oge_api": "service.getCoverage",
+        "has_python": false
+      },
+      {
+        "gee_api": "ee.Image.add",
+        "status": "matched",
+        "mapping_type": "one_to_one",
+        "oge_api": "Coverage.add",
+        "has_python": false
+      },
+      {
+        "gee_api": "ee.Image.divide",
+        "status": "matched",
+        "mapping_type": "one_to_one",
+        "oge_api": "Coverage.divide",
+        "has_python": false
+      },
+      {
+        "gee_api": "ee.Image.rename",
+        "status": "matched",
+        "mapping_type": "one_to_one",
+        "oge_api": "Coverage.rename",
+        "has_python": false
+      },
+      {
+        "gee_api": "ee.Image.select",
+        "status": "matched",
+        "mapping_type": "one_to_one",
+        "oge_api": "Coverage.selectBands",
+        "has_python": false
+      },
+      {
+        "gee_api": "ee.Image.subtract",
+        "status": "matched",
+        "mapping_type": "one_to_one",
+        "oge_api": "Coverage.subtract",
+        "has_python": false
+      }
+    ],
+    "match_rate": 1.0,
+    "matched_count": 8,
+    "missing_count": 0,
+    "missing_apis": []
+  },
+  "step4": {
+    "step_codes": [
+      {
+        "step_index": 1,
+        "step_description": "Winter-season image",
+        "gee_code": "var winterImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20230104');",
+        "oge_code": "# ee.Image -> service.getCoverage\n# result = service.getProcess(\"service.getCoverage\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# var winterImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20230104');"
+      },
+      {
+        "step_index": 2,
+        "step_description": "Summer-season image",
+        "gee_code": "var summerImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20220728');",
+        "oge_code": "# ee.Image -> service.getCoverage\n# result = service.getProcess(\"service.getCoverage\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# var summerImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20220728');"
+      },
+      {
+        "step_index": 3,
+        "step_description": "Code Execution",
+        "gee_code": "var winterRed = winterImage.select('B4');\nvar winterGreen = winterImage.select('B3');\nvar winterNir = winterImage.select('B5');\nvar winterSwir1 = winterImage.select('B6');",
+        "oge_code": "# ee.Image.select -> Coverage.selectBands\n# result = service.getProcess(\"Coverage.selectBands\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# var winterRed = winterImage.select('B4');\n# var winterGreen = winterImage.select('B3');\n# var winterNir = winterImage.select('B5');\n# var winterSwir1 = winterImage.select('B6');"
+      },
+      {
+        "step_index": 4,
+        "step_description": "Winter NDVI",
+        "gee_code": "var winterNdviNumerator = winterNir.subtract(winterRed);\nvar winterNdviDenominator = winterNir.add(winterRed);\nvar winterNdvi = winterNdviNumerator.divide(winterNdviDenominator).rename('Winter_NDVI');",
+        "oge_code": "# ee.Image.add -> Coverage.add\n# result = service.getProcess(\"Coverage.add\").execute(...)\n# ee.Image.divide -> Coverage.divide\n# result = service.getProcess(\"Coverage.divide\").execute(...)\n# ee.Image.rename -> Coverage.rename\n# result = service.getProcess(\"Coverage.rename\").execute(...)\n# ee.Image.subtract -> Coverage.subtract\n# result = service.getProcess(\"Coverage.subtract\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# var winterNdviNumerator = winterNir.subtract(winterRed);\n# var winterNdviDenominator = winterNir.add(winterRed);\n# var winterNdvi = winterNdviNumerator.divide(winterNdviDenominator).rename('Winter_NDVI');"
+      },
+      {
+        "step_index": 5,
+        "step_description": "Visualization parameters",
+        "gee_code": "var vis = {\n  min: -1,\n  max: 1,\n  palette: ['blue', 'lightblue', 'green', 'yellow', 'red']\n};",
+        "oge_code": "\n# === 原始 GEE 代码（参考）===\n# var vis = {\n#   min: -1,\n#   max: 1,\n#   palette: ['blue', 'lightblue', 'green', 'yellow', 'red']\n# };"
+      },
+      {
+        "step_index": 6,
+        "step_description": "Add layers to the map",
+        "gee_code": "Map.addLayer(winterNdvi, vis, 'Winter NDVI');",
+        "oge_code": "# Map.addLayer -> getMap\n# result = service.getProcess(\"getMap\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# Map.addLayer(winterNdvi, vis, 'Winter NDVI');"
+      },
+      {
+        "step_index": 7,
+        "step_description": "Set the map center",
+        "gee_code": "Map.setCenter(120.5, 32.0, 9);",
+        "oge_code": "# Map.setCenter -> oge.mapclient.centerMap\n# result = service.getProcess(\"oge.mapclient.centerMap\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# Map.setCenter(120.5, 32.0, 9);"
+      }
+    ],
+    "feasibility_flags": [
+      {
+        "step_index": 1,
+        "step_description": "Winter-season image",
+        "feasibility": "direct_feasible"
+      },
+      {
+        "step_index": 2,
+        "step_description": "Summer-season image",
+        "feasibility": "direct_feasible"
+      },
+      {
+        "step_index": 3,
+        "step_description": "Code Execution",
+        "feasibility": "direct_feasible"
+      },
+      {
+        "step_index": 4,
+        "step_description": "Winter NDVI",
+        "feasibility": "direct_feasible"
+      },
+      {
+        "step_index": 5,
+        "step_description": "Visualization parameters",
+        "feasibility": "direct_feasible"
+      },
+      {
+        "step_index": 6,
+        "step_description": "Add layers to the map",
+        "feasibility": "direct_feasible"
+      },
+      {
+        "step_index": 7,
+        "step_description": "Set the map center",
+        "feasibility": "direct_feasible"
+      }
+    ]
+  },
+  "step5": {
+    "overall_feasible": true,
+    "blocking_apis": [],
+    "non_blocking_gaps": [],
+    "rescue_suggestions": []
+  },
+  "step6": {
+    "oge_code": "# ============================================================\n# GEE → OGE 自动迁移生成的工作流\n# 任务目标: Task decomposed into 7 steps: Winter-season image; Summer-season image; Code Execution; ...\n# ============================================================\n\nimport oge\n\n# 初始化\noge.initialize()\nservice = oge.Service()\n\n# ----- Step 1: Winter-season image -----\n# ee.Image -> service.getCoverage\n# result = service.getProcess(\"service.getCoverage\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# var winterImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20230104');\n\n# ----- Step 2: Summer-season image -----\n# ee.Image -> service.getCoverage\n# result = service.getProcess(\"service.getCoverage\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# var summerImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20220728');\n\n# ----- Step 3: Code Execution -----\n# ee.Image.select -> Coverage.selectBands\n# result = service.getProcess(\"Coverage.selectBands\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# var winterRed = winterImage.select('B4');\n# var winterGreen = winterImage.select('B3');\n# var winterNir = winterImage.select('B5');\n# var winterSwir1 = winterImage.select('B6');\n\n# ----- Step 4: Winter NDVI -----\n# ee.Image.add -> Coverage.add\n# result = service.getProcess(\"Coverage.add\").execute(...)\n# ee.Image.divide -> Coverage.divide\n# result = service.getProcess(\"Coverage.divide\").execute(...)\n# ee.Image.rename -> Coverage.rename\n# result = service.getProcess(\"Coverage.rename\").execute(...)\n# ee.Image.subtract -> Coverage.subtract\n# result = service.getProcess(\"Coverage.subtract\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# var winterNdviNumerator = winterNir.subtract(winterRed);\n# var winterNdviDenominator = winterNir.add(winterRed);\n# var winterNdvi = winterNdviNumerator.divide(winterNdviDenominator).rename('Winter_NDVI');\n\n# ----- Step 5: Visualization parameters -----\n\n# === 原始 GEE 代码（参考）===\n# var vis = {\n#   min: -1,\n#   max: 1,\n#   palette: ['blue', 'lightblue', 'green', 'yellow', 'red']\n# };\n\n# ----- Step 6: Add layers to the map -----\n# Map.addLayer -> getMap\n# result = service.getProcess(\"getMap\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# Map.addLayer(winterNdvi, vis, 'Winter NDVI');\n\n# ----- Step 7: Set the map center -----\n# Map.setCenter -> oge.mapclient.centerMap\n# result = service.getProcess(\"oge.mapclient.centerMap\").execute(...)\n\n# === 原始 GEE 代码（参考）===\n# Map.setCenter(120.5, 32.0, 9);\n",
+    "missing_report": null,
+    "feasibility": "full_feasible"
+  },
+  "match_rate": 1.0,
+  "error": null
+}

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEE→OGE 批量转换</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --text-muted: #64748b;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.top-bar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.back-btn:hover { background: var(--bg); color: var(--primary); border-color: var(--primary); }
+.top-bar h1 { font-size: 1.1rem; font-weight: 600; }
+.top-bar .badge {
+  padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: 600;
+}
+.badge.idle { background: #f1f5f9; color: var(--text-muted); }
+.badge.running { background: #fef3c7; color: #d97706; }
+.badge.completed { background: #d1fae5; color: #059669; }
+.badge.failed { background: #fee2e2; color: #dc2626; }
+.top-bar .spacer { flex: 1; }
+.top-bar .stats { display: flex; gap: 16px; font-size: 0.8rem; color: var(--text-muted); }
+.top-bar .stats strong { color: var(--primary); }
+
+.container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-title { font-size: 1rem; font-weight: 600; }
+.card-body { padding: 20px; }
+
+.control-panel { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.control-panel label { font-size: 0.85rem; color: var(--text-muted); }
+.btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+.btn-secondary { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: #e2e8f0; }
+.btn-danger { background: #fee2e2; color: var(--danger); border: 1px solid #fecaca; }
+.btn-danger:hover { background: #fecaca; }
+
+.progress-bar {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+.progress-bar .fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #3b82f6);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.summary-item {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+.summary-item .label { font-size: 0.75rem; color: var(--text-muted); }
+.summary-item .value { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+.summary-item .value.success { color: var(--success); }
+.summary-item .value.failed { color: var(--danger); }
+
+.results-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.results-table th {
+  background: var(--bg);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 0;
+}
+.results-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.results-table tr:hover td { background: #f8fafc; }
+.status-tag {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.status-tag.success { background: #d1fae5; color: #059669; }
+.status-tag.failed { background: #fee2e2; color: #dc2626; }
+.status-tag.skipped { background: #f1f5f9; color: var(--text-muted); }
+
+.code-preview {
+  max-height: 400px;
+  overflow: auto;
+  background: #1e293b;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-top: 12px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-header h2 { font-size: 1.1rem; }
+.modal-close {
+  background: none; border: none; font-size: 1.5rem; cursor: pointer;
+  color: var(--text-muted);
+}
+.modal-body { padding: 20px; overflow: auto; flex: 1; }
+
+.tab-bar { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.tab-btn {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+}
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+}
+.empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="/" class="back-btn">← 返回主页</a>
+  <h1>GEE → OGE 批量转换</h1>
+  <span class="badge idle" id="statusBadge">空闲</span>
+  <div class="spacer"></div>
+  <div class="stats">
+    <span>总计 <strong id="statTotal">0</strong></span>
+    <span>成功 <strong id="statConverted" style="color:var(--success)">0</strong></span>
+    <span>跳过 <strong id="statSkipped">0</strong></span>
+    <span>失败 <strong id="statFailed" style="color:var(--danger)">0</strong></span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 控制面板 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">控制面板</div>
+    </div>
+    <div class="card-body">
+      <div class="control-panel">
+        <button class="btn btn-primary" id="startBtn">🚀 开始批量转换</button>
+        <button class="btn btn-secondary" id="resumeBtn">📋 加载/续跑</button>
+        <button class="btn btn-danger" id="clearBtn">🗑️ 清空结果</button>
+        <label style="margin-left:auto">
+          <input type="checkbox" id="forceCheckbox"> 强制重新转换（忽略已有结果）
+        </label>
+      </div>
+
+      <div class="progress-bar" id="progressBar" style="display:none">
+        <div class="fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <div id="progressText" style="font-size:0.85rem;color:var(--text-muted);margin-top:4px;"></div>
+
+      <div class="summary-grid" id="summaryGrid" style="display:none">
+        <div class="summary-item">
+          <div class="label">总案例</div>
+          <div class="value" id="sumTotal">0</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">成功转换</div>
+          <div class="value success" id="sumConverted">0</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">跳过</div>
+          <div class="value" id="sumSkipped">0</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">失败</div>
+          <div class="value failed" id="sumFailed">0</div>
+        </div>
+        <div class="summary-item">
+          <div class="label">总耗时</div>
+          <div class="value" id="sumElapsed" style="font-size:1rem;">0s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 案例列表 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">案例列表（点击查看详情）</div>
+      <span id="caseCount" style="font-size:0.85rem;color:var(--text-muted)"></span>
+    </div>
+    <div class="card-body" style="padding:0; max-height:500px; overflow:auto">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>案例 ID</th>
+            <th>GEE 代码长度</th>
+            <th>OGE 真值</th>
+            <th>转换状态</th>
+            <th>耗时</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="caseTable">
+          <tr><td colspan="6" class="empty-state"><div class="icon">📋</div>点击「加载/续跑」获取案例列表</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="detailTitle">案例详情</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(event, 'gee')">GEE 原代码</button>
+        <button class="tab-btn" onclick="switchTab(event, 'oge')">LLM 生成 OGE</button>
+        <button class="tab-btn" onclick="switchTab(event, 'truth')">OGE 真值</button>
+        <button class="tab-btn" onclick="switchTab(event, 'meta')">元信息</button>
+      </div>
+      <div class="tab-content active" id="tab-gee">
+        <pre class="code-preview" id="codeGee"></pre>
+      </div>
+      <div class="tab-content" id="tab-oge">
+        <pre class="code-preview" id="codeOge"></pre>
+      </div>
+      <div class="tab-content" id="tab-truth">
+        <pre class="code-preview" id="codeTruth"></pre>
+      </div>
+      <div class="tab-content" id="tab-meta">
+        <div id="metaInfo" style="font-size:0.85rem;line-height:2;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let currentTaskId = null;
+let pollTimer = null;
+let allCases = [];
+let batchResults = null;
+
+async function loadCases() {
+  try {
+    const res = await fetch('/api/gee-benchmark-cases');
+    const data = await res.json();
+    if (data.success) {
+      allCases = data.cases;
+      document.getElementById('caseCount').textContent = `共 ${data.total} 个案例`;
+      renderCaseTable();
+    }
+  } catch(e) { showToast('加载案例失败: ' + e.message); }
+}
+
+function renderCaseTable() {
+  const tbody = document.getElementById('caseTable');
+  if (!allCases.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="icon">📋</div>暂无案例</td></tr>';
+    return;
+  }
+
+  // 合并已有结果
+  const resultMap = {};
+  if (batchResults && batchResults.results) {
+    for (const r of batchResults.results) {
+      resultMap[r.case_id] = r;
+    }
+  }
+
+  tbody.innerHTML = allCases.map(c => {
+    const r = resultMap[c.case_id] || {};
+    const status = r.status || 'pending';
+    const statusLabel = {success:'成功', failed:'失败', skipped:'跳过', pending:'待转换'}[status];
+    const statusClass = status;
+    const elapsed = r.elapsed_ms ? r.elapsed_ms + 'ms' : '-';
+    return `<tr>
+      <td><strong>${c.case_id}</strong></td>
+      <td>${c.gee_code_length}</td>
+      <td>${c.has_oge_truth ? '✅' : '❌'}</td>
+      <td><span class="status-tag ${statusClass}">${statusLabel}</span></td>
+      <td>${elapsed}</td>
+      <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:0.8rem" onclick="showDetail('${c.case_id}')">查看</button></td>
+    </tr>`;
+  }).join('');
+}
+
+async function showDetail(caseId) {
+  let caseData = null;
+  // 从已有结果中查找
+  if (batchResults && batchResults.results) {
+    caseData = batchResults.results.find(r => r.case_id === caseId);
+  }
+  // 如果没有结果，从案例列表获取基本信息
+  if (!caseData) {
+    const caseInfo = allCases.find(c => c.case_id === caseId);
+    if (caseInfo) {
+      // 获取完整案例详情
+      try {
+        const res = await fetch('/api/gee-benchmark-case/' + caseId);
+        const data = await res.json();
+        if (data.success) {
+          caseData = {
+            case_id: data.case.case_id,
+            gee_code: data.case.gee,
+            ground_truth_oge: data.case.oge_truth,
+            llm_oge_code: '',
+            status: 'pending'
+          };
+        }
+      } catch(e) { caseData = {case_id: caseId, gee_code: '', status: 'pending'}; }
+    }
+  }
+
+  if (!caseData) return;
+
+  document.getElementById('detailTitle').textContent = '案例 ' + caseData.case_id;
+  document.getElementById('codeGee').textContent = caseData.gee_code || '（无）';
+  document.getElementById('codeOge').textContent = caseData.llm_oge_code || '（尚未转换）';
+  document.getElementById('codeTruth').textContent = caseData.ground_truth_oge || '（无真值）';
+
+  const metaParts = [];
+  metaParts.push(`<b>案例 ID:</b> ${caseData.case_id}`);
+  metaParts.push(`<b>状态:</b> ${caseData.status || '未知'}`);
+  if (caseData.elapsed_ms) metaParts.push(`<b>耗时:</b> ${caseData.elapsed_ms}ms`);
+  if (caseData.feasible) metaParts.push(`<b>可行性:</b> ${caseData.feasible}`);
+  if (caseData.warnings && caseData.warnings.length) {
+    metaParts.push(`<b>警告:</b> ${caseData.warnings.join('; ')}`);
+  }
+  if (caseData.error) metaParts.push(`<b>错误:</b> <span style="color:var(--danger)">${caseData.error}</span>`);
+  if (caseData.explanations && caseData.explanations.length) {
+    metaParts.push(`<b>说明:</b> ${caseData.explanations.join('; ')}`);
+  }
+  document.getElementById('metaInfo').innerHTML = metaParts.join('<br>');
+
+  document.getElementById('detailModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('detailModal').classList.remove('active');
+}
+
+function switchTab(event, tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function updateStatusBadge(status) {
+  const badge = document.getElementById('statusBadge');
+  badge.className = 'badge ' + status;
+  const label = {idle:'空闲', running:'转换中', completed:'已完成', failed:'失败'}[status] || status;
+  badge.textContent = label;
+}
+
+async function startBatchConvert() {
+  const force = document.getElementById('forceCheckbox').checked;
+  const btn = document.getElementById('startBtn');
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/gee-benchmark-convert', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({resume: true, force: force})
+    });
+    const data = await res.json();
+    if (data.success) {
+      currentTaskId = data.task_id;
+      showToast('任务已启动: ' + data.message);
+      updateStatusBadge('running');
+      startPolling();
+    } else {
+      showToast('启动失败: ' + data.error);
+      btn.disabled = false;
+    }
+  } catch(e) {
+    showToast('请求失败: ' + e.message);
+    btn.disabled = false;
+  }
+}
+
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(pollTaskStatus, 3000);
+  pollTaskStatus();
+}
+
+async function pollTaskStatus() {
+  if (!currentTaskId) return;
+  try {
+    const res = await fetch('/api/gee-benchmark-status?task_id=' + currentTaskId);
+    const data = await res.json();
+    if (!data.success) return;
+
+    const t = data.data;
+    document.getElementById('statTotal').textContent = t.total;
+    document.getElementById('statConverted').textContent = t.converted;
+    document.getElementById('statSkipped').textContent = t.skipped;
+    document.getElementById('statFailed').textContent = t.failed;
+
+    const progress = t.progress || 0;
+    document.getElementById('progressBar').style.display = 'block';
+    document.getElementById('progressFill').style.width = progress + '%';
+    document.getElementById('progressText').textContent =
+      `进度: ${progress}% (${t.converted + t.skipped}/${t.total}) | 已耗时: ${(t.elapsed_ms/1000).toFixed(1)}s`;
+
+    if (t.status === 'completed') {
+      updateStatusBadge('completed');
+      clearInterval(pollTimer);
+      pollTimer = null;
+      document.getElementById('startBtn').disabled = false;
+      showToast('🎉 批量转换完成！');
+      loadResults();
+    } else if (t.status === 'running') {
+      updateStatusBadge('running');
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function loadResults() {
+  try {
+    const res = await fetch('/api/gee-benchmark-result');
+    const data = await res.json();
+    if (data.success) {
+      batchResults = data.data;
+      document.getElementById('summaryGrid').style.display = 'grid';
+      document.getElementById('sumTotal').textContent = data.data.total;
+      document.getElementById('sumConverted').textContent = data.data.converted;
+      document.getElementById('sumSkipped').textContent = data.data.skipped;
+      document.getElementById('sumFailed').textContent = data.data.failed;
+      document.getElementById('sumElapsed').textContent = (data.data.elapsed_ms/1000).toFixed(1) + 's';
+      renderCaseTable();
+    }
+  } catch(e) { showToast('加载结果失败: ' + e.message); }
+}
+
+async function clearResults() {
+  if (!confirm('确定清空所有批量转换结果？')) return;
+  try {
+    await fetch('/api/gee-benchmark-result', {method: 'DELETE'});
+    batchResults = null;
+    currentTaskId = null;
+    updateStatusBadge('idle');
+    document.getElementById('progressBar').style.display = 'none';
+    document.getElementById('summaryGrid').style.display = 'none';
+    renderCaseTable();
+    showToast('结果已清空');
+  } catch(e) { showToast('清空失败: ' + e.message); }
+}
+
+// 初始化
+document.getElementById('startBtn').addEventListener('click', startBatchConvert);
+document.getElementById('resumeBtn').addEventListener('click', () => {
+  loadCases();
+  loadResults();
+});
+document.getElementById('clearBtn').addEventListener('click', clearResults);
+document.getElementById('detailModal').addEventListener('click', (e) => {
+  if (e.target.id === 'detailModal') closeModal();
+});
+
+// 自动加载
+loadCases();
+loadResults();
+</script>
+
+</body>
+</html>

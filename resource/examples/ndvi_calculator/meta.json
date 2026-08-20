@@ -1,0 +1,14 @@
+{
+  "id": "ndvi_calculator",
+  "name": "植被指数计算 (NDVI/GNDVI/NDMI)",
+  "description": "测试修改描述",
+  "tags": [
+    "指数计算",
+    "波段选择",
+    "可视化",
+    "Landsat"
+  ],
+  "source": "Landsat 8 C02 T1_TOA",
+  "created_at": "2024-01-01",
+  "difficulty": "easy"
+}

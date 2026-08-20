@@ -1,0 +1,855 @@
+{
+  "total_matched": 202,
+  "one_to_one": 193,
+  "one_to_many": 9,
+  "n_to_one_targets": 36,
+  "n_to_one_details": {
+    "oge.mapclient.centerMap": [
+      "Map.centerObject",
+      "Map.setCenter"
+    ],
+    "FeatureCollection.addStyles": [
+      "Map.setOptions",
+      "ee.FeatureCollection.style"
+    ],
+    "Coverage.export": [
+      "Export.image.toAsset",
+      "Export.image.toCloudStorage",
+      "Export.image.toDrive",
+      "ee.batch.Export.image.toAsset",
+      "ee.batch.Export.image.toDrive"
+    ],
+    "FeatureCollection.export": [
+      "Export.table.toAsset",
+      "Export.table.toDrive"
+    ],
+    "Python List": [
+      "ee.Array",
+      "ee.Array.matrixDeterminant",
+      "ee.Array.matrixInverse",
+      "ee.Array.matrixTrace",
+      "ee.List.filter",
+      "ee.List.flatten",
+      "ee.List.get",
+      "ee.List.group",
+      "ee.List.join",
+      "ee.List.map",
+      "ee.List.remove",
+      "ee.List.repeat",
+      "ee.List.sequence",
+      "ee.List.size",
+      "ee.List.slice",
+      "ee.List.sort",
+      "ee.List.zip"
+    ],
+    "Coverage.svmClassificationBySAGA": [
+      "ee.Classifier.libsvm",
+      "ee.Classifier.minimumDistance",
+      "ee.Classifier.smileCart",
+      "ee.Classifier.smileGradientTreeBoost",
+      "ee.Classifier.smileKMeans",
+      "ee.Classifier.smileNaiveBayes",
+      "ee.Classifier.smileRandomForest",
+      "ee.Classifier.train",
+      "ee.Image.classify"
+    ],
+    "Coverage.mlKMeans": [
+      "ee.Classifier.wekaKMeans",
+      "ee.Classifier.wekaXMeans",
+      "ee.Clusterer.wekaKMeans",
+      "ee.Image.cluster"
+    ],
+    "Python Function": [
+      "ee.Date",
+      "ee.Date.advance",
+      "ee.Date.dayOfYear",
+      "ee.Date.difference",
+      "ee.Date.format",
+      "ee.Date.get",
+      "ee.Date.getRelative",
+      "ee.Date.parse",
+      "ee.Date.subtract",
+      "ee.DateRange"
+    ],
+    "Python Dictionary": [
+      "ee.Dictionary",
+      "ee.Dictionary.get",
+      "ee.Dictionary.getInfo",
+      "ee.Dictionary.set",
+      "ee.Dictionary.toList"
+    ],
+    "Feature.buffer": [
+      "ee.Feature.buffer",
+      "ee.Geometry.Point.buffer",
+      "ee.Geometry.buffer"
+    ],
+    "FeatureCollection.filterBounds": [
+      "ee.FeatureCollection.filterBounds",
+      "ee.Filter.bounds",
+      "ee.ImageCollection.filterBounds"
+    ],
+    "FeatureCollection.filterDate": [
+      "ee.FeatureCollection.filterDate",
+      "ee.Filter.calendarRange",
+      "ee.Filter.date",
+      "ee.ImageCollection.filterDate"
+    ],
+    "FeatureCollection.filterMetadata": [
+      "ee.FeatureCollection.filterMetadata",
+      "ee.ImageCollection.filterMetadata"
+    ],
+    "FeatureCollection.union": [
+      "ee.FeatureCollection.geometry",
+      "ee.FeatureCollection.union",
+      "ee.Geometry.union"
+    ],
+    "Python Loop": [
+      "ee.FeatureCollection.iterate",
+      "ee.FeatureCollection.map"
+    ],
+    "FeatureCollection.limit": [
+      "ee.FeatureCollection.limit",
+      "ee.FeatureCollection.sort",
+      "ee.ImageCollection.limit"
+    ],
+    "FeatureCollection.randomColumn": [
+      "ee.FeatureCollection.randomColumn",
+      "ee.ImageCollection.randomColumn"
+    ],
+    "Coverage.eq": [
+      "ee.Filter.eq",
+      "ee.Image.eq"
+    ],
+    "Coverage.gt": [
+      "ee.Filter.gt",
+      "ee.Image.gt"
+    ],
+    "Coverage.gte": [
+      "ee.Filter.gte",
+      "ee.Image.gte"
+    ],
+    "Coverage.lt": [
+      "ee.Filter.lt",
+      "ee.Image.lt"
+    ],
+    "Coverage.not": [
+      "ee.Filter.not",
+      "ee.Image.not"
+    ],
+    "Coverage.or": [
+      "ee.Filter.or",
+      "ee.Image.or"
+    ],
+    "Geometry.Polygon": [
+      "ee.Geometry",
+      "ee.Geometry.Polygon",
+      "ee.Geometry.Rectangle"
+    ],
+    "CoverageCollection.mergeCoverages": [
+      "ee.Image.addBands",
+      "ee.ImageCollection.fromImages"
+    ],
+    "Coverage.bitwiseAnd": [
+      "ee.Image.and",
+      "ee.Image.bitwiseAnd"
+    ],
+    "Coverage.selectBands": [
+      "ee.Image.get",
+      "ee.Image.select"
+    ],
+    "Coverage.hsvToRgb": [
+      "ee.Image.hsvToRgb",
+      "ee.Image.rgbToHsv"
+    ],
+    "Coverage.maxi": [
+      "ee.Image.max",
+      "ee.Reducer.max"
+    ],
+    "Coverage.mini": [
+      "ee.Image.min",
+      "ee.Reducer.min"
+    ],
+    "Coverage.projection": [
+      "ee.Image.projection",
+      "ee.Projection"
+    ],
+    "Coverage.resample": [
+      "ee.Image.reduceResolution",
+      "ee.Image.resample"
+    ],
+    "Coverage.toInt32": [
+      "ee.Image.toInt",
+      "ee.Image.toInt32"
+    ],
+    "Python Int": [
+      "ee.Number",
+      "ee.Number.divide",
+      "ee.Number.format",
+      "ee.Number.gte",
+      "ee.Number.lte",
+      "ee.Number.multiply"
+    ],
+    "Python Float": [
+      "ee.Number",
+      "ee.Number.divide",
+      "ee.Number.format",
+      "ee.Number.gte",
+      "ee.Number.lte",
+      "ee.Number.multiply"
+    ],
+    "Python String": [
+      "ee.String",
+      "ee.String.format"
+    ]
+  },
+  "semantic_issues": [
+    {
+      "gee": "Map.addLayer",
+      "oge": "getMap",
+      "gee_method": "addlayer",
+      "oge_method": "",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "Map.centerObject",
+      "oge": "oge.mapclient.centerMap",
+      "gee_method": "centerobject",
+      "oge_method": "centermap",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "Map.setCenter",
+      "oge": "oge.mapclient.centerMap",
+      "gee_method": "setcenter",
+      "oge_method": "centermap",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "Map.setOptions",
+      "oge": "Coverage.addStyles",
+      "gee_method": "setoptions",
+      "oge_method": "addstyles",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "Map.setOptions",
+      "oge": "CoverageCollection.addStyles",
+      "gee_method": "setoptions",
+      "oge_method": "addstyles",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "Map.setOptions",
+      "oge": "Feature.addStyles",
+      "gee_method": "setoptions",
+      "oge_method": "addstyles",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "Map.setOptions",
+      "oge": "FeatureCollection.addStyles",
+      "gee_method": "setoptions",
+      "oge_method": "addstyles",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "Export.image.toAsset",
+      "oge": "Coverage.export",
+      "gee_method": "toasset",
+      "oge_method": "export",
+      "detail": " | GEE: Export.image.toAsset returns=",
+      "reason": ""
+    },
+    {
+      "gee": "Export.image.toCloudStorage",
+      "oge": "Coverage.export",
+      "gee_method": "tocloudstorage",
+      "oge_method": "export",
+      "detail": " | GEE: Export.image.toCloudStorage returns=",
+      "reason": ""
+    },
+    {
+      "gee": "Export.image.toDrive",
+      "oge": "Coverage.export",
+      "gee_method": "todrive",
+      "oge_method": "export",
+      "detail": " | GEE: Export.image.toDrive returns=",
+      "reason": ""
+    },
+    {
+      "gee": "Export.table.toAsset",
+      "oge": "FeatureCollection.export",
+      "gee_method": "toasset",
+      "oge_method": "export",
+      "detail": " | GEE: Export.table.toAsset returns=",
+      "reason": ""
+    },
+    {
+      "gee": "Export.table.toDrive",
+      "oge": "FeatureCollection.export",
+      "gee_method": "todrive",
+      "oge_method": "export",
+      "detail": " | GEE: Export.table.toDrive returns=",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Classifier.libsvm",
+      "oge": "Coverage.svmClassificationBySAGA",
+      "gee_method": "libsvm",
+      "oge_method": "svmclassificationbysaga",
+      "detail": " | GEE: ee.Classifier.libsvm returns=Classifier",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Classifier.minimumDistance",
+      "oge": "Coverage.svmClassificationBySAGA",
+      "gee_method": "minimumdistance",
+      "oge_method": "svmclassificationbysaga",
+      "detail": " | GEE: ee.Classifier.minimumDistance returns=Classifier",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Classifier.smileCart",
+      "oge": "Coverage.svmClassificationBySAGA",
+      "gee_method": "smilecart",
+      "oge_method": "svmclassificationbysaga",
+      "detail": " | GEE: ee.Classifier.smileCart returns=Classifier",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Classifier.smileGradientTreeBoost",
+      "oge": "Coverage.svmClassificationBySAGA",
+      "gee_method": "smilegradienttreeboost",
+      "oge_method": "svmclassificationbysaga",
+      "detail": " | GEE: ee.Classifier.smileGradientTreeBoost returns=Classifier",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Classifier.smileKMeans",
+      "oge": "Coverage.svmClassificationBySAGA",
+      "gee_method": "smilekmeans",
+      "oge_method": "svmclassificationbysaga",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Classifier.smileNaiveBayes",
+      "oge": "Coverage.svmClassificationBySAGA",
+      "gee_method": "smilenaivebayes",
+      "oge_method": "svmclassificationbysaga",
+      "detail": " | GEE: ee.Classifier.smileNaiveBayes returns=Classifier",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Classifier.smileRandomForest",
+      "oge": "Coverage.svmClassificationBySAGA",
+      "gee_method": "smilerandomforest",
+      "oge_method": "svmclassificationbysaga",
+      "detail": " | GEE: ee.Classifier.smileRandomForest returns=Classifier",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Classifier.train",
+      "oge": "Coverage.svmClassificationBySAGA",
+      "gee_method": "train",
+      "oge_method": "svmclassificationbysaga",
+      "detail": " | GEE: ee.Classifier.train returns=Classifier",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Classifier.wekaKMeans",
+      "oge": "Coverage.mlKMeans",
+      "gee_method": "wekakmeans",
+      "oge_method": "mlkmeans",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Classifier.wekaXMeans",
+      "oge": "Coverage.mlKMeans",
+      "gee_method": "wekaxmeans",
+      "oge_method": "mlkmeans",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Clusterer.wekaKMeans",
+      "oge": "Coverage.mlKMeans",
+      "gee_method": "wekakmeans",
+      "oge_method": "mlkmeans",
+      "detail": " | GEE: ee.Clusterer.wekaKMeans returns=Clusterer",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Feature",
+      "oge": "Feature.loadFromGeometry",
+      "gee_method": "feature",
+      "oge_method": "loadfromgeometry",
+      "detail": " | GEE: ee.Feature. returns=Feature",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Feature.set",
+      "oge": "Feature.select",
+      "gee_method": "set",
+      "oge_method": "select",
+      "detail": " | GEE: ee.Feature.set returns=Element",
+      "reason": ""
+    },
+    {
+      "gee": "ee.FeatureCollection",
+      "oge": "Service.getFeatureCollection",
+      "gee_method": "featurecollection",
+      "oge_method": "getfeaturecollection",
+      "detail": " | GEE: ee.FeatureCollection. returns=FeatureCollection",
+      "reason": ""
+    },
+    {
+      "gee": "ee.FeatureCollection.aggregate_array",
+      "oge": "FeatureCollection.aggregateStats",
+      "gee_method": "aggregate_array",
+      "oge_method": "aggregatestats",
+      "detail": " | GEE: ee.FeatureCollection.aggregate_array returns=List",
+      "reason": ""
+    },
+    {
+      "gee": "ee.FeatureCollection.aggregate_count",
+      "oge": "FeatureCollection.aggregateCount",
+      "gee_method": "aggregate_count",
+      "oge_method": "aggregatecount",
+      "detail": " | GEE: ee.FeatureCollection.aggregate_count returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.FeatureCollection.fromFeatures",
+      "oge": "FeatureCollection.loadFromFeature",
+      "gee_method": "fromfeatures",
+      "oge_method": "loadfromfeature",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "ee.FeatureCollection.geometry",
+      "oge": "FeatureCollection.union",
+      "gee_method": "geometry",
+      "oge_method": "union",
+      "detail": " | GEE: ee.FeatureCollection.geometry returns=Geometry",
+      "reason": ""
+    },
+    {
+      "gee": "ee.FeatureCollection.sort",
+      "oge": "FeatureCollection.limit",
+      "gee_method": "sort",
+      "oge_method": "limit",
+      "detail": " | GEE: ee.FeatureCollection.sort returns=Collection",
+      "reason": ""
+    },
+    {
+      "gee": "ee.FeatureCollection.style",
+      "oge": "FeatureCollection.addStyles",
+      "gee_method": "style",
+      "oge_method": "addstyles",
+      "detail": " | GEE: ee.FeatureCollection.style returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Filter.bounds",
+      "oge": "FeatureCollection.filterBounds",
+      "gee_method": "bounds",
+      "oge_method": "filterbounds",
+      "detail": " | GEE: ee.Filter.bounds returns=Filter",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Filter.calendarRange",
+      "oge": "FeatureCollection.filterDate",
+      "gee_method": "calendarrange",
+      "oge_method": "filterdate",
+      "detail": " | GEE: ee.Filter.calendarRange returns=Filter",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Filter.date",
+      "oge": "FeatureCollection.filterDate",
+      "gee_method": "date",
+      "oge_method": "filterdate",
+      "detail": " | GEE: ee.Filter.date returns=Filter",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Geometry",
+      "oge": "Geometry.Polygon",
+      "gee_method": "geometry",
+      "oge_method": "polygon",
+      "detail": " | GEE: ee.Geometry. returns=Geometry",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Geometry",
+      "oge": "Geometry.LineString",
+      "gee_method": "geometry",
+      "oge_method": "linestring",
+      "detail": " | GEE: ee.Geometry. returns=Geometry",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Geometry.Rectangle",
+      "oge": "Geometry.Polygon",
+      "gee_method": "rectangle",
+      "oge_method": "polygon",
+      "detail": " | GEE: ee.Geometry.Rectangle returns=Geometry.Rectangle",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image",
+      "oge": "service.getCoverage",
+      "gee_method": "image",
+      "oge_method": "getcoverage",
+      "detail": " | GEE: ee.Image. returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.addBands",
+      "oge": "CoverageCollection.mergeCoverages",
+      "gee_method": "addbands",
+      "oge_method": "mergecoverages",
+      "detail": " | GEE: ee.Image.addBands returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.and",
+      "oge": "Coverage.bitwiseAnd",
+      "gee_method": "and",
+      "oge_method": "bitwiseand",
+      "detail": " | GEE: ee.Image.and returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.classify",
+      "oge": "Coverage.svmClassificationBySAGA",
+      "gee_method": "classify",
+      "oge_method": "svmclassificationbysaga",
+      "detail": " | GEE: ee.Image.classify returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.clip",
+      "oge": "Coverage.clipRasterByExtentByGDAL",
+      "gee_method": "clip",
+      "oge_method": "cliprasterbyextentbygdal",
+      "detail": " | GEE: ee.Image.clip returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.cluster",
+      "oge": "Coverage.mlKMeans",
+      "gee_method": "cluster",
+      "oge_method": "mlkmeans",
+      "detail": " | GEE: ee.Image.cluster returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.focal_max",
+      "oge": "Coverage.focalMax",
+      "gee_method": "focal_max",
+      "oge_method": "focalmax",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.focal_mean",
+      "oge": "Coverage.focalMean",
+      "gee_method": "focal_mean",
+      "oge_method": "focalmean",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.focal_median",
+      "oge": "Coverage.focalMedian",
+      "gee_method": "focal_median",
+      "oge_method": "focalmedian",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.focal_min",
+      "oge": "Coverage.focalMin",
+      "gee_method": "focal_min",
+      "oge_method": "focalmin",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.focal_mode",
+      "oge": "Coverage.focalMode",
+      "gee_method": "focal_mode",
+      "oge_method": "focalmode",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.get",
+      "oge": "Coverage.selectBands",
+      "gee_method": "get",
+      "oge_method": "selectbands",
+      "detail": " | GEE: ee.Image.get returns=",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.max",
+      "oge": "Coverage.maxi",
+      "gee_method": "max",
+      "oge_method": "maxi",
+      "detail": " | GEE: ee.Image.max returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.min",
+      "oge": "Coverage.mini",
+      "gee_method": "min",
+      "oge_method": "mini",
+      "detail": " | GEE: ee.Image.min returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.pixelArea",
+      "oge": "Coverage.surfAreaByGrass",
+      "gee_method": "pixelarea",
+      "oge_method": "surfareabygrass",
+      "detail": " | GEE: ee.Image.pixelArea returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.pow",
+      "oge": "Coverage.powNum",
+      "gee_method": "pow",
+      "oge_method": "pownum",
+      "detail": " | GEE: ee.Image.pow returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.reduceResolution",
+      "oge": "Coverage.resample",
+      "gee_method": "reduceresolution",
+      "oge_method": "resample",
+      "detail": " | GEE: ee.Image.reduceResolution returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.reduceToVectors",
+      "oge": "Coverage.polygonizeByGDAL",
+      "gee_method": "reducetovectors",
+      "oge_method": "polygonizebygdal",
+      "detail": " | GEE: ee.Image.reduceToVectors returns=FeatureCollection",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.remap",
+      "oge": "Coverage.reclass",
+      "gee_method": "remap",
+      "oge_method": "reclass",
+      "detail": " | GEE: ee.Image.remap returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.rgbToHsv",
+      "oge": "Coverage.hsvToRgb",
+      "gee_method": "rgbtohsv",
+      "oge_method": "hsvtorgb",
+      "detail": " | GEE: ee.Image.rgbToHsv returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.select",
+      "oge": "Coverage.selectBands",
+      "gee_method": "select",
+      "oge_method": "selectbands",
+      "detail": " | GEE: ee.Image.select returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.toInt",
+      "oge": "Coverage.toInt32",
+      "gee_method": "toint",
+      "oge_method": "toint32",
+      "detail": " | GEE: ee.Image.toInt returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Image.visualize",
+      "oge": "OGE Image Visualizatiion",
+      "gee_method": "visualize",
+      "oge_method": "",
+      "detail": " | GEE: ee.Image.visualize returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.ImageCollection",
+      "oge": "Service.getCoverageCollection",
+      "gee_method": "imagecollection",
+      "oge_method": "getcoveragecollection",
+      "detail": " | GEE: ee.ImageCollection. returns=ImageCollection",
+      "reason": ""
+    },
+    {
+      "gee": "ee.ImageCollection.fromImages",
+      "oge": "CoverageCollection.mergeCoverages",
+      "gee_method": "fromimages",
+      "oge_method": "mergecoverages",
+      "detail": " | GEE: ee.ImageCollection.fromImages returns=ImageCollection",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number",
+      "oge": "Python Int",
+      "gee_method": "number",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number. returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number",
+      "oge": "Python Float",
+      "gee_method": "number",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number. returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number.divide",
+      "oge": "Python Int",
+      "gee_method": "divide",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number.divide returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number.divide",
+      "oge": "Python Float",
+      "gee_method": "divide",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number.divide returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number.format",
+      "oge": "Python Int",
+      "gee_method": "format",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number.format returns=String",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number.format",
+      "oge": "Python Float",
+      "gee_method": "format",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number.format returns=String",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number.gte",
+      "oge": "Python Int",
+      "gee_method": "gte",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number.gte returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number.gte",
+      "oge": "Python Float",
+      "gee_method": "gte",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number.gte returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number.lte",
+      "oge": "Python Int",
+      "gee_method": "lte",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number.lte returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number.lte",
+      "oge": "Python Float",
+      "gee_method": "lte",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number.lte returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number.multiply",
+      "oge": "Python Int",
+      "gee_method": "multiply",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number.multiply returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Number.multiply",
+      "oge": "Python Float",
+      "gee_method": "multiply",
+      "oge_method": "",
+      "detail": " | GEE: ee.Number.multiply returns=Number",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Reducer.max",
+      "oge": "Coverage.maxi",
+      "gee_method": "max",
+      "oge_method": "maxi",
+      "detail": " | GEE: ee.Reducer.max returns=Reducer",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Reducer.min",
+      "oge": "Coverage.mini",
+      "gee_method": "min",
+      "oge_method": "mini",
+      "detail": " | GEE: ee.Reducer.min returns=Reducer",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Terrain.aspect",
+      "oge": "Coverage.terrAspect",
+      "gee_method": "aspect",
+      "oge_method": "terraspect",
+      "detail": " | GEE: ee.Terrain.aspect returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.Terrain.slope",
+      "oge": "Coverage.terrSlope",
+      "gee_method": "slope",
+      "oge_method": "terrslope",
+      "detail": " | GEE: ee.Terrain.slope returns=Image",
+      "reason": ""
+    },
+    {
+      "gee": "ee.batch.Export.image.toAsset",
+      "oge": "Coverage.export",
+      "gee_method": "toasset",
+      "oge_method": "export",
+      "detail": "",
+      "reason": ""
+    },
+    {
+      "gee": "ee.batch.Export.image.toDrive",
+      "oge": "Coverage.export",
+      "gee_method": "todrive",
+      "oge_method": "export",
+      "detail": "",
+      "reason": ""
+    }
+  ]
+}

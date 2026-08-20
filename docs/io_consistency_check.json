@@ -1,0 +1,1091 @@
+{
+  "total_checked": 202,
+  "total_issues": 26,
+  "severity_counts": {
+    "🔴 严重": 6,
+    "🟡 警告": 20
+  },
+  "issues": [
+    {
+      "gee": "ee.Feature.set",
+      "oge": "Feature.select",
+      "issue": "功能不同：set 设置属性值，select 选择字段",
+      "severity": "🔴 严重",
+      "suggestion": "Python 实现 set()",
+      "gee_inputs": [
+        {
+          "name": "this: element",
+          "type": "Element"
+        },
+        {
+          "name": "var_args",
+          "type": "VarArgs[Object]"
+        }
+      ],
+      "gee_returns": "Element",
+      "oge_inputs": [
+        {
+          "name": "feature",
+          "type": "Feature",
+          "description": "Target feature"
+        },
+        {
+          "name": "propertySelectors",
+          "type": "List[String]",
+          "description": "Target field"
+        },
+        {
+          "name": "newProperties",
+          "type": "List[String]",
+          "description": "New property"
+        },
+        {
+          "name": "retainGeometry",
+          "type": "Boolean",
+          "description": "Retain original geometry"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "Feature",
+        "description": ""
+      }
+    },
+    {
+      "gee": "ee.FeatureCollection.geometry",
+      "oge": "FeatureCollection.union",
+      "issue": "功能不同：geometry 获取几何，union 合并几何",
+      "severity": "🔴 严重",
+      "suggestion": "Python 实现 geometry()",
+      "gee_inputs": [
+        {
+          "name": "this: collection",
+          "type": "FeatureCollection"
+        },
+        {
+          "name": "maxError",
+          "type": "ErrorMargin, optional"
+        }
+      ],
+      "gee_returns": "Geometry",
+      "oge_inputs": [
+        {
+          "name": "collection1",
+          "type": "DataFrame",
+          "description": "用于联合操作的第一矢量要素集合。"
+        },
+        {
+          "name": "collection2",
+          "type": "DataFrame",
+          "description": "用于联合操作的第二矢量要素集合。"
+        },
+        {
+          "name": "geometryFieldName",
+          "type": "String",
+          "description": "常量字段名。"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": "输出结果"
+      }
+    },
+    {
+      "gee": "ee.FeatureCollection.sort",
+      "oge": "FeatureCollection.limit",
+      "issue": "功能不同：sort 排序，limit 限制数量",
+      "severity": "🔴 严重",
+      "suggestion": "Python 实现 sort()",
+      "gee_inputs": [
+        {
+          "name": "this: collection",
+          "type": "Collection"
+        },
+        {
+          "name": "property",
+          "type": "String"
+        },
+        {
+          "name": "ascending",
+          "type": "Boolean, optional"
+        }
+      ],
+      "gee_returns": "Collection",
+      "oge_inputs": [
+        {
+          "name": "collection",
+          "type": "DataFrame",
+          "description": "待排序的要素集合"
+        },
+        {
+          "name": "maxRows",
+          "type": "Int",
+          "description": "返回的最大要素数量"
+        },
+        {
+          "name": "property",
+          "type": "String",
+          "description": "用于排序的属性字段名称"
+        },
+        {
+          "name": "ascending",
+          "type": "Boolean",
+          "description": "是否按升序排序"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": "输出要素"
+      }
+    },
+    {
+      "gee": "ee.FeatureCollection.style",
+      "oge": "FeatureCollection.addStyles",
+      "issue": "⚠️ 返回值可能不匹配：GEE 返回 Image, OGE 返回 FeatureCollection",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "this: collection",
+          "type": "FeatureCollection"
+        },
+        {
+          "name": "color",
+          "type": "String, default: \"black\""
+        },
+        {
+          "name": "pointSize",
+          "type": "Integer, default: 3"
+        },
+        {
+          "name": "pointShape",
+          "type": "String, default: \"circle\""
+        },
+        {
+          "name": "width",
+          "type": "Float, default: 2"
+        },
+        {
+          "name": "fillColor",
+          "type": "String, default: null"
+        },
+        {
+          "name": "styleProperty",
+          "type": "String, default: null"
+        },
+        {
+          "name": "neighborhood",
+          "type": "Integer, default: 5"
+        },
+        {
+          "name": "lineType",
+          "type": "String, default: \"solid\""
+        }
+      ],
+      "gee_returns": "Image",
+      "oge_inputs": [
+        {
+          "name": "input",
+          "type": "FeatureCollection",
+          "description": "要添加样式的特征集"
+        },
+        {
+          "name": "color",
+          "type": "List<String>",
+          "description": "颜色"
+        },
+        {
+          "name": "attribute",
+          "type": "String",
+          "description": "属性"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Filter.and",
+      "oge": "Coverage.and",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "var_args",
+          "type": "VarArgs[Filter]"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "coverage1",
+          "type": "Coverage",
+          "description": "第一个覆盖区域开始运营。"
+        },
+        {
+          "name": "coverage2",
+          "type": "Coverage",
+          "description": "第一个覆盖区域开始运营。"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "Coverage",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Filter.bounds",
+      "oge": "FeatureCollection.filterBounds",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "geometry",
+          "type": "ComputedObject|FeatureCollection|Geometry"
+        },
+        {
+          "name": "errorMargin",
+          "type": "ComputedObject|Number, optional"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "collection",
+          "type": "FeatureCollection",
+          "description": ""
+        },
+        {
+          "name": "geometry",
+          "type": "Geometry",
+          "description": ""
+        },
+        {
+          "name": "geometryFieldName",
+          "type": "String",
+          "description": ""
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Filter.calendarRange",
+      "oge": "FeatureCollection.filterDate",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "start",
+          "type": "Integer"
+        },
+        {
+          "name": "end",
+          "type": "Integer, default: null"
+        },
+        {
+          "name": "field",
+          "type": "String, default: \"day_of_year\""
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "collection",
+          "type": "DataFrame",
+          "description": "FeatureCollection"
+        },
+        {
+          "name": "start",
+          "type": "String",
+          "description": "Start time"
+        },
+        {
+          "name": "end",
+          "type": "String",
+          "description": "End time"
+        },
+        {
+          "name": "timeFieldName",
+          "type": "String",
+          "description": "Time field name"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": ""
+      }
+    },
+    {
+      "gee": "ee.Filter.contains",
+      "oge": "Feature.contains",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "leftField",
+          "type": "String, default: null"
+        },
+        {
+          "name": "rightValue",
+          "type": "Object, default: null"
+        },
+        {
+          "name": "rightField",
+          "type": "String, default: null"
+        },
+        {
+          "name": "leftValue",
+          "type": "Object, default: null"
+        },
+        {
+          "name": "maxError",
+          "type": "ErrorMargin, optional"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "feature1",
+          "type": "Feature",
+          "description": "Feature"
+        },
+        {
+          "name": "feature2",
+          "type": "Feature",
+          "description": "Feature"
+        },
+        {
+          "name": "crs",
+          "type": "String",
+          "description": "CRS"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "String",
+        "description": ""
+      }
+    },
+    {
+      "gee": "ee.Filter.date",
+      "oge": "FeatureCollection.filterDate",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "start",
+          "type": "Date|Number|String"
+        },
+        {
+          "name": "end",
+          "type": "Date|Number|String, optional"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "collection",
+          "type": "DataFrame",
+          "description": "FeatureCollection"
+        },
+        {
+          "name": "start",
+          "type": "String",
+          "description": "Start time"
+        },
+        {
+          "name": "end",
+          "type": "String",
+          "description": "End time"
+        },
+        {
+          "name": "timeFieldName",
+          "type": "String",
+          "description": "Time field name"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": ""
+      }
+    },
+    {
+      "gee": "ee.Filter.eq",
+      "oge": "Coverage.eq",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "type": "Object"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "coverage1",
+          "type": "Coverage",
+          "description": "首次运营覆盖。"
+        },
+        {
+          "name": "coverage2",
+          "type": "Coverage",
+          "description": "第二次手术覆盖。"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "Coverage",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Filter.gt",
+      "oge": "Coverage.gt",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "type": "Object"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "coverage1",
+          "type": "Coverage",
+          "description": "首次运营覆盖。"
+        },
+        {
+          "name": "coverage2",
+          "type": "Coverage",
+          "description": "第二次手术覆盖。"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "Coverage",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Filter.gte",
+      "oge": "Coverage.gte",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "type": "Object"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "coverage1",
+          "type": "Coverage",
+          "description": "首次运营覆盖。"
+        },
+        {
+          "name": "coverage2",
+          "type": "Coverage",
+          "description": "第二次手术覆盖。"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "Coverage",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Filter.lt",
+      "oge": "Coverage.lt",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "type": "Object"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "coverage1",
+          "type": "Coverage",
+          "description": "首次运营覆盖。"
+        },
+        {
+          "name": "coverage2",
+          "type": "Coverage",
+          "description": "第二次手术覆盖。"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "Coverage",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Filter.not",
+      "oge": "Coverage.not",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "this: filter",
+          "type": "Filter"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "coverage",
+          "type": "Coverage",
+          "description": "栅格影像"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "Coverage",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Filter.or",
+      "oge": "Coverage.or",
+      "issue": "⚠️ Filter 类映射到非 Filter 类，使用方式可能不同",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "var_args",
+          "type": "VarArgs[Filter]"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "coverage1",
+          "type": "Coverage",
+          "description": "第一个覆盖区域开始运营。"
+        },
+        {
+          "name": "coverage2",
+          "type": "Coverage",
+          "description": "第一个覆盖区域开始运营。"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "Coverage",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Filter.withinDistance",
+      "oge": "Feature.withinDistance",
+      "issue": "层级不匹配：Filter 返回过滤器，Feature 返回 Boolean",
+      "severity": "🔴 严重",
+      "suggestion": "Python 实现集合级过滤器",
+      "gee_inputs": [
+        {
+          "name": "distance",
+          "type": "Float"
+        },
+        {
+          "name": "leftField",
+          "type": "String, default: null"
+        },
+        {
+          "name": "rightValue",
+          "type": "Object, default: null"
+        },
+        {
+          "name": "rightField",
+          "type": "String, default: null"
+        },
+        {
+          "name": "leftValue",
+          "type": "Object, default: null"
+        },
+        {
+          "name": "maxError",
+          "type": "ErrorMargin, optional"
+        }
+      ],
+      "gee_returns": "Filter",
+      "oge_inputs": [
+        {
+          "name": "feature1",
+          "type": "Feature",
+          "description": "Feature"
+        },
+        {
+          "name": "feature2",
+          "type": "Feature",
+          "description": "Feature"
+        },
+        {
+          "name": "distance",
+          "type": "Double",
+          "description": "Distance"
+        },
+        {
+          "name": "crs",
+          "type": "String",
+          "description": "CRS"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "String",
+        "description": ""
+      }
+    },
+    {
+      "gee": "ee.Image.addBands",
+      "oge": "CoverageCollection.mergeCoverages",
+      "issue": "⚠️ 返回值可能不匹配：GEE 返回 Image, OGE 返回 CoverageCollection",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "this: dstImg",
+          "type": "Image"
+        },
+        {
+          "name": "srcImg",
+          "type": "Image"
+        },
+        {
+          "name": "names",
+          "type": "List, default: null"
+        },
+        {
+          "name": "overwrite",
+          "type": "Boolean, default: false"
+        }
+      ],
+      "gee_returns": "Image",
+      "oge_inputs": [
+        {
+          "name": "coverages",
+          "type": "List<Coverage>",
+          "description": "保险范围列表。"
+        },
+        {
+          "name": "names",
+          "type": "List<String>",
+          "description": "名单。"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "CoverageCollection",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Image.and",
+      "oge": "Coverage.bitwiseAnd",
+      "issue": "逻辑与 vs 位与：ee.Image.and() 返回 0/1，而 bitwiseAnd 进行二进制位运算",
+      "severity": "🔴 严重",
+      "suggestion": "Python 实现逻辑与",
+      "gee_inputs": [
+        {
+          "name": "this: image1",
+          "type": "Image"
+        },
+        {
+          "name": "image2",
+          "type": "Image"
+        }
+      ],
+      "gee_returns": "Image",
+      "oge_inputs": [
+        {
+          "name": "coverage1",
+          "type": "Coverage",
+          "description": "第一个覆盖区域开始运营。"
+        },
+        {
+          "name": "coverage2",
+          "type": "Coverage",
+          "description": "第二覆盖rdd运行。"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "Coverage",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Image.metadata",
+      "oge": "Coverage.metadata",
+      "issue": "⚠️ 返回值可能不匹配：GEE 返回 Image, OGE 返回 String",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "this: image",
+          "type": "Image"
+        },
+        {
+          "name": "property",
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "type": "String, default: null"
+        }
+      ],
+      "gee_returns": "Image",
+      "oge_inputs": [
+        {
+          "name": "coverage",
+          "type": "Coverage",
+          "description": "获取元数据的图像"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "String",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Image.pixelArea",
+      "oge": "Coverage.surfAreaByGrass",
+      "issue": "⚠️ 返回值可能不匹配：GEE 返回 Image, OGE 返回 String",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [],
+      "gee_returns": "Image",
+      "oge_inputs": [
+        {
+          "name": "map",
+          "type": "Coverage",
+          "description": "输入栅格地图名称"
+        },
+        {
+          "name": "vscale",
+          "type": "String",
+          "description": "垂直刻度"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "String",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.Image.rgbToHsv",
+      "oge": "Coverage.hsvToRgb",
+      "issue": "方向相反：RGB→HSV 映射到 HSV→RGB",
+      "severity": "🔴 严重",
+      "suggestion": "Python 实现 rgbToHsv",
+      "gee_inputs": [
+        {
+          "name": "this: image",
+          "type": "Image"
+        }
+      ],
+      "gee_returns": "Image",
+      "oge_inputs": [
+        {
+          "name": "coverage",
+          "type": "Coverage",
+          "description": "The coverage with three bands: H, S, V."
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "Coverage",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.ImageCollection.filterBounds",
+      "oge": "FeatureCollection.filterBounds",
+      "issue": "⚠️ 对象类型不匹配：GEE 操作 ImageCollection，OGE 操作 FeatureCollection",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "this: collection",
+          "type": "Collection"
+        },
+        {
+          "name": "geometry",
+          "type": "ComputedObject|FeatureCollection|Geometry"
+        }
+      ],
+      "gee_returns": "Collection",
+      "oge_inputs": [
+        {
+          "name": "collection",
+          "type": "FeatureCollection",
+          "description": ""
+        },
+        {
+          "name": "geometry",
+          "type": "Geometry",
+          "description": ""
+        },
+        {
+          "name": "geometryFieldName",
+          "type": "String",
+          "description": ""
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.ImageCollection.filterDate",
+      "oge": "FeatureCollection.filterDate",
+      "issue": "⚠️ 对象类型不匹配：GEE 操作 ImageCollection，OGE 操作 FeatureCollection",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "this: collection",
+          "type": "Collection"
+        },
+        {
+          "name": "start",
+          "type": "Date|Number|String"
+        },
+        {
+          "name": "end",
+          "type": "Date|Number|String, optional"
+        }
+      ],
+      "gee_returns": "Collection",
+      "oge_inputs": [
+        {
+          "name": "collection",
+          "type": "DataFrame",
+          "description": "FeatureCollection"
+        },
+        {
+          "name": "start",
+          "type": "String",
+          "description": "Start time"
+        },
+        {
+          "name": "end",
+          "type": "String",
+          "description": "End time"
+        },
+        {
+          "name": "timeFieldName",
+          "type": "String",
+          "description": "Time field name"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": ""
+      }
+    },
+    {
+      "gee": "ee.ImageCollection.filterMetadata",
+      "oge": "FeatureCollection.filterMetadata",
+      "issue": "⚠️ 对象类型不匹配：GEE 操作 ImageCollection，OGE 操作 FeatureCollection",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [],
+      "gee_returns": "",
+      "oge_inputs": [
+        {
+          "name": "collection",
+          "type": "FeatureCollection",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "description": ""
+        },
+        {
+          "name": "operator",
+          "type": "String",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "String",
+          "description": ""
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": "输出参数"
+      }
+    },
+    {
+      "gee": "ee.ImageCollection.limit",
+      "oge": "FeatureCollection.limit",
+      "issue": "⚠️ 对象类型不匹配：GEE 操作 ImageCollection，OGE 操作 FeatureCollection",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "this: collection",
+          "type": "Collection"
+        },
+        {
+          "name": "max",
+          "type": "Number"
+        },
+        {
+          "name": "property",
+          "type": "String, optional"
+        },
+        {
+          "name": "ascending",
+          "type": "Boolean, optional"
+        }
+      ],
+      "gee_returns": "Collection",
+      "oge_inputs": [
+        {
+          "name": "collection",
+          "type": "DataFrame",
+          "description": "待排序的要素集合"
+        },
+        {
+          "name": "maxRows",
+          "type": "Int",
+          "description": "返回的最大要素数量"
+        },
+        {
+          "name": "property",
+          "type": "String",
+          "description": "用于排序的属性字段名称"
+        },
+        {
+          "name": "ascending",
+          "type": "Boolean",
+          "description": "是否按升序排序"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": "输出要素"
+      }
+    },
+    {
+      "gee": "ee.ImageCollection.randomColumn",
+      "oge": "FeatureCollection.randomColumn",
+      "issue": "⚠️ 对象类型不匹配：GEE 操作 ImageCollection，OGE 操作 FeatureCollection",
+      "severity": "🟡 警告",
+      "suggestion": "需要确认使用方式",
+      "gee_inputs": [
+        {
+          "name": "this: collection",
+          "type": "FeatureCollection"
+        },
+        {
+          "name": "columnName",
+          "type": "String, default: \"random\""
+        },
+        {
+          "name": "seed",
+          "type": "Long, default: 0"
+        },
+        {
+          "name": "distribution",
+          "type": "String, default: \"uniform\""
+        },
+        {
+          "name": "rowKeys",
+          "type": "List, optional"
+        }
+      ],
+      "gee_returns": "FeatureCollection",
+      "oge_inputs": [
+        {
+          "name": "collection",
+          "type": "DataFrame",
+          "description": "FeatureCollection"
+        },
+        {
+          "name": "columnName",
+          "type": "String",
+          "description": "Generated random column name"
+        },
+        {
+          "name": "seed",
+          "type": "Long",
+          "description": "random seed"
+        },
+        {
+          "name": "distribution",
+          "type": "String",
+          "description": "distribution"
+        },
+        {
+          "name": "rowKeys",
+          "type": "List[String]",
+          "description": "Specified field(s)"
+        }
+      ],
+      "oge_output": {
+        "name": "output",
+        "type": "FeatureCollection",
+        "description": ""
+      }
+    }
+  ]
+}

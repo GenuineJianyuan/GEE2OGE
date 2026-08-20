@@ -1,0 +1,114 @@
+[
+  {
+    "severity": "🔴 严重",
+    "category": "功能方向相反",
+    "gee": "ee.Image.rgbToHsv",
+    "oge": "Coverage.hsvToRgb",
+    "reason": "rgbToHsv 是 RGB→HSV，而 hsvToRgb 是 HSV→RGB，方向完全相反",
+    "suggestion": "应映射到 Coverage.rgbToHsv（如果存在），或标注为 Python 实现"
+  },
+  {
+    "severity": "🔴 严重",
+    "category": "功能不同",
+    "gee": "ee.Feature.set",
+    "oge": "Feature.select",
+    "reason": "Feature.set 是设置属性值，Feature.select 是选择字段",
+    "suggestion": "这两个功能完全不同，需要重新映射"
+  },
+  {
+    "severity": "🟡 中等",
+    "category": "功能不匹配",
+    "gee": "ee.FeatureCollection.sort",
+    "oge": "FeatureCollection.limit",
+    "reason": "sort 是排序，limit 是限制结果数量",
+    "suggestion": "排序功能应有对应的 OGE API，或者映射到 Python 实现"
+  },
+  {
+    "severity": "🟡 中等",
+    "category": "功能不匹配",
+    "gee": "ee.FeatureCollection.geometry",
+    "oge": "FeatureCollection.union",
+    "reason": "geometry 获取所有要素的几何，union 是合并所有几何",
+    "suggestion": "这两个功能语义不同"
+  },
+  {
+    "severity": "🟡 中等",
+    "category": "分类器简化过度",
+    "gee": "ee.Classifier.libsvm / smileRandomForest / smileCart 等",
+    "oge": "Coverage.svmClassificationBySAGA",
+    "reason": "9 个不同的分类器（SVM、随机森林、CART、KMeans 等）全部映射到同一个 SAGA API",
+    "suggestion": "不同分类器应有不同的 OGE 映射，或者需要分别实现"
+  },
+  {
+    "severity": "🟡 中等",
+    "category": "功能类型不同",
+    "gee": "ee.Image.pixelArea",
+    "oge": "Coverage.surfAreaByGrass",
+    "reason": "pixelArea 是计算像素面积（米²），surfArea 是计算地形表面积",
+    "suggestion": "两者计算方式不同，不能简单替换"
+  },
+  {
+    "severity": "🟡 中等",
+    "category": "构造函数映射",
+    "gee": "ee.Image",
+    "oge": "service.getCoverage",
+    "reason": "ee.Image 是构造函数，getCoverage 是服务获取接口",
+    "suggestion": "构造函数和服务接口是不同的使用方式"
+  },
+  {
+    "severity": "🟡 中等",
+    "category": "构造函数映射",
+    "gee": "ee.FeatureCollection",
+    "oge": "Service.getFeatureCollection",
+    "reason": "ee.FeatureCollection 是构造函数，getFeatureCollection 是服务接口",
+    "suggestion": "构造函数和服务接口是不同的使用方式"
+  },
+  {
+    "severity": "🟡 中等",
+    "category": "功能不同",
+    "gee": "Map.addLayer",
+    "oge": "getMap",
+    "reason": "addLayer 添加图层，getMap 获取地图",
+    "suggestion": "功能差异较大"
+  },
+  {
+    "severity": "🟡 中等",
+    "category": "方法名不同",
+    "gee": "ee.Image.classify",
+    "oge": "Coverage.svmClassificationBySAGA",
+    "reason": "classify 方法名直接对应，理论上是分类功能，但映射到 SAGA 特定的 SVM API",
+    "suggestion": "可能需要更通用的分类 API"
+  },
+  {
+    "severity": "🟢 轻微",
+    "category": "近似功能",
+    "gee": "ee.Image.reduceResolution",
+    "oge": "Coverage.resample",
+    "reason": "reduceResolution 降低分辨率（使用聚合），resample 重采样",
+    "suggestion": "功能近似但不完全相同，需要注意"
+  },
+  {
+    "severity": "🟢 轻微",
+    "category": "近似功能",
+    "gee": "ee.Image.reduceToVectors",
+    "oge": "Coverage.polygonizeByGDAL",
+    "reason": "reduceToVectors 是将栅格转为矢量（简化版），polygonize 是栅格转多边形",
+    "suggestion": "功能近似但有差异"
+  },
+  {
+    "severity": "ℹ️ 信息",
+    "category": "合理的 N:1 映射",
+    "gee": "ee.Filter.eq / ee.Image.eq → Coverage.eq",
+    "oge": "Coverage.eq",
+    "reason": "Filter.eq 和 Image.eq 语义相同，只是作用对象不同",
+    "suggestion": "这是合理的映射"
+  },
+  {
+    "severity": "🟢 轻微",
+    "category": "导出映射",
+    "gee": "Export.image.toAsset / toDrive / toCloudStorage → Coverage.export",
+    "oge": "Coverage.export",
+    "reason": "不同的导出目标映射到同一个 export 接口",
+    "suggestion": "这是合理的设计，具体导出目标作为参数传递"
+  }
+]

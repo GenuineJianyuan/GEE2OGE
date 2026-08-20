@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEE2OGE - GEE 代码迁移系统</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --accent-bg: #eff6ff;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .nav {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .nav-brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-right: 32px;
+  }
+  .nav-brand span { color: var(--text); }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .nav-tab:hover { background: var(--accent-bg); color: var(--primary); }
+  .nav-tab.active { background: var(--primary); color: white; }
+  .nav-stats {
+    margin-left: auto;
+    display: flex;
+    gap: 16px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .nav-stats span strong { color: var(--primary); }
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Index Page */
+  .workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-title { font-size: 1rem; font-weight: 600; }
+  .card-body { padding: 16px; flex: 1; }
+  .editor-container { position: relative; height: 500px; }
+  .editor-container textarea {
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+    background: #fafbfc;
+  }
+  .editor-container textarea:focus { border-color: var(--primary); }
+  .toolbar { display: flex; gap: 8px; padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid var(--border); }
+  .btn {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn:hover { background: var(--bg); }
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-sm { padding: 4px 10px; font-size: 0.75rem; }
+  .case-name {
+    flex: 1;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    outline: none;
+  }
+  .case-name:focus { border-color: var(--primary); }
+
+  .result-area { height: 500px; overflow: auto; }
+  .result-tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .result-tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .result-tab.active { border-color: var(--primary); color: var(--primary); }
+  .result-content { padding: 16px; }
+  .result-content pre {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .step-list { display: flex; flex-direction: column; gap: 12px; }
+  .step-item {
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+  }
+  .step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 0.85rem;
+  }
+  .step-title { font-weight: 600; }
+  .step-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px; }
+  .step-detail { font-size: 0.8rem; }
+  .api-chip {
+    display: inline-block;
+    padding: 3px 8px;
+    margin: 2px;
+    background: var(--accent-bg);
+    color: var(--primary);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-family: monospace;
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .status-success { background: #d1fae5; color: #065f46; }
+  .status-warning { background: #fef3c7; color: #92400e; }
+  .status-error { background: #fee2e2; color: #991b1b; }
+
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--text-muted);
+  }
+  .loading::after {
+    content: '';
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    margin-left: 10px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  /* Stats Cards */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .stat-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    transform: translateY(-2px);
+  }
+  .stat-value { font-size: 2rem; font-weight: 700; color: var(--primary); }
+  .stat-label { font-size: 0.85rem; color: var(--text-muted); }
+
+  /* Knowledge Page */
+  .filter-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-bar select, .filter-bar input {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    outline: none;
+  }
+  .filter-bar select:focus, .filter-bar input:focus { border-color: var(--primary); }
+  .knowledge-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .knowledge-table th {
+    padding: 12px 16px;
+    background: #f8fafc;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .knowledge-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+  .knowledge-table tr:hover { background: var(--accent-bg); }
+  .knowledge-table code { font-family: monospace; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+  .pagination button { padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; background: white; cursor: pointer; }
+  .pagination button:disabled { opacity: 0.5; }
+  .pagination .page-info { align-self: center; color: var(--text-muted); font-size: 0.85rem; }
+
+  /* History Page */
+  .history-list { display: flex; flex-direction: column; gap: 12px; }
+  .history-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .history-item:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .history-info h4 { margin-bottom: 4px; }
+  .history-meta { display: flex; gap: 12px; font-size: 0.8rem; color: var(--text-muted); }
+  .history-actions { display: flex; gap: 8px; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 1100px;
+    width: 100%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-body { padding: 20px; overflow: auto; flex: 1; max-height: 70vh; }
+  .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+
+  /* Pipeline Stepper */
+  .stepper { display: flex; flex-direction: column; gap: 0; }
+  .stepper-item {
+    display: flex;
+    gap: 16px;
+    padding: 12px 0;
+    position: relative;
+  }
+  .stepper-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 40px;
+    bottom: -8px;
+    width: 2px;
+    background: var(--border);
+  }
+  .stepper-item.done:not(:last-child)::before { background: var(--success); }
+  .stepper-item.active:not(:last-child)::before { 
+    background: linear-gradient(to bottom, var(--primary) 50%, var(--border) 50%);
+  }
+  .stepper-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: var(--border);
+    color: var(--text-muted);
+    z-index: 1;
+  }
+  .stepper-item.done .stepper-icon { background: var(--success); color: white; }
+  .stepper-item.active .stepper-icon { 
+    background: var(--primary); 
+    color: white;
+    animation: pulse 2s infinite;
+  }
+  .stepper-content { flex: 1; min-width: 0; }
+  .stepper-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .stepper-title { font-weight: 600; font-size: 0.9rem; }
+  .stepper-timer { 
+    font-family: monospace; 
+    font-size: 0.8rem; 
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stepper-timer .spinner {
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+  }
+  .stepper-item.done .stepper-timer .spinner { display: none; }
+  .stepper-desc { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
+  .stepper-result {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    max-height: 120px;
+    overflow: auto;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .stepper-item.active .stepper-result { border-color: var(--primary); }
+  .stepper-result-empty { color: var(--text-muted); font-style: italic; }
+  .stepper-meta { display: flex; gap: 12px; font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+  .step-api-chip {
+    display: inline-block;
+    padding: 2px 6px;
+    background: var(--accent-bg);
+    color: var(--primary);
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.7rem;
+    margin: 2px;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); }
+  }
+
+  /* Data table in modal */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .data-table th {
+    padding: 10px 12px;
+    background: #f8fafc;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+  }
+  .data-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: monospace;
+  }
+  .data-table tr:hover td { background: var(--accent-bg); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .workspace { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Example Code */
+  .example-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">GEE<span>2</span>OGE</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-page="index">代码转换</button>
+    <button class="nav-tab" data-page="knowledge">知识库</button>
+    <button class="nav-tab" data-page="history">历史记录</button>
+  </div>
+  <div class="nav-stats">
+    <span>GEE API: <strong id="stat-gee">-</strong></span>
+    <span>OGE API: <strong id="stat-oge">-</strong></span>
+    <span>映射: <strong id="stat-mapping">-</strong></span>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Index Page: GEE to OGE Converter -->
+  <div id="page-index" class="page active">
+    <div class="stats-grid" id="stats-grid"></div>
+
+    <div class="workspace">
+      <!-- Left: GEE Code Input -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">GEE 代码输入</span>
+          <span class="example-badge" onclick="loadExample('wheat')">加载示例</span>
+        </div>
+        <div class="toolbar">
+          <input type="text" class="case-name" id="case-name" placeholder="案例名称（可选）" value="华东小麦长势监测">
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--text-muted); margin-right: 4px;">
+            <input type="checkbox" id="llm-toggle" style="width: 14px; height: 14px;" checked>
+            <span>LLM 增强</span>
+          </label>
+          <span id="llm-status" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; background: #fee2e2; color: #991b1b;">检测中...</span>
+          <button class="btn" onclick="clearCode()">清空</button>
+          <button class="btn btn-primary" onclick="convertCode()" id="btn-convert">
+            <span id="btn-text">一键转换</span>
+          </button>
+        </div>
+        <div class="editor-container">
+          <textarea id="gee-code" placeholder="在此粘贴 GEE JavaScript 代码...">// Winter-season image
+var winterImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20230104');
+
+// Summer-season image
+var summerImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20220728');
+
+// -----------------------
+// Winter bands
+// -----------------------
+var winterRed = winterImage.select('B4');
+var winterGreen = winterImage.select('B3');
+var winterNir = winterImage.select('B5');
+var winterSwir1 = winterImage.select('B6');
+
+// Winter NDVI
+var winterNdviNumerator = winterNir.subtract(winterRed);
+var winterNdviDenominator = winterNir.add(winterRed);
+var winterNdvi = winterNdviNumerator.divide(winterNdviDenominator).rename('Winter_NDVI');
+
+// Visualization parameters
+var vis = {
+  min: -1,
+  max: 1,
+  palette: ['blue', 'lightblue', 'green', 'yellow', 'red']
+};
+
+// Add layers to the map
+Map.addLayer(winterNdvi, vis, 'Winter NDVI');
+
+// Set the map center
+Map.setCenter(120.5, 32.0, 9);</textarea>
+        </div>
+      </div>
+
+      <!-- Right: Conversion Results -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">转换结果</span>
+          <div>
+            <button class="btn btn-sm" onclick="copyResult()">复制</button>
+            <button class="btn btn-sm" onclick="downloadResult()">下载</button>
+          </div>
+        </div>
+        <div class="result-tabs">
+          <button class="result-tab active" data-tab="steps">步骤链条</button>
+          <button class="result-tab" data-tab="overview">概览</button>
+          <button class="result-tab" data-tab="oge">OGE 代码</button>
+          <button class="result-tab" data-tab="missing">缺失报告</button>
+        </div>
+        <div class="result-content" id="result-content">
+          <div class="empty-state">
+            <div class="empty-state-icon">📝</div>
+            <div>点击"一键转换"开始迁移</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Knowledge Page -->
+  <div id="page-knowledge" class="page">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">算子映射知识库</span>
+      </div>
+      <div class="card-body">
+        <div class="filter-bar">
+          <input type="text" id="kw-search" placeholder="🔍 搜索 API 名称或描述..." oninput="loadKnowledge()">
+          <select id="kw-type" onchange="loadKnowledge()">
+            <option value="all">所有类型</option>
+            <option value="one_to_one">一对一</option>
+            <option value="one_to_many">一对多</option>
+            <option value="native_python">Python 实现</option>
+            <option value="missing">缺失</option>
+          </select>
+          <select id="kw-class" onchange="loadKnowledge()">
+            <option value="">所有类</option>
+          </select>
+        </div>
+        <div id="knowledge-table-container"></div>
+        <div class="pagination" id="knowledge-pagination"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Page -->
+  <div id="page-history" class="page">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">转换历史记录</span>
+        <button class="btn btn-sm" onclick="loadHistory()">刷新</button>
+      </div>
+      <div class="card-body">
+        <div id="history-list" class="history-list"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="card-title" id="modal-title">详情</span>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// 全局变量
+// ============================================================
+let currentResult = null;
+let knowledgePage = 1;
+
+// ============================================================
+// 初始化
+// ============================================================
+async function init() {
+  // 加载统计信息
+  try {
+    const resp = await fetch('/api/stats');
+    const data = await resp.json();
+    if (data.success) {
+      document.getElementById('stat-gee').textContent = data.data.total_gee_apis;
+      document.getElementById('stat-oge').textContent = data.data.total_oge_apis;
+      document.getElementById('stat-mapping').textContent = data.data.total_mappings;
+
+      // 渲染统计卡片（可点击查看对应数据）
+      document.getElementById('stats-grid').innerHTML = `
+        <div class="stat-card" onclick="showDataModal('gee-apis')">
+          <div class="stat-value">${data.data.total_gee_apis}</div>
+          <div class="stat-label">GEE API 总数</div>
+        </div>
+        <div class="stat-card" onclick="showDataModal('oge-apis')">
+          <div class="stat-value">${data.data.total_oge_apis}</div>
+          <div class="stat-label">OGE API 总数</div>
+        </div>
+        <div class="stat-card" onclick="showDataModal('mappings')">
+          <div class="stat-value">${data.data.total_mappings}</div>
+          <div class="stat-label">算子映射总数</div>
+        </div>
+        <div class="stat-card" onclick="showDataModal('native-python')">
+          <div class="stat-value">${(data.data.by_mapping_type || {}).native_python || 0}</div>
+          <div class="stat-label">Python 原生实现</div>
+        </div>
+      `;
+
+      // 设置 LLM 状态
+      updateLLMStatus(data.data.llm_available);
+    }
+  } catch(e) { console.error(e); }
+
+  // 加载类过滤器选项
+  try {
+    const resp = await fetch('/api/classes');
+    const data = await resp.json();
+    if (data.success) {
+      const sel = document.getElementById('kw-class');
+      data.data.forEach(m => {
+        if (m.oge_class) {
+          const opt = document.createElement('option');
+          opt.value = m.gee_class;
+          opt.textContent = `${m.gee_class} → ${m.oge_class}`;
+          sel.appendChild(opt);
+        }
+      });
+    }
+  } catch(e) { console.error(e); }
+
+  // 如果 stats 接口未返回 llm_available，则单独检测
+  try {
+    const resp = await fetch('/api/llm-status');
+    const data = await resp.json();
+    if (data.success) updateLLMStatus(data.available);
+  } catch(e) { console.error(e); }
+}
+
+/**
+ * 更新 LLM 状态指示器
+ * @param {boolean} available - LLM 是否可用
+ */
+function updateLLMStatus(available) {
+  const statusEl = document.getElementById('llm-status');
+  const toggleEl = document.getElementById('llm-toggle');
+  if (available) {
+    statusEl.textContent = 'LLM 就绪';
+    statusEl.style.background = '#d1fae5';
+    statusEl.style.color = '#065f46';
+    toggleEl.disabled = false;
+  } else {
+    statusEl.textContent = 'LLM 离线 - 使用规则引擎';
+    statusEl.style.background = '#fef3c7';
+    statusEl.style.color = '#92400e';
+    toggleEl.checked = false;
+    toggleEl.disabled = true;
+  }
+}
+
+// ============================================================
+// 导航切换
+// ============================================================
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(`page-${tab.dataset.page}`).classList.add('active');
+
+    if (tab.dataset.page === 'knowledge') {
+      knowledgePage = 1;
+      loadKnowledge();
+    } else if (tab.dataset.page === 'history') {
+      loadHistory();
+    }
+  });
+});
+
+// ============================================================
+// 流水线步骤定义
+// ============================================================
+const PIPELINE_STEPS = [
+  { key: 'step1', title: '语义抽象', desc: '分析任务目标、提取关键参数、理解代码意图' },
+  { key: 'step2', title: 'API 需求识别', desc: '解析 GEE 代码、提取所有 API 调用、推断变量类型' },
+  { key: 'step3', title: 'GEE-OGE 匹配', desc: '将识别的 GEE API 与 OGE 算子库进行映射匹配' },
+  { key: 'step4', title: '步骤级代码生成', desc: '为每个子步骤生成对应的 OGE 代码片段' },
+  { key: 'step5', title: '可行性补全', desc: '识别缺失的 API、生成 Python 原生实现建议' },
+  { key: 'step6', title: '工作流重构', desc: '组装完整 OGE 工作流代码、输出最终结果' }
+];
+
+let pipelineTimers = {};  // 步骤计时器
+let pipelineStartTimes = {};
+
+/**
+ * 格式化毫秒为 MM:SS.ms
+ */
+function formatDuration(ms) {
+  if (ms < 1000) return ms + 'ms';
+  const s = Math.floor(ms / 1000);
+  const msPart = (ms % 1000).toString().padStart(3, '0');
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  if (m > 0) return `${m}m ${sec}s`;
+  return `${sec}.${msPart.substring(0, 2)}s`;
+}
+
+/**
+ * 启动步骤计时器
+ */
+function startStepTimer(stepKey) {
+  pipelineStartTimes[stepKey] = Date.now();
+  const timerEl = document.getElementById(`timer-${stepKey}`);
+  if (timerEl) {
+    timerEl.innerHTML = '<span class="spinner"></span><span id="timer-val-' + stepKey + '">0.00s</span>';
+  }
+  if (pipelineTimers[stepKey]) clearInterval(pipelineTimers[stepKey]);
+  pipelineTimers[stepKey] = setInterval(() => {
+    const elapsed = Date.now() - (pipelineStartTimes[stepKey] || Date.now());
+    const valEl = document.getElementById(`timer-val-${stepKey}`);
+    if (valEl) valEl.textContent = formatDuration(elapsed);
+  }, 50);
+}
+
+/**
+ * 停止步骤计时器
+ */
+function stopStepTimer(stepKey) {
+  if (pipelineTimers[stepKey]) {
+    clearInterval(pipelineTimers[stepKey]);
+    delete pipelineTimers[stepKey];
+  }
+  const elapsed = pipelineStartTimes[stepKey] ? Date.now() - pipelineStartTimes[stepKey] : 0;
+  delete pipelineStartTimes[stepKey];
+  const timerEl = document.getElementById(`timer-${stepKey}`);
+  if (timerEl) {
+    timerEl.innerHTML = formatDuration(elapsed);
+  }
+}
+
+/**
+ * 渲染步骤链条视图（带动画和计时器）
+ */
+function renderStepper(result, isRunning = false, currentStep = null) {
+  const r = result.result || result;
+  const container = document.getElementById('result-content');
+
+  let html = '<div class="stepper">';
+  PIPELINE_STEPS.forEach((step, idx) => {
+    const status = getStepStatus(step.key, r, isRunning, currentStep, idx);
+    const resultHtml = getStepResultHtml(step.key, r);
+
+    html += `
+      <div class="stepper-item ${status}">
+        <div class="stepper-icon">
+          ${status === 'done' ? '✓' : (status === 'active' ? (idx + 1) : idx + 1)}
+        </div>
+        <div class="stepper-content">
+          <div class="stepper-header">
+            <div class="stepper-title">Step ${idx + 1}: ${step.title}</div>
+            <div class="stepper-timer" id="timer-${step.key}">
+              ${status === 'done' ? formatDuration(getStepDuration(step.key, r)) : '⏱ 0.00s'}
+            </div>
+          </div>
+          <div class="stepper-desc">${step.desc}</div>
+          ${resultHtml ? `<div class="stepper-result">${resultHtml}</div>` : ''}
+        </div>
+      </div>
+    `;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+/**
+ * 获取步骤状态（pending/active/done）
+ */
+function getStepStatus(stepKey, r, isRunning, currentStep, idx) {
+  if (!r) return 'pending';
+  // 如果步骤数据存在，说明已完成
+  if (r[stepKey] && Object.keys(r[stepKey]).length > 0) return 'done';
+  // 如果是当前正在执行的步骤
+  if (isRunning && currentStep === stepKey) return 'active';
+  // 如果前面的步骤都有数据，且正在运行中，说明该步骤正在执行
+  if (isRunning) {
+    const prevKeys = PIPELINE_STEPS.slice(0, idx).map(s => s.key);
+    const allPrevDone = prevKeys.every(k => r[k] && Object.keys(r[k]).length > 0);
+    if (allPrevDone) return 'active';
+  }
+  return 'pending';
+}
+
+/**
+ * 获取步骤结果 HTML
+ */
+function getStepResultHtml(stepKey, r) {
+  if (!r || !r[stepKey]) return '';
+  const step = r[stepKey];
+
+  switch (stepKey) {
+    case 'step1':
+      const goal = step.task_goal || 'N/A';
+      const params = step.key_params || {};
+      return `<div><strong>🎯 任务目标:</strong> ${goal}</div>
+              <div><strong>📋 关键参数:</strong> <code>${JSON.stringify(params)}</code></div>
+              <div><strong>🔄 工作流步骤数:</strong> ${step.workflow_steps?.length || 0}</div>`;
+
+    case 'step2':
+      const apis = step.all_apis || [];
+      const classes = {};
+      (step.variable_types || []).forEach(vt => { classes[vt.variable] = vt.type; });
+      return `<div><strong>📡 识别 API (${step.api_count || 0} 个):</strong>
+              ${apis.map(a => `<span class="step-api-chip">${a}</span>`).join('')}</div>
+              ${Object.keys(classes).length > 0 ? `<div><strong>🔤 变量类型:</strong>
+              ${Object.entries(classes).map(([k, v]) => `<span class="step-api-chip">${k}: ${v}</span>`).join('')}</div>` : ''}`;
+
+    case 'step3':
+      if (step.mapping_summary) {
+        const ms = step.mapping_summary;
+        return `<div><strong>✅ 直接可行:</strong> ${ms.direct_feasible || 0} | 
+                <strong>🔀 组合可行:</strong> ${ms.combo_feasible || 0} | 
+                <strong>🐍 Python实现:</strong> ${ms.native_python || 0} | 
+                <strong>❌ 缺失:</strong> ${ms.missing || 0}</div>`;
+      }
+      if (step.match_results) {
+        return `<div><strong>🎯 匹配数:</strong> ${step.match_results.length}</div>`;
+      }
+      return '';
+
+    case 'step4':
+      const codes = step.step_codes || [];
+      return `<div><strong>📝 生成子步骤 (${codes.length} 个):</strong></div>
+              ${codes.slice(0, 3).map(s => `<div style="margin-top: 4px;"><code style="color: var(--primary);">${s.oge_code?.substring(0, 80) || 'N/A'}...</code></div>`).join('')}
+              ${codes.length > 3 ? `<div style="color: var(--text-muted); font-size: 0.75rem;">+${codes.length - 3} 更多步骤</div>` : ''}`;
+
+    case 'step5':
+      const blocking = step.blocking_apis || [];
+      const nonBlocking = step.non_blocking_gaps || [];
+      return `<div><strong>🚫 阻断缺失:</strong> ${blocking.length} | 
+              <strong>⚠️ 非阻断:</strong> ${nonBlocking.length}</div>`;
+
+    case 'step6':
+      // 优先使用 LLM 生成的代码
+      let step6Code = '';
+      let codeSource = '';
+      
+      // 检查 LLM 生成的代码
+      if (r.llm_oge_code && r.llm_oge_code.trim()) {
+        step6Code = r.llm_oge_code;
+        codeSource = '🤖 LLM 生成';
+      } else if (step.oge_code && !step.oge_code.includes('[PYTHON IMPL]')) {
+        // 规则引擎生成的代码（排除纯注释）
+        step6Code = step.oge_code;
+        codeSource = '📋 规则引擎';
+      } else {
+        // 仅有注释/占位
+        step6Code = '// 代码生成失败，请使用 LLM 增强模式';
+        codeSource = '⚠️ 需 LLM 增强';
+      }
+      
+      const feasibility = step.feasibility || 'unknown';
+      return `<div><strong>📊 可行性:</strong> ${feasibility} | 
+              <strong>📄 代码长度:</strong> ${step6Code.length} 字符 | 
+              <strong>来源:</strong> ${codeSource}</div>
+              <div style="margin-top: 4px; max-height: 80px; overflow: auto; background: #f1f5f9; padding: 6px; border-radius: 4px;"><code style="font-size: 0.75rem;">${step6Code.substring(0, 300)}${step6Code.length > 300 ? '...' : ''}</code></div>`;
+    default:
+      return '';
+  }
+}
+
+/**
+ * 获取步骤耗时（如果 result 中记录了）
+ */
+function getStepDuration(stepKey, r) {
+  // 简单估算：如果有该步骤数据，给一个默认值
+  if (r && r[stepKey] && Object.keys(r[stepKey]).length > 0) {
+    return 500; // 占位
+  }
+  return 0;
+}
+
+// ============================================================
+// 代码转换（顺序步骤动画）
+// ============================================================
+async function convertCode() {
+  const code = document.getElementById('gee-code').value.trim();
+  const caseName = document.getElementById('case-name').value.trim();
+  const useLLM = document.getElementById('llm-toggle').checked;
+  if (!code) { alert('请输入 GEE 代码'); return; }
+
+  const btn = document.getElementById('btn-convert');
+  const btnText = document.getElementById('btn-text');
+  btn.disabled = true;
+  btnText.textContent = useLLM ? 'LLM 分析中...' : '分析中...';
+
+  // 先切换到步骤链条标签
+  document.querySelectorAll('.result-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.result-tab[data-tab="steps"]').classList.add('active');
+
+  // 显示初始骨架（所有步骤 pending，第一个步骤 active）
+  showTab('steps', {}, { rate: 0, feasibilityText: '' });
+
+  // 立即激活第一个步骤
+  setTimeout(() => {
+    const items = document.querySelectorAll('.stepper-item');
+    if (items[0]) {
+      items[0].classList.add('active');
+      items[0].classList.remove('pending');
+      startStepTimer(PIPELINE_STEPS[0].key);
+    }
+  }, 50);
+
+  try {
+    const endpoint = useLLM ? '/api/convert-llm' : '/api/convert';
+    const resp = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gee_code: code, case_name: caseName || '未命名案例' })
+    });
+    const data = await resp.json();
+
+    // 停止第一个步骤的计时器
+    stopStepTimer(PIPELINE_STEPS[0].key);
+
+    if (!data.success) {
+      // 显示错误
+      const content = document.getElementById('result-content');
+      content.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><div style="color: var(--danger); font-weight: 600;">转换失败: ${data.error}</div></div>`;
+      btn.disabled = false;
+      btnText.textContent = '一键转换';
+      return;
+    }
+
+    // 成功后，依次显示每个步骤完成（间隔 250ms）
+    const r = data.result;
+    animateStepsSequentially(r);
+
+    // 保存结果并在动画完成后显示
+    setTimeout(() => {
+      currentResult = data;
+      showResult(data);
+      btn.disabled = false;
+      btnText.textContent = '一键转换';
+    }, PIPELINE_STEPS.length * 250 + 100);
+
+  } catch(e) {
+    PIPELINE_STEPS.forEach(s => stopStepTimer(s.key));
+    alert('请求失败: ' + e.message);
+    btn.disabled = false;
+    btnText.textContent = '一键转换';
+  }
+}
+
+/**
+ * 依次点亮每个步骤（顺序动画）
+ */
+function animateStepsSequentially(r) {
+  PIPELINE_STEPS.forEach((step, idx) => {
+    setTimeout(() => {
+      const items = document.querySelectorAll('.stepper-item');
+      if (items[idx]) {
+        // 标记当前步骤完成
+        items[idx].classList.add('done');
+        items[idx].classList.remove('active', 'pending');
+        stopStepTimer(step.key);
+
+        // 如果有结果，显示该步骤的结果
+        if (r && r[step.key]) {
+          const resultHtml = getStepResultHtml(step.key, r);
+          const resultEl = items[idx].querySelector('.stepper-result');
+          if (resultEl && resultHtml) {
+            resultEl.innerHTML = resultHtml;
+          }
+        }
+
+        // 激活下一个步骤
+        if (idx + 1 < PIPELINE_STEPS.length && items[idx + 1]) {
+          items[idx + 1].classList.add('active');
+          items[idx + 1].classList.remove('pending');
+          startStepTimer(PIPELINE_STEPS[idx + 1].key);
+        }
+      }
+    }, idx * 250);
+  });
+}
+
+function showResult(data) {
+  const content = document.getElementById('result-content');
+  if (!data.success) {
+    content.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><div style="color: var(--danger); font-weight: 600;">转换失败: ${data.error}</div></div>`;
+    return;
+  }
+
+  const r = data.result;
+  const rate = (r.match_rate * 100).toFixed(1);
+  const feasibility = r.step6?.feasibility || 'unknown';
+  const feasibilityText = {
+    'full_feasible': '<span class="status-badge status-success">完全可行</span>',
+    'partial_feasible': '<span class="status-badge status-warning">部分可行</span>',
+    'infeasible': '<span class="status-badge status-error">不可执行</span>'
+  }[feasibility] || '<span class="status-badge status-warning">未知</span>';
+
+  const engine = data.engine || 'rule_based';
+  const engineBadge = engine === 'llm_enhanced'
+    ? '<span class="status-badge status-success" style="margin-left: 8px;">⚡ LLM 增强</span>'
+    : '<span class="status-badge" style="margin-left: 8px; background: #dbeafe; color: #1e40af;">规则引擎</span>';
+
+  let llmEnhancements = '';
+  if (r.llm_enhancements && r.llm_enhancements.length > 0) {
+    llmEnhancements = `
+      <div style="margin-bottom: 12px; padding: 10px; background: #d1fae5; border-radius: 6px; font-size: 0.8rem;">
+        <strong>🤖 LLM 增强:</strong>
+        <ul style="margin: 4px 0 0 20px; padding: 0;">
+          ${r.llm_enhancements.map(e => `<li>${e}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  r._engineBadge = engineBadge;
+  r._llmEnhancements = llmEnhancements;
+
+  // 默认显示步骤链条
+  showTab('steps', r, { rate, feasibilityText });
+
+  // 更新标签点击事件
+  document.querySelectorAll('.result-tab').forEach(t => {
+    t.onclick = () => showTab(t.dataset.tab, r, { rate, feasibilityText });
+  });
+}
+
+function showTab(tab, r, info) {
+  document.querySelectorAll('.result-tab').forEach(t => t.classList.remove('active'));
+  const activeTab = document.querySelector(`.result-tab[data-tab="${tab}"]`);
+  if (activeTab) activeTab.classList.add('active');
+
+  const content = document.getElementById('result-content');
+
+  if (tab === 'steps') {
+    // 停止所有计时器
+    PIPELINE_STEPS.forEach(s => stopStepTimer(s.key));
+    content.innerHTML = renderStepperHTML(r, info);
+  } else if (tab === 'overview') {
+    content.innerHTML = `
+      <div style="display: flex; align-items: center; margin-bottom: 16px;">
+        <strong style="font-size: 0.95rem;">转换引擎:</strong>
+        ${r._engineBadge || ''}
+      </div>
+      ${r._llmEnhancements || ''}
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+        <div class="stat-card">
+          <div class="stat-value">${info.rate}%</div>
+          <div class="stat-label">API 匹配率</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${r.step1?.workflow_steps?.length || 0}</div>
+          <div class="stat-label">识别步骤数</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="font-size: 1rem;">${info.feasibilityText}</div>
+          <div class="stat-label">整体可行性</div>
+        </div>
+      </div>
+      <div style="margin-bottom: 16px;">
+        <strong>任务目标:</strong> ${r.llm_analysis?.task_goal || r.step1?.task_goal || 'N/A'}
+      </div>
+      <div style="margin-bottom: 16px;">
+        <strong>识别的 GEE API (${r.step2?.api_count || 0} 个):</strong><br>
+        ${(r.step2?.all_apis || []).map(a => `<span class="api-chip">${a}</span>`).join('')}
+      </div>
+      <div>
+        <strong>关键参数:</strong>
+        <pre style="margin-top: 8px;">${JSON.stringify(r.step1?.key_params || {}, null, 2)}</pre>
+      </div>
+    `;
+  } else if (tab === 'oge') {
+    // 优先使用 LLM 生成的代码
+    let ogeCode = '';
+    let codeSource = '';
+    
+    if (r.llm_oge_code && r.llm_oge_code.trim()) {
+      ogeCode = r.llm_oge_code;
+      codeSource = '🤖 LLM 生成';
+    } else if (r.step6?.oge_code && !r.step6.oge_code.includes('[PYTHON IMPL]')) {
+      ogeCode = r.step6.oge_code;
+      codeSource = '📋 规则引擎';
+    } else {
+      ogeCode = '// 未生成有效代码\n// 请确保开启 LLM 增强模式';
+      codeSource = '⚠️ 无代码';
+    }
+    
+    content.innerHTML = `
+      <div style="margin-bottom: 12px; padding: 10px; background: #f0f9ff; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+        <span><strong>代码来源:</strong> ${codeSource}</span>
+        <span style="color: var(--text-muted); font-size: 0.85rem;">${ogeCode.length} 字符</span>
+      </div>
+      <pre style="max-height: 500px; overflow: auto; background: #f1f5f9; padding: 16px; border-radius: 8px;">${ogeCode}</pre>
+    `;
+  } else if (tab === 'missing') {
+    const blocking = r.step5?.blocking_apis || [];
+    const nonBlocking = r.step5?.non_blocking_gaps || [];
+    const suggestions = r.step5?.rescue_suggestions || [];
+
+    if (blocking.length === 0 && nonBlocking.length === 0) {
+      content.innerHTML = `<div class="empty-state"><div class="empty-state-icon">✅</div><div>无缺失 API，完全可行</div></div>`;
+    } else {
+      content.innerHTML = `
+        ${blocking.length > 0 ? `
+          <div style="margin-bottom: 20px;">
+            <strong style="color: var(--danger);">阻断性缺失 (${blocking.length} 个):</strong>
+            <div style="margin-top: 8px;">${blocking.map(a => `<span class="api-chip" style="background: #fee2e2; color: #991b1b;">${a}</span>`).join('')}</div>
+          </div>
+        ` : ''}
+        ${nonBlocking.length > 0 ? `
+          <div style="margin-bottom: 20px;">
+            <strong style="color: var(--warning);">非阻断性缺失 (${nonBlocking.length} 个):</strong>
+            <div style="margin-top: 8px;">${nonBlocking.map(a => `<span class="api-chip" style="background: #fef3c7; color: #92400e;">${a}</span>`).join('')}</div>
+          </div>
+        ` : ''}
+        <div>
+          <strong>修复建议:</strong>
+          <ul style="margin-top: 8px; padding-left: 20px;">
+            ${suggestions.map(s => `<li style="margin-bottom: 6px;"><code>${s.api}</code>: ${s.suggestion}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    }
+  }
+}
+
+/**
+ * 渲染步骤链条 HTML（用于转换完成后展示）
+ */
+function renderStepperHTML(r, info) {
+  let html = '<div class="stepper">';
+  PIPELINE_STEPS.forEach((step, idx) => {
+    const status = r[step.key] && Object.keys(r[step.key]).length > 0 ? 'done' : 'pending';
+    const resultHtml = getStepResultHtml(step.key, r);
+
+    html += `
+      <div class="stepper-item ${status}">
+        <div class="stepper-icon">${status === 'done' ? '✓' : idx + 1}</div>
+        <div class="stepper-content">
+          <div class="stepper-header">
+            <div class="stepper-title">Step ${idx + 1}: ${step.title}</div>
+            <div class="stepper-timer" id="timer-${step.key}">
+              ${status === 'done' ? '✓ 完成' : '⏱ 待执行'}
+            </div>
+          </div>
+          <div class="stepper-desc">${step.desc}</div>
+          ${resultHtml ? `<div class="stepper-result">${resultHtml}</div>` : ''}
+        </div>
+      </div>
+    `;
+  });
+  html += '</div>';
+
+  // 添加引擎标记
+  if (info && info.rate !== undefined) {
+    html = `<div style="margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; display: flex; gap: 16px; align-items: center;">
+      <div><strong>引擎:</strong> ${r._engineBadge || ''}</div>
+      <div><strong>匹配率:</strong> ${info.rate}%</div>
+      <div><strong>可行性:</strong> ${info.feasibilityText}</div>
+    </div>` + html;
+  }
+
+  return html;
+}
+
+// ============================================================
+// 示例代码
+// ============================================================
+function loadExample(type) {
+  const examples = {
+    wheat: `// 华东小麦长势监测 - NDVI 计算
+var winterImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20230104');
+var summerImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20220728');
+
+// 冬季影像 - 波段选择
+var winterRed = winterImage.select('B4');
+var winterNir = winterImage.select('B5');
+
+// 冬季 NDVI
+var winterNdvi = winterNir.subtract(winterRed)
+  .divide(winterNir.add(winterRed))
+  .rename('Winter_NDVI');
+
+// 可视化
+var vis = {min: -1, max: 1, palette: ['blue', 'green', 'red']};
+Map.addLayer(winterNdvi, vis, 'Winter NDVI');
+Map.setCenter(120.5, 32.0, 9);`,
+    crop: `// 作物分类示例
+var roi = ee.Geometry.Rectangle([116, 32, 117, 33]);
+var collection = ee.ImageCollection('LANDSAT/LC08/C02/T1_TOA')
+  .filterBounds(roi)
+  .filterDate('2023-01-01', '2023-12-31');
+
+var composite = collection.median();
+var ndvi = composite.normalizedDifference(['B5', 'B4']);
+
+// 分类
+var classified = ndvi.gt(0.5);
+Map.addLayer(classified, {palette: ['white', 'green']}, 'Vegetation');`
+  };
+  document.getElementById('gee-code').value = examples[type] || examples.wheat;
+}
+
+function clearCode() {
+  document.getElementById('gee-code').value = '';
+  currentResult = null;
+  document.getElementById('result-content').innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><div>点击"一键转换"开始迁移</div></div>';
+}
+
+function copyResult() {
+  if (!currentResult?.result?.step6?.oge_code) return;
+  navigator.clipboard.writeText(currentResult.result.step6.oge_code);
+  alert('已复制到剪贴板');
+}
+
+function downloadResult() {
+  if (!currentResult?.result?.step6?.oge_code) return;
+  const blob = new Blob([currentResult.result.step6.oge_code], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'oge_workflow.py';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// 知识库
+// ============================================================
+async function loadKnowledge(page = 1) {
+  knowledgePage = page;
+  const kw = document.getElementById('kw-search').value.trim();
+  const type = document.getElementById('kw-type').value;
+  const cls = document.getElementById('kw-class').value;
+
+  const params = new URLSearchParams({ type, keyword: kw, class: cls, page, per_page: 50 });
+
+  try {
+    const resp = await fetch(`/api/mappings?${params}`);
+    const data = await resp.json();
+    renderKnowledge(data);
+  } catch(e) { console.error(e); }
+}
+
+function renderKnowledge(data) {
+  const container = document.getElementById('knowledge-table-container');
+  if (!data.success || data.data.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><div>未找到匹配的映射</div></div>';
+    document.getElementById('knowledge-pagination').innerHTML = '';
+    return;
+  }
+
+  const typeLabels = {
+    'one_to_one': '<span class="api-chip">一对一</span>',
+    'one_to_many': '<span class="api-chip" style="background: #dcfce7; color: #166534;">一对多</span>',
+    'native_python': '<span class="api-chip" style="background: #fef3c7; color: #92400e;">Python</span>',
+    'missing': '<span class="api-chip" style="background: #fee2e2; color: #991b1b;">缺失</span>'
+  };
+
+  container.innerHTML = `
+    <table class="knowledge-table">
+      <thead>
+        <tr>
+          <th>GEE API</th>
+          <th>OGE API</th>
+          <th>类型</th>
+          <th>置信度</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.data.map(m => `
+          <tr>
+            <td><code>${m.gee_api.full_name}</code></td>
+            <td>${m.oge_api ? `<code>${m.oge_api}</code>` : '<span style="color: var(--text-muted);">—</span>'}</td>
+            <td>${typeLabels[m.mapping_type] || m.mapping_type}</td>
+            <td>${typeof m.confidence === 'number' ? (m.confidence * 100).toFixed(0) + '%' : '-'}</td>
+            <td>${m.has_python_code ? '📦 有Python' : ''}</td>
+            <td><button class="btn btn-sm" onclick="showMappingDetail('${encodeURIComponent(m.gee_api.full_name)}')">详情</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+
+  // 分页
+  const totalPages = Math.ceil(data.total / data.per_page);
+  const pagination = document.getElementById('knowledge-pagination');
+  pagination.innerHTML = `
+    <button ${data.page <= 1 ? 'disabled' : ''} onclick="loadKnowledge(${data.page - 1})">上一页</button>
+    <span class="page-info">第 ${data.page} / ${totalPages} 页 (共 ${data.total} 条)</span>
+    <button ${data.page >= totalPages ? 'disabled' : ''} onclick="loadKnowledge(${data.page + 1})">下一页</button>
+  `;
+}
+
+async function showMappingDetail(geeName) {
+  try {
+    const resp = await fetch(`/api/mapping/${geeName}`);
+    const data = await resp.json();
+    if (!data.success) { alert(data.error); return; }
+
+    const d = data.data;
+    document.getElementById('modal-title').textContent = d.gee_api.api_full_name;
+    document.getElementById('modal-body').innerHTML = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+        <div class="card" style="padding: 16px;">
+          <strong>GEE API 详情</strong>
+          <p style="margin-top: 8px;"><code>${d.gee_api.api_full_name}</code></p>
+          <p><strong>类名:</strong> ${d.gee_api.class_name}</p>
+          <p><strong>描述:</strong> ${d.gee_api.description || '无'}</p>
+          <p><strong>参数类型:</strong> ${JSON.stringify(d.gee_api.arg_types)}</p>
+          <p><strong>参数个数:</strong> ${d.gee_api.arg_count}</p>
+        </div>
+        <div class="card" style="padding: 16px;">
+          <strong>映射详情</strong>
+          <p style="margin-top: 8px;"><strong>映射类型:</strong> ${d.mapping_type}</p>
+          <p><strong>置信度:</strong> ${(d.confidence * 100).toFixed(1)}%</p>
+          <p><strong>校验状态:</strong> ${d.verification_status}</p>
+          ${d.oge_api ? `<p><strong>OGE API:</strong> <code>${d.oge_api.api_name}</code></p>` : ''}
+          ${d.combo_steps ? `<p><strong>组合步骤:</strong></p><pre>${JSON.stringify(d.combo_steps, null, 2)}</pre>` : ''}
+          <p><strong>备注:</strong> ${d.review_comment || '无'}</p>
+        </div>
+      </div>
+      ${d.native_python_code_preview ? `
+        <div style="margin-top: 16px;">
+          <strong>Python 原生实现:</strong>
+          <pre style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; max-height: 300px; overflow: auto;">${d.native_python_code_preview}</pre>
+        </div>
+      ` : ''}
+    `;
+    document.getElementById('modal').classList.add('show');
+  } catch(e) { console.error(e); }
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+// ============================================================
+// ============================================================
+// 统计卡片点击跳转到知识库
+// ============================================================
+function showKnowledge(type, keyword) {
+  // 切换到知识库标签页
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelector('.nav-tab[data-page="knowledge"]').classList.add('active');
+  document.getElementById('page-knowledge').classList.add('active');
+
+  // 设置筛选条件
+  document.getElementById('kw-type').value = type;
+  if (keyword) {
+    document.getElementById('kw-search').value = keyword;
+  }
+  // 加载知识库
+  knowledgePage = 1;
+  loadKnowledge();
+}
+
+// ============================================================
+// 数据模态框 - 展示 GEE API / OGE API / 映射 / Python实现
+// ============================================================
+let dataModalState = { type: '', page: 1, perPage: 50 };
+
+/**
+ * 显示数据模态框
+ */
+function showDataModal(type) {
+  dataModalState = { type, page: 1, perPage: 50 };
+  const titles = {
+    'gee-apis': 'GEE API 列表 (gee_api_info)',
+    'oge-apis': 'OGE API 列表 (oge_api_info)',
+    'mappings': '算子映射列表 (operator_mapping)',
+    'native-python': 'Python 原生实现列表'
+  };
+  document.getElementById('modal-title').textContent = titles[type] || '数据列表';
+  document.getElementById('modal').classList.add('show');
+  renderDataModal();
+}
+
+/**
+ * 关闭模态框
+ */
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+/**
+ * 渲染数据模态框内容
+ */
+async function renderDataModal() {
+  const body = document.getElementById('modal-body');
+  const { type, page, perPage } = dataModalState;
+
+  body.innerHTML = '<div class="loading" style="text-align: center; padding: 40px;">加载中...</div>';
+
+  try {
+    let url = '';
+    if (type === 'gee-apis') url = `/api/gee-apis?page=${page}&per_page=${perPage}`;
+    else if (type === 'oge-apis') url = `/api/oge-apis?page=${page}&per_page=${perPage}`;
+    else if (type === 'mappings') url = `/api/mappings?type=all&page=${page}&per_page=${perPage}`;
+    else if (type === 'native-python') url = `/api/native-python?page=${page}&per_page=${perPage}`;
+
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    if (!data.success) {
+      body.innerHTML = `<div style="color: var(--danger); text-align: center; padding: 40px;">加载失败: ${data.error}</div>`;
+      return;
+    }
+
+    const total = data.total;
+    const totalPages = Math.ceil(total / perPage);
+
+    // 构建搜索框
+    let searchHtml = `<div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: center;">
+      <input type="text" id="data-search" placeholder="搜索..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;" onkeypress="if(event.key==='Enter') searchDataModal()">
+      <button class="btn btn-sm" onclick="searchDataModal()">搜索</button>
+      <button class="btn btn-sm" onclick="resetDataModal()">重置</button>
+      <span style="color: var(--text-muted); font-size: 0.85rem;">共 ${total} 条</span>
+    </div>`;
+
+    // 表格内容
+    let tableHtml = '';
+    if (type === 'gee-apis') {
+      tableHtml = renderGeeApisTable(data.data);
+    } else if (type === 'oge-apis') {
+      tableHtml = renderOgeApisTable(data.data);
+    } else if (type === 'mappings') {
+      tableHtml = renderMappingsTable(data.data);
+    } else if (type === 'native-python') {
+      tableHtml = renderNativePythonTable(data.data);
+    }
+
+    // 分页
+    let paginationHtml = `<div style="margin-top: 16px; display: flex; justify-content: space-between; align-items: center;">
+      <span style="color: var(--text-muted); font-size: 0.85rem;">第 ${page} / ${totalPages} 页</span>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-sm" ${page <= 1 ? 'disabled' : ''} onclick="changeDataModalPage(${page - 1})">上一页</button>
+        <button class="btn btn-sm" ${page >= totalPages ? 'disabled' : ''} onclick="changeDataModalPage(${page + 1})">下一页</button>
+      </div>
+    </div>`;
+
+    body.innerHTML = searchHtml + tableHtml + paginationHtml;
+  } catch(e) {
+    body.innerHTML = `<div style="color: var(--danger); text-align: center; padding: 40px;">请求失败: ${e.message}</div>`;
+  }
+}
+
+/**
+ * 搜索数据
+ */
+function searchDataModal() {
+  const kw = document.getElementById('data-search').value.trim();
+  // 简单通过重新加载第一页实现（搜索在服务端处理）
+  // TODO: 添加搜索参数到 URL
+  dataModalState.page = 1;
+  renderDataModal();
+}
+
+function resetDataModal() {
+  dataModalState.page = 1;
+  document.getElementById('data-search').value = '';
+  renderDataModal();
+}
+
+function changeDataModalPage(newPage) {
+  dataModalState.page = newPage;
+  renderDataModal();
+}
+
+/**
+ * 渲染 GEE API 表格
+ */
+function renderGeeApisTable(apis) {
+  if (!apis.length) return '<div style="text-align: center; padding: 40px; color: var(--text-muted);">暂无数据</div>';
+  let html = `<table class="data-table"><thead><tr>
+    <th>ID</th><th>API 全名</th><th>类名</th><th>方法名</th><th>描述</th><th>参数</th>
+  </tr></thead><tbody>`;
+  apis.forEach(api => {
+    const args = (api.arg_types || []).map(a => a.name || a).join(', ');
+    html += `<tr>
+      <td>${api.id}</td>
+      <td style="color: var(--primary);">${api.api_full_name}</td>
+      <td>${api.class_name || ''}</td>
+      <td>${api.method_name || ''}</td>
+      <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${(api.description || '').substring(0, 80)}</td>
+      <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${args}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+/**
+ * 渲染 OGE API 表格
+ */
+function renderOgeApisTable(apis) {
+  if (!apis.length) return '<div style="text-align: center; padding: 40px; color: var(--text-muted);">暂无数据</div>';
+  let html = `<table class="data-table"><thead><tr>
+    <th>ID</th><th>API 名称</th><th>分类</th><th>描述</th>
+  </tr></thead><tbody>`;
+  apis.forEach(api => {
+    html += `<tr>
+      <td>${api.id}</td>
+      <td style="color: var(--primary);">${api.api_name}</td>
+      <td>${api.catalog_name || ''}</td>
+      <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${(api.description || '').substring(0, 100)}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+/**
+ * 渲染映射表格
+ */
+function renderMappingsTable(mappings) {
+  if (!mappings.length) return '<div style="text-align: center; padding: 40px; color: var(--text-muted);">暂无数据</div>';
+  const typeLabels = {
+    'one_to_one': '<span class="status-badge status-success">一对一</span>',
+    'one_to_many': '<span class="status-badge" style="background: #dbeafe; color: #1e40af;">一对多</span>',
+    'many_to_one': '<span class="status-badge" style="background: #dbeafe; color: #1e40af;">多对一</span>',
+    'native_python': '<span class="status-badge status-warning">Python实现</span>',
+    'missing': '<span class="status-badge status-error">缺失</span>'
+  };
+  let html = `<table class="data-table"><thead><tr>
+    <th>GEE API</th><th>OGE API</th><th>映射类型</th><th>置信度</th>
+  </tr></thead><tbody>`;
+  mappings.forEach(m => {
+    const geeName = m.gee_api?.full_name || m.gee_api?.api_full_name || '';
+    const ogeName = m.oge_api || '-';
+    const typeBadge = typeLabels[m.mapping_type] || m.mapping_type;
+    html += `<tr>
+      <td style="color: var(--primary);">${geeName}</td>
+      <td>${ogeName}</td>
+      <td>${typeBadge}</td>
+      <td>${m.confidence || '-'}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+/**
+ * 渲染 Python 原生实现表格
+ */
+function renderNativePythonTable(items) {
+  if (!items.length) return '<div style="text-align: center; padding: 40px; color: var(--text-muted);">暂无数据</div>';
+  let html = `<table class="data-table"><thead><tr>
+    <th>GEE API</th><th>对应 OGE</th><th>代码大小</th><th>预览</th><th>置信度</th>
+  </tr></thead><tbody>`;
+  items.forEach(item => {
+    html += `<tr>
+      <td style="color: var(--primary);">${item.gee_api.full_name}</td>
+      <td>${item.oge_api || '-'}</td>
+      <td>${item.python_code_length} 字符</td>
+      <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.python_code_preview.substring(0, 100)}...</td>
+      <td>${item.confidence || '-'}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+// ============================================================
+// 历史记录
+// ============================================================
+async function loadHistory() {
+  const list = document.getElementById('history-list');
+  list.innerHTML = '<div class="loading">加载中</div>';
+
+  try {
+    const resp = await fetch('/api/history?limit=50');
+    const data = await resp.json();
+
+    if (!data.success || data.data.length === 0) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><div>暂无历史记录</div></div>';
+      return;
+    }
+
+    list.innerHTML = data.data.map(r => `
+      <div class="history-item" onclick="showHistoryDetail(${r.id})">
+        <div class="history-info">
+          <h4>${r.case_name}</h4>
+          <div class="history-meta">
+            <span>📊 匹配率: ${(r.match_rate * 100).toFixed(1)}%</span>
+            <span>${r.feasibility || 'unknown'}</span>
+            <span>${r.created_at}</span>
+          </div>
+        </div>
+        <div class="history-actions">
+          <button class="btn btn-sm" onclick="event.stopPropagation(); showHistoryDetail(${r.id})">查看</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function showHistoryDetail(id) {
+  try {
+    const resp = await fetch(`/api/history/${id}`);
+    const data = await resp.json();
+    if (!data.success) { alert(data.error); return; }
+
+    const d = data.data;
+    document.getElementById('modal-title').textContent = d.case_name;
+    document.getElementById('modal-body').innerHTML = `
+      <div style="margin-bottom: 16px;">
+        <strong>原始 GEE 代码:</strong>
+        <pre style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; max-height: 200px; overflow: auto;">${d.gee_code || '无'}</pre>
+      </div>
+      ${d.step6_workflow ? `
+        <div>
+          <strong>OGE 工作流代码:</strong>
+          <pre style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; max-height: 400px; overflow: auto;">${d.step6_workflow}</pre>
+        </div>
+      ` : ''}
+    `;
+    document.getElementById('modal').classList.add('show');
+  } catch(e) { console.error(e); }
+}
+
+// 点击遮罩关闭
+document.getElementById('modal').addEventListener('click', (e) => {
+  if (e.target.id === 'modal') closeModal();
+});
+
+// 启动
+init();
+</script>
+
+</body>
+</html>

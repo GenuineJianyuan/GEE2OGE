@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GEE2OGE Prototype Interface</title>
+  <style>
+    :root {
+      --line: rgba(77, 105, 95, 0.14);
+      --text: #21312b;
+      --muted: #6c7a74;
+      --green: #5f8e7b;
+      --green-dark: #476d5d;
+      --green-soft: #dbe9df;
+      --panel: rgba(255, 255, 255, 0.86);
+      --code: #f5f8f7;
+      --shadow: 0 30px 80px rgba(88, 108, 99, 0.13);
+      --mono: "SFMono-Regular", Consolas, Menlo, monospace;
+      --sans: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      color: var(--text);
+      font-family: var(--sans);
+      background:
+        radial-gradient(circle at top left, rgba(221, 235, 223, 0.88), transparent 24%),
+        radial-gradient(circle at top right, rgba(245, 224, 196, 0.82), transparent 26%),
+        linear-gradient(180deg, #fcfbf8 0%, #f4f0e7 100%);
+    }
+
+    .page {
+      width: calc(100vw - 24px);
+      height: calc(100vh - 24px);
+      margin: 12px auto;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.48);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #fff;
+      background: linear-gradient(135deg, var(--green), #84aa99);
+      box-shadow: 0 14px 24px rgba(95, 142, 123, 0.28);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 1.18rem;
+      letter-spacing: -0.03em;
+    }
+
+    .topbar p,
+    .subtle,
+    .step-card p,
+    .modal-header p,
+    .status-line,
+    .process-box,
+    .compare-box p {
+      color: var(--muted);
+    }
+
+    .topbar p {
+      margin: 4px 0 0;
+      font-size: 0.92rem;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1.18fr 0.82fr;
+      gap: 18px;
+      height: calc(100% - 80px);
+      margin-top: 18px;
+      min-height: 0;
+    }
+
+    .left-pane,
+    .right-pane {
+      display: grid;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      min-height: 0;
+    }
+
+    .workspace,
+    .stage-panel {
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .workspace-head,
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .workspace-head h3,
+    .stage-panel h3,
+    .modal-header h3,
+    .compare-box h5 {
+      margin: 0;
+      letter-spacing: -0.03em;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .below-toolbar {
+      margin-top: 12px;
+    }
+
+    .select,
+    .button {
+      border: 0;
+      font: inherit;
+      border-radius: 10px;
+      transition: 180ms ease;
+    }
+
+    .select {
+      min-width: 190px;
+      padding: 8px 12px;
+      background: rgba(95, 142, 123, 0.1);
+      color: var(--green-dark);
+      font-weight: 700;
+      outline: none;
+    }
+
+    .button {
+      cursor: pointer;
+      padding: 8px 12px;
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .button.primary {
+      background: linear-gradient(135deg, var(--green), #709b89);
+      color: #fff;
+    }
+
+    .button.secondary {
+      background: rgba(95, 142, 123, 0.1);
+      color: var(--green-dark);
+    }
+
+    .input-shell,
+    .code-shell {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--code);
+      overflow: hidden;
+    }
+
+    .input-shell {
+      height: calc(100% - 84px);
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 0;
+    }
+
+    .generated-shell {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 0;
+      height: 100%;
+    }
+
+    .generated-shell .code-shell {
+      margin-top: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .generated-shell pre {
+      height: 100%;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .code-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.74);
+    }
+
+    .dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d4e4d7;
+    }
+
+    .dots span:nth-child(2) {
+      background: #efd6b6;
+    }
+
+    .dots span:nth-child(3) {
+      background: #dae6f2;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      outline: 0;
+      resize: none;
+      padding: 18px;
+      background: transparent;
+      color: #233833;
+      font: 13px/1.7 var(--mono);
+    }
+
+    pre {
+      margin: 0;
+      padding: 18px;
+      overflow: auto;
+      white-space: pre-wrap;
+      color: #244039;
+      font: 13px/1.7 var(--mono);
+    }
+
+    .status-line {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.7);
+      font-size: 0.92rem;
+    }
+
+    .stage-panel {
+      display: grid;
+      gap: 14px;
+      height: 100%;
+    }
+
+    .stage-list {
+      display: grid;
+      gap: 12px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .step-card {
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      gap: 14px;
+      width: 100%;
+      text-align: left;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.74);
+      cursor: pointer;
+    }
+
+    .step-card.active {
+      background: linear-gradient(135deg, rgba(95, 142, 123, 0.13), rgba(255, 255, 255, 0.9));
+      border-color: rgba(95, 142, 123, 0.3);
+    }
+
+    .step-num {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: var(--green-dark);
+      background: linear-gradient(135deg, var(--green-soft), #eef5ef);
+    }
+
+    .step-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.97rem;
+    }
+
+    .step-card p {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.58;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(34, 47, 42, 0.28);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      width: min(1160px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 40px 90px rgba(55, 73, 66, 0.22);
+    }
+
+    .modal-header {
+      position: sticky;
+      top: 0;
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(219, 233, 223, 0.9);
+      color: var(--green-dark);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .modal-header p {
+      margin: 8px 0 0;
+      max-width: 760px;
+      line-height: 1.7;
+    }
+
+    .close-btn {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(95, 142, 123, 0.12);
+      color: var(--green-dark);
+      font-size: 1.2rem;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .modal-body {
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .info-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.84);
+    }
+
+    .compare-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .compare-row {
+      display: grid;
+      grid-template-columns: 1fr 0.72fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .compare-box {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .compare-box h5 {
+      margin: 0 0 10px;
+      font-size: 0.94rem;
+    }
+
+    .process-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(219, 233, 223, 0.55), rgba(255, 255, 255, 0.88));
+      line-height: 1.7;
+    }
+
+    .process-box strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .code-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tab-btn {
+      border: 0;
+      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 800;
+      background: rgba(95, 142, 123, 0.1);
+      color: var(--green-dark);
+    }
+
+    .tab-btn.active {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .map-card {
+      position: relative;
+      min-height: 360px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(154, 188, 165, 0.66), transparent 20%),
+        radial-gradient(circle at 78% 68%, rgba(245, 214, 171, 0.78), transparent 24%),
+        linear-gradient(135deg, #eef4ee 0%, #dde8dd 38%, #f3efe5 100%);
+    }
+
+    .map-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(74, 106, 94, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74, 106, 94, 0.08) 1px, transparent 1px);
+      background-size: 38px 38px;
+    }
+
+    .region {
+      position: absolute;
+      left: 25%;
+      top: 20%;
+      width: 48%;
+      height: 54%;
+      border: 2px solid rgba(74, 112, 95, 0.84);
+      border-radius: 38% 42% 44% 34%;
+      background:
+        linear-gradient(135deg, rgba(125, 178, 140, 0.24), rgba(226, 211, 118, 0.22)),
+        rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 0 16px rgba(255, 255, 255, 0.15);
+    }
+
+    .layer-stack {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .layer-chip {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(76, 107, 96, 0.12);
+      color: var(--green-dark);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 0.84rem;
+    }
+
+    .legend i {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.93em;
+      color: #26463c;
+    }
+
+    @media (max-width: 1200px) {
+      .main,
+      .compare-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="logo">G2O</div>
+      <div>
+        <h1>GEE2OGE Prototype</h1>
+        <p>Navigation-style workflow migration interface for GEE code understanding, API alignment, and OGE reconstruction.</p>
+      </div>
+    </header>
+
+    <div class="main">
+      <div class="left-pane">
+        <section class="card workspace">
+          <div class="workspace-head">
+            <div><h3>Imported GEE Code</h3></div>
+          </div>
+
+          <div class="input-shell">
+            <div class="code-top">
+              <div class="dots"><span></span><span></span><span></span></div>
+              <span class="subtle">Source code input</span>
+            </div>
+            <textarea id="geeInput">// Winter-season image
+var winterImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20230104');
+
+// Summer-season image
+var summerImage = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_119038_20220728');
+
+// -----------------------
+// Winter bands
+// -----------------------
+var winterRed = winterImage.select('B4');
+var winterGreen = winterImage.select('B3');
+var winterNir = winterImage.select('B5');
+var winterSwir1 = winterImage.select('B6');
+
+// Winter NDVI
+var winterNdviNumerator = winterNir.subtract(winterRed);
+var winterNdviDenominator = winterNir.add(winterRed);
+var winterNdvi = winterNdviNumerator.divide(winterNdviDenominator).rename('Winter_NDVI');
+
+// Winter GNDVI
+var winterGndviNumerator = winterNir.subtract(winterGreen);
+var winterGndviDenominator = winterNir.add(winterGreen);
+var winterGndvi = winterGndviNumerator.divide(winterGndviDenominator).rename('Winter_GNDVI');
+
+// Winter NDMI
+var winterNdmiNumerator = winterNir.subtract(winterSwir1);
+var winterNdmiDenominator = winterNir.add(winterSwir1);
+var winterNdmi = winterNdmiNumerator.divide(winterNdmiDenominator).rename('Winter_NDMI');
+
+// -----------------------
+// Summer bands
+// -----------------------
+var summerRed = summerImage.select('B4');
+var summerGreen = summerImage.select('B3');
+var summerNir = summerImage.select('B5');
+var summerSwir1 = summerImage.select('B6');
+
+// Summer NDVI
+var summerNdviNumerator = summerNir.subtract(summerRed);
+var summerNdviDenominator = summerNir.add(summerRed);
+var summerNdvi = summerNdviNumerator.divide(summerNdviDenominator).rename('Summer_NDVI');
+
+// Summer GNDVI
+var summerGndviNumerator = summerNir.subtract(summerGreen);
+var summerGndviDenominator = summerNir.add(summerGreen);
+var summerGndvi = summerGndviNumerator.divide(summerGndviDenominator).rename('Summer_GNDVI');
+
+// Summer NDMI
+var summerNdmiNumerator = summerNir.subtract(summerSwir1);
+var summerNdmiDenominator = summerNir.add(summerSwir1);
+var summerNdmi = summerNdmiNumerator.divide(summerNdmiDenominator).rename('Summer_NDMI');
+
+// Visualization parameters
+var vis = {
+  min: -1,
+  max: 1,
+  palette: ['blue', 'lightblue', 'green', 'yellow', 'red']
+};
+
+var ndmiVis = {
+  min: -1,
+  max: 1,
+  palette: ['brown', 'yellow', 'lightgreen', 'green', 'darkgreen']
+};
+
+// Add layers to the map
+Map.addLayer(winterNdvi, vis, 'Winter NDVI');
+Map.addLayer(summerNdvi, vis, 'Summer NDVI');
+Map.addLayer(winterGndvi, vis, 'Winter GNDVI');
+Map.addLayer(summerGndvi, vis, 'Summer GNDVI');
+Map.addLayer(winterNdmi, ndmiVis, 'Winter NDMI');
+Map.addLayer(summerNdmi, ndmiVis, 'Summer NDMI');
+
+// Set the map center
+Map.setCenter(120.5, 32.0, 9);</textarea>
+          </div>
+
+          <div class="toolbar below-toolbar">
+            <select class="select" id="llmSelect">
+              <option>GPT-4.1</option>
+              <option selected>GPT-4o</option>
+              <option>GPT-4.1-mini</option>
+              <option>Custom OGE LLM</option>
+            </select>
+            <button class="button secondary" id="copyBtn" type="button">Copy</button>
+            <button class="button primary" id="submitBtn" type="button">Submit</button>
+          </div>
+
+          <div class="status-line" id="statusLine">
+            Ready. Choose the LLM model, review the imported script, and click <strong>Submit</strong>.
+          </div>
+        </section>
+
+        <section class="card workspace generated-shell">
+          <div class="workspace-head">
+            <div><h3>Generated OGE Code</h3></div>
+            <div class="toolbar">
+              <button class="button secondary" id="copyOgeBtn" type="button">Copy</button>
+            </div>
+          </div>
+
+          <div class="code-shell">
+            <div class="code-top">
+              <div class="dots"><span></span><span></span><span></span></div>
+              <span class="subtle">Reconstructed workflow preview</span>
+            </div>
+            <pre id="ogeOutput">import oge
+
+oge.initialize()
+service = oge.Service()
+
+winter_lc08 = service.getCoverage(
+    coverageID="LC08_L1TP_119038_20230104_20230111_02_T1",
+    productID="LC08_C02_L1"
+)
+winter_lc08_d = service.getProcess("Coverage.toFloat").execute(winter_lc08)
+
+summer_lc08 = service.getCoverage(
+    coverageID="TODO_SUMMER_COVERAGE_ID",
+    productID="LC08_C02_L1"
+)
+summer_lc08_d = service.getProcess("Coverage.toFloat").execute(summer_lc08)
+
+winter_red = service.getProcess("Coverage.selectBands").execute(winter_lc08_d, ["B4"])
+winter_green = service.getProcess("Coverage.selectBands").execute(winter_lc08_d, ["B3"])
+winter_nir = service.getProcess("Coverage.selectBands").execute(winter_lc08_d, ["B5"])
+winter_swir1 = service.getProcess("Coverage.selectBands").execute(winter_lc08_d, ["B6"])
+
+summer_red = service.getProcess("Coverage.selectBands").execute(summer_lc08_d, ["B4"])
+summer_green = service.getProcess("Coverage.selectBands").execute(summer_lc08_d, ["B3"])
+summer_nir = service.getProcess("Coverage.selectBands").execute(summer_lc08_d, ["B5"])
+summer_swir1 = service.getProcess("Coverage.selectBands").execute(summer_lc08_d, ["B6"])
+
+winter_ndvi_numerator = service.getProcess("Coverage.subtract").execute(winter_nir, winter_red)
+winter_ndvi_denominator = service.getProcess("Coverage.add").execute(winter_nir, winter_red)
+winter_ndvi = service.getProcess("Coverage.divide").execute(winter_ndvi_numerator, winter_ndvi_denominator)
+
+summer_ndvi_numerator = service.getProcess("Coverage.subtract").execute(summer_nir, summer_red)
+summer_ndvi_denominator = service.getProcess("Coverage.add").execute(summer_nir, summer_red)
+summer_ndvi = service.getProcess("Coverage.divide").execute(summer_ndvi_numerator, summer_ndvi_denominator)
+
+ndvi_vis = {"min": -1, "max": 1, "palette": ["blue", "lightblue", "green", "yellow", "red"]}
+ndmi_vis = {"min": -1, "max": 1, "palette": ["brown", "yellow", "lightgreen", "green", "darkgreen"]}
+
+winter_ndvi.styles(ndvi_vis).getMap("Winter NDVI")
+summer_ndvi.styles(ndvi_vis).getMap("Summer NDVI")
+winter_gndvi.styles(ndvi_vis).getMap("Winter GNDVI")
+summer_gndvi.styles(ndvi_vis).getMap("Summer GNDVI")
+winter_ndmi.styles(ndmi_vis).getMap("Winter NDMI")
+summer_ndmi.styles(ndmi_vis).getMap("Summer NDMI")
+
+oge.mapclient.centerMap(120.5, 32.0, 9)</pre>
+          </div>
+        </section>
+      </div>
+
+      <div class="right-pane">
+        <section class="card stage-panel">
+          <h3>Pipeline Navigator</h3>
+          <div class="stage-list">
+            <button class="step-card active" data-step="step1" type="button">
+              <div class="step-num">1</div>
+              <div><strong>Semantic Abstraction</strong><p>Summarize the source workflow and decompose it into operational steps.</p></div>
+            </button>
+            <button class="step-card" data-step="step2" type="button">
+              <div class="step-num">2</div>
+              <div><strong>API Requirement Elicitation</strong><p>Infer the required GEE APIs for each semantic step of the script.</p></div>
+            </button>
+            <button class="step-card" data-step="step3" type="button">
+              <div class="step-num">3</div>
+              <div><strong>GEE-to-OGE API Matching</strong><p>Map the required GEE interfaces to the corresponding OGE capabilities.</p></div>
+            </button>
+            <button class="step-card" data-step="step4" type="button">
+              <div class="step-num">4</div>
+              <div><strong>Step-Level OGE Codegen</strong><p>Generate OGE code snippets for data loading, index computation, and rendering.</p></div>
+            </button>
+            <button class="step-card" data-step="step5" type="button">
+              <div class="step-num">5</div>
+              <div><strong>Feasibility Completion</strong><p>Handle missing APIs and determine whether workarounds are needed.</p></div>
+            </button>
+            <button class="step-card" data-step="step6" type="button">
+              <div class="step-num">6</div>
+              <div><strong>Workflow Reconstruction</strong><p>Assemble the final executable OGE workflow and execution-ready output view.</p></div>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div>
+          <div class="eyebrow" id="modalEyebrow">Stage</div>
+          <h3 id="modalTitle">Stage Title</h3>
+          <p id="modalDesc">Stage description</p>
+        </div>
+        <button class="close-btn" id="closeModal" type="button" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <template id="tpl-step1">
+    <div class="info-card">
+      <h4>Semantic Abstraction and Step Decomposition</h4>
+      <div class="compare-grid">
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterImage = ee.Image(...);
+var summerImage = ee.Image(...);</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Load the winter image and the summer image.
+          </div>
+          <div class="compare-box">
+            <h5>Semantic Result</h5>
+            <pre>Load the winter Landsat 8 image and the summer
+Landsat 8 image as inputs for index calculation.</pre>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterRed = winterImage.select('B4');
+var winterGreen = winterImage.select('B3');
+var winterNir = winterImage.select('B5');
+var winterSwir1 = winterImage.select('B6');</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Select target spectral bands.
+          </div>
+          <div class="compare-box">
+            <h5>Semantic Result</h5>
+            <pre>Select the red, green, near-infrared, and
+shortwave infrared 1 bands from both images.</pre>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterNdvi = winterNdviNumerator
+  .divide(winterNdviDenominator)
+  .rename('Winter_NDVI');</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Compute seasonal indices.
+          </div>
+          <div class="compare-box">
+            <h5>Semantic Result</h5>
+            <pre>Compute NDVI, GNDVI, and NDMI for the winter
+and summer images and rename the output bands.</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-step2">
+    <div class="info-card">
+      <h4>Required GEE APIs</h4>
+      <pre>ee.Image
+ee.Image.select
+ee.Image.subtract
+ee.Image.add
+ee.Image.divide
+ee.Image.rename
+Map.addLayer
+Map.setCenter</pre>
+    </div>
+  </template>
+
+  <template id="tpl-step3">
+    <div class="info-card">
+      <h4>GEE-to-OGE API Matching Results</h4>
+      <div class="compare-grid">
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterImage = ee.Image(...);
+var summerImage = ee.Image(...);</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Load source images.
+          </div>
+          <div class="compare-box">
+            <h5>Matched OGE Capability</h5>
+            <pre>Service.getCoverage</pre>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterRed = winterImage.select('B4');
+var summerNir = summerImage.select('B5');</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Select target bands.
+          </div>
+          <div class="compare-box">
+            <h5>Matched OGE Capability</h5>
+            <pre>Coverage.selectBands</pre>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterNdviNumerator = winterNir.subtract(winterRed);
+var winterNdviDenominator = winterNir.add(winterRed);
+var winterNdvi = winterNdviNumerator
+  .divide(winterNdviDenominator)
+  .rename('Winter_NDVI');</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Compute NDVI.
+          </div>
+          <div class="compare-box">
+            <h5>Matched OGE Capability</h5>
+            <pre>Coverage.subtract
+Coverage.add
+Coverage.divide
+
+rename -> semantic label workaround</pre>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>Map.addLayer(winterNdvi, vis, 'Winter NDVI');
+Map.setCenter(120.5, 32.0, 9);</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Render and set the map view.
+          </div>
+          <div class="compare-box">
+            <h5>Matched OGE Capability</h5>
+            <pre>Coverage.styles(...).getMap(...)
+oge.mapclient.centerMap</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-step4">
+    <div class="info-card">
+      <h4>Generated OGE Code for Index Calculation</h4>
+      <div class="code-tabs">
+        <button class="tab-btn active" data-code-tab="load">Load Images</button>
+        <button class="tab-btn" data-code-tab="bands">Select Bands</button>
+        <button class="tab-btn" data-code-tab="ndvi">NDVI</button>
+        <button class="tab-btn" data-code-tab="gndvi">GNDVI</button>
+        <button class="tab-btn" data-code-tab="ndmi">NDMI</button>
+        <button class="tab-btn" data-code-tab="render">Render</button>
+      </div>
+
+      <div class="tab-panel active" data-code-panel="load">
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterImage = ee.Image(...);
+var summerImage = ee.Image(...);</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Load images.
+          </div>
+          <div class="compare-box">
+            <h5>OGE Code Snippet</h5>
+            <pre>winter_lc08 = service.getCoverage(...)
+summer_lc08 = service.getCoverage(...)</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-code-panel="bands">
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterRed = winterImage.select('B4');
+var winterGreen = winterImage.select('B3');
+var winterNir = winterImage.select('B5');</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Select target bands.
+          </div>
+          <div class="compare-box">
+            <h5>OGE Code Snippet</h5>
+            <pre>winter_red = service.getProcess("Coverage.selectBands").execute(...)
+winter_green = service.getProcess("Coverage.selectBands").execute(...)
+winter_nir = service.getProcess("Coverage.selectBands").execute(...)</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-code-panel="ndvi">
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterNdviNumerator = winterNir.subtract(winterRed);
+var winterNdviDenominator = winterNir.add(winterRed);
+var winterNdvi = winterNdviNumerator.divide(...);</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Compute NDVI.
+          </div>
+          <div class="compare-box">
+            <h5>OGE Code Snippet</h5>
+            <pre>winter_ndvi_numerator = service.getProcess("Coverage.subtract").execute(...)
+winter_ndvi_denominator = service.getProcess("Coverage.add").execute(...)
+winter_ndvi = service.getProcess("Coverage.divide").execute(...)</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-code-panel="gndvi">
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterGndviNumerator = winterNir.subtract(winterGreen);
+var winterGndviDenominator = winterNir.add(winterGreen);</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Compute GNDVI.
+          </div>
+          <div class="compare-box">
+            <h5>OGE Code Snippet</h5>
+            <pre>winter_gndvi_numerator = service.getProcess("Coverage.subtract").execute(...)
+winter_gndvi_denominator = service.getProcess("Coverage.add").execute(...)
+winter_gndvi = service.getProcess("Coverage.divide").execute(...)</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-code-panel="ndmi">
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>var winterNdmiNumerator = winterNir.subtract(winterSwir1);
+var winterNdmiDenominator = winterNir.add(winterSwir1);</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Compute NDMI.
+          </div>
+          <div class="compare-box">
+            <h5>OGE Code Snippet</h5>
+            <pre>winter_ndmi_numerator = service.getProcess("Coverage.subtract").execute(...)
+winter_ndmi_denominator = service.getProcess("Coverage.add").execute(...)
+winter_ndmi = service.getProcess("Coverage.divide").execute(...)</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-code-panel="render">
+        <div class="compare-row">
+          <div class="compare-box">
+            <h5>GEE Code Snippet</h5>
+            <pre>Map.addLayer(winterNdvi, vis, 'Winter NDVI');
+Map.addLayer(summerNdvi, vis, 'Summer NDVI');
+Map.setCenter(120.5, 32.0, 9);</pre>
+          </div>
+          <div class="compare-box process-box">
+            <strong>Processing Step</strong>
+            Render outputs and set the view.
+          </div>
+          <div class="compare-box">
+            <h5>OGE Code Snippet</h5>
+            <pre>winter_ndvi.styles(ndvi_vis).getMap("Winter NDVI")
+summer_ndvi.styles(ndvi_vis).getMap("Summer NDVI")
+oge.mapclient.centerMap(120.5, 32.0, 9)</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-step5">
+    <div class="info-card">
+      <h4>Feasibility Completion</h4>
+      <pre>full_feasible = true
+rescue_needed_for_blocking_steps = false
+remaining_blocking_apis = none
+non_blocking_gap = ee.Image.rename</pre>
+    </div>
+  </template>
+
+  <template id="tpl-step6">
+    <div class="info-card">
+      <h4>Workflow Reconstruction and Final Result</h4>
+      <div class="map-card">
+        <div class="map-grid"></div>
+        <div class="region"></div>
+        <div class="layer-stack">
+          <div class="layer-chip">Winter NDVI</div>
+          <div class="layer-chip">Summer NDVI</div>
+          <div class="layer-chip">Winter GNDVI</div>
+          <div class="layer-chip">Summer GNDVI</div>
+          <div class="layer-chip">Winter NDMI</div>
+          <div class="layer-chip">Summer NDMI</div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><i style="background:#4f7fd3;"></i> Lower vigor</span>
+        <span><i style="background:#8ecf90;"></i> Active crop growth</span>
+        <span><i style="background:#deca69;"></i> Transitional stage</span>
+        <span><i style="background:#8b6c3e;"></i> Lower moisture</span>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const stepMeta = {
+      step1: { eyebrow: "Step 1", title: "Semantic Abstraction and Step Decomposition", desc: "GEE code snippets are abstracted into processing steps." },
+      step2: { eyebrow: "Step 2", title: "Required GEE API Elicitation", desc: "The required GEE APIs are inferred from the script." },
+      step3: { eyebrow: "Step 3", title: "GEE-to-OGE API Matching Results", desc: "Each key GEE snippet is aligned with the corresponding OGE capability." },
+      step4: { eyebrow: "Step 4", title: "Generated OGE Code for Index Calculation", desc: "Each main processing step is shown as a direct GEE-to-OGE code correspondence." },
+      step5: { eyebrow: "Step 5", title: "Feasibility Completion", desc: "The system checks whether the generated code needs extra completion logic." },
+      step6: { eyebrow: "Step 6", title: "Workflow Reconstruction and Final OGE Result", desc: "The final workflow is assembled and rendered as an executable OGE result." }
+    };
+
+    const modalOverlay = document.getElementById("modalOverlay");
+    const modalEyebrow = document.getElementById("modalEyebrow");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDesc = document.getElementById("modalDesc");
+    const modalBody = document.getElementById("modalBody");
+    const closeModal = document.getElementById("closeModal");
+
+    function wireCodeTabs(root) {
+      const buttons = root.querySelectorAll("[data-code-tab]");
+      const panels = root.querySelectorAll("[data-code-panel]");
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          buttons.forEach((item) => item.classList.remove("active"));
+          panels.forEach((panel) => panel.classList.remove("active"));
+          button.classList.add("active");
+          root.querySelector(`[data-code-panel="${button.dataset.codeTab}"]`).classList.add("active");
+        });
+      });
+    }
+
+    function openStep(stepId) {
+      const meta = stepMeta[stepId];
+      const template = document.getElementById(`tpl-${stepId}`);
+      if (!meta || !template) return;
+      modalEyebrow.textContent = meta.eyebrow;
+      modalTitle.textContent = meta.title;
+      modalDesc.textContent = meta.desc;
+      modalBody.innerHTML = "";
+      modalBody.appendChild(template.content.cloneNode(true));
+      wireCodeTabs(modalBody);
+      modalOverlay.classList.add("open");
+    }
+
+    document.querySelectorAll(".step-card").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".step-card").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        openStep(button.dataset.step);
+      });
+    });
+
+    function closeStepModal() {
+      modalOverlay.classList.remove("open");
+    }
+
+    closeModal.addEventListener("click", closeStepModal);
+    modalOverlay.addEventListener("click", (event) => {
+      if (event.target === modalOverlay) closeStepModal();
+    });
+
+    const geeInput = document.getElementById("geeInput");
+    const copyBtn = document.getElementById("copyBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const statusLine = document.getElementById("statusLine");
+    const llmSelect = document.getElementById("llmSelect");
+    const copyOgeBtn = document.getElementById("copyOgeBtn");
+    const ogeOutput = document.getElementById("ogeOutput");
+
+    copyBtn.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(geeInput.value);
+      copyBtn.textContent = "Copied";
+      setTimeout(() => copyBtn.textContent = "Copy", 1000);
+    });
+
+    copyOgeBtn.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(ogeOutput.innerText);
+      copyOgeBtn.textContent = "Copied";
+      setTimeout(() => copyOgeBtn.textContent = "Copy", 1000);
+    });
+
+    submitBtn.addEventListener("click", () => {
+      statusLine.innerHTML = `Submitted using <strong>${llmSelect.value}</strong>. Open a step on the right to inspect the migration results.`;
+      submitBtn.textContent = "Submitted";
+      setTimeout(() => submitBtn.textContent = "Submit", 1200);
+    });
+  </script>
+</body>
+</html>

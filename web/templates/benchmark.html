@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmark 测试集 - OGE→GEE 转换工具</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0d1117; color: #c9d1d9;
+            display: flex; height: 100vh; overflow: hidden;
+        }
+        /* 左侧案例列表 */
+        .sidebar {
+            width: 420px; min-width: 420px; background: #161b22;
+            border-right: 1px solid #30363d; display: flex; flex-direction: column;
+        }
+        .sidebar-header {
+            padding: 16px 20px; border-bottom: 1px solid #30363d;
+            background: #161b22; position: sticky; top: 0; z-index: 10;
+        }
+        .sidebar-header h2 { font-size: 16px; color: #e6edf3; margin-bottom: 12px; }
+        .sidebar-header .search-box { position: relative; }
+        .sidebar-header input {
+            width: 100%; padding: 8px 12px 8px 32px;
+            background: #0d1117; border: 1px solid #30363d; border-radius: 6px;
+            color: #c9d1d9; font-size: 13px; outline: none;
+        }
+        .sidebar-header input:focus { border-color: #58a6ff; }
+        .sidebar-header .search-icon {
+            position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+            color: #8b949e; font-size: 14px;
+        }
+        .filter-row { display: flex; gap: 8px; margin-top: 10px; }
+        .filter-btn {
+            padding: 4px 10px; border: 1px solid #30363d; border-radius: 12px;
+            background: transparent; color: #8b949e; font-size: 11px; cursor: pointer;
+        }
+        .filter-btn.active { background: #1f6feb; color: #fff; border-color: #1f6feb; }
+        .case-list { flex: 1; overflow-y: auto; padding: 8px; }
+        .case-card {
+            padding: 12px 14px; margin-bottom: 6px; background: #0d1117;
+            border: 1px solid #30363d; border-radius: 6px; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .case-card:hover { border-color: #58a6ff; background: #161b22; }
+        .case-card.active { border-color: #1f6feb; background: #0d1117; }
+        .case-card.active::before {
+            content: ''; display: block; width: 3px; height: 100%;
+            background: #1f6feb; position: absolute; left: 0; top: 0;
+            border-radius: 6px 0 0 6px;
+        }
+        .case-id {
+            display: inline-block; padding: 2px 8px; border-radius: 10px;
+            font-size: 11px; font-weight: 600; margin-right: 8px;
+        }
+        .case-id.easy { background: #1a4731; color: #3fb950; }
+        .case-id.medium { background: #3d2e00; color: #d29922; }
+        .case-id.hard { background: #4a1e1e; color: #f85149; }
+        .case-desc { font-size: 12px; color: #8b949e; margin-top: 6px; line-height: 1.5;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .case-meta { display: flex; gap: 12px; font-size: 11px; color: #656d76; margin-top: 6px; }
+        .case-meta span { display: flex; align-items: center; gap: 4px; }
+        .loading { text-align: center; padding: 40px; color: #8b949e; }
+
+        /* 右侧主区域 */
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .main-header {
+            padding: 12px 20px; border-bottom: 1px solid #30363d;
+            background: #161b22; display: flex; align-items: center; gap: 12px;
+        }
+        .main-header h1 { font-size: 15px; color: #e6edf3; }
+        .main-header .case-info { font-size: 12px; color: #8b949e; }
+        .action-bar { margin-left: auto; display: flex; gap: 8px; }
+        .btn {
+            padding: 6px 14px; border-radius: 6px; border: 1px solid #30363d;
+            background: #21262d; color: #c9d1d9; font-size: 13px; cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn:hover { background: #30363d; }
+        .btn-primary { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+        .btn-primary:hover { background: #388bfd; }
+        .btn-success { background: #238636; border-color: #238636; color: #fff; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .content-area { flex: 1; display: flex; overflow: hidden; }
+        .code-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .code-panel-half { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid #30363d; }
+        .code-panel-half:last-child { border-right: none; }
+        .panel-header {
+            padding: 8px 16px; background: #161b22; border-bottom: 1px solid #30363d;
+            font-size: 12px; color: #8b949e; display: flex; align-items: center; gap: 8px;
+        }
+        .panel-header .lang-tag { padding: 2px 6px; border-radius: 3px; font-size: 10px; }
+        .lang-tag.python { background: #1a3a5c; color: #79c0ff; }
+        .lang-tag.js { background: #3d2e00; color: #d29922; }
+        .code-container { flex: 1; overflow: auto; }
+        .code-container pre {
+            margin: 0; padding: 16px; font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word;
+        }
+        .code-container pre.python { color: #79c0ff; }
+        .code-container pre.js { color: #7ee787; }
+
+        /* 转换结果浮层 */
+        .result-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;
+        }
+        .result-overlay.show { display: flex; }
+        .result-modal {
+            background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+            max-width: 90vw; max-height: 85vh; width: 900px; display: flex; flex-direction: column;
+        }
+        .result-modal-header {
+            padding: 16px 20px; border-bottom: 1px solid #30363d;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .result-modal-header h3 { font-size: 16px; color: #e6edf3; }
+        .result-modal-body { flex: 1; overflow-y: auto; padding: 20px; }
+        .result-modal-body pre {
+            background: #0d1117; border: 1px solid #30363d; border-radius: 6px;
+            padding: 16px; font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 13px; color: #7ee787; white-space: pre-wrap; word-break: break-word;
+        }
+        .result-section { margin-bottom: 20px; }
+        .result-section h4 { font-size: 13px; color: #58a6ff; margin-bottom: 8px; }
+        .result-explanations { list-style: disc; padding-left: 20px; }
+        .result-explanations li { font-size: 13px; color: #c9d1d9; margin-bottom: 4px; }
+        .result-warnings { list-style: none; padding: 0; }
+        .result-warnings li {
+            font-size: 13px; color: #f85149; margin-bottom: 4px;
+            padding: 6px 10px; background: #4a1e1e; border-radius: 4px;
+        }
+        .result-modal-footer {
+            padding: 12px 20px; border-top: 1px solid #30363d;
+            display: flex; justify-content: flex-end; gap: 8px;
+        }
+        .spinner {
+            display: inline-block; width: 14px; height: 14px;
+            border: 2px solid #30363d; border-top-color: #58a6ff;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toast {
+            position: fixed; top: 20px; right: 20px; padding: 12px 20px;
+            border-radius: 6px; font-size: 14px; z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+        .toast.success { background: #238636; color: #fff; }
+        .toast.error { background: #da3633; color: #fff; }
+        .toast.info { background: #1f6feb; color: #fff; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+<!-- 左侧案例列表 -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h2>Benchmark 测试集</h2>
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search-input" placeholder="搜索案例 ID 或描述..." oninput="filterCases()">
+        </div>
+        <div class="filter-row">
+            <button class="filter-btn active" data-difficulty="all" onclick="filterByDifficulty('all')">全部</button>
+            <button class="filter-btn" data-difficulty="简单" onclick="filterByDifficulty('简单')">简单</button>
+            <button class="filter-btn" data-difficulty="中等" onclick="filterByDifficulty('中等')">中等</button>
+            <button class="filter-btn" data-difficulty="困难" onclick="filterByDifficulty('困难')">困难</button>
+        </div>
+    </div>
+    <div class="case-list" id="case-list">
+        <div class="loading">加载中...</div>
+    </div>
+</div>
+
+<!-- 右侧主区域 -->
+<div class="main">
+    <div class="main-header">
+        <h1 id="main-title">请选择一个案例</h1>
+        <div class="case-info" id="case-info"></div>
+        <div class="action-bar">
+            <button class="btn btn-success" id="convert-btn" onclick="convertToGee()" disabled>
+                🔄 转换为 GEE 代码
+            </button>
+            <button class="btn" id="copy-oge-btn" onclick="copyOgeCode()" disabled>
+                📋 复制 OGE
+            </button>
+        </div>
+    </div>
+    <div class="content-area">
+        <!-- 左侧 OGE 代码 -->
+        <div class="code-panel-half">
+            <div class="panel-header">
+                <span class="lang-tag python">Python</span>
+                <span>OGE 工作流代码</span>
+            </div>
+            <div class="code-container">
+                <pre id="oge-code-display" class="python">// 请从左侧选择一个案例</pre>
+            </div>
+        </div>
+        <!-- 右侧 GEE 代码（转换结果） -->
+        <div class="code-panel-half">
+            <div class="panel-header">
+                <span class="lang-tag js">JavaScript</span>
+                <span>GEE 转换结果</span>
+                <span id="gee-status" style="margin-left:auto; font-size:11px; color:#656d76;"></span>
+            </div>
+            <div class="code-container">
+                <pre id="gee-code-display" class="js">// 转换结果将显示在这里</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 转换结果详情浮层 -->
+<div class="result-overlay" id="result-overlay" onclick="closeResultModal(event)">
+    <div class="result-modal" onclick="event.stopPropagation()">
+        <div class="result-modal-header">
+            <h3>🔄 OGE → GEE 转换结果</h3>
+            <span id="result-time" style="margin-left:auto; font-size:12px; color:#8b949e;"></span>
+            <button class="btn" onclick="closeResultModal()">关闭</button>
+        </div>
+        <div class="result-modal-body" id="result-modal-body">
+            <!-- 动态填充 -->
+        </div>
+        <div class="result-modal-footer">
+            <button class="btn" onclick="copyGeeCode()">📋 复制 GEE 代码</button>
+            <button class="btn btn-primary" onclick="closeResultModal()">完成</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 全局状态
+    let allCases = [];
+    let currentCase = null;
+    let currentGeeCode = '';
+    let currentFilter = 'all';
+
+    /**
+     * 页面加载时获取所有 benchmark 案例
+     */
+    async function loadCases() {
+        try {
+            const res = await fetch('/api/benchmark-cases');
+            const data = await res.json();
+            if (data.success) {
+                allCases = data.cases;
+                renderCaseList(allCases);
+                document.querySelector('.sidebar-header h2').textContent =
+                    `Benchmark 测试集 (${data.total} 个案例)`;
+            } else {
+                document.getElementById('case-list').innerHTML =
+                    '<div class="loading">加载失败: ' + data.error + '</div>';
+            }
+        } catch (err) {
+            document.getElementById('case-list').innerHTML =
+                '<div class="loading">加载失败: ' + err.message + '</div>';
+        }
+    }
+
+    /**
+     * 渲染案例列表
+     */
+    function renderCaseList(cases) {
+        const list = document.getElementById('case-list');
+        if (cases.length === 0) {
+            list.innerHTML = '<div class="loading">无匹配案例</div>';
+            return;
+        }
+        list.innerHTML = cases.map(c => {
+            const diffClass = c.difficulty === '简单' ? 'easy' :
+                             c.difficulty === '中等' ? 'medium' : 'hard';
+            return `
+                <div class="case-card" data-case-id="${c.case_id}"
+                     onclick="selectCase('${c.case_id}')">
+                    <span class="case-id ${diffClass}">${c.case_id}</span>
+                    <span style="font-size:11px; color:#656d76;">${c.task_type}</span>
+                    <div class="case-desc">${escapeHtml(c.description)}</div>
+                    <div class="case-meta">
+                        <span>📊 ${c.difficulty}</span>
+                        <span>📝 ${c.code_length} 字符</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /**
+     * 搜索过滤
+     */
+    function filterCases() {
+        const q = document.getElementById('search-input').value.toLowerCase();
+        let filtered = allCases.filter(c =>
+            c.case_id.toLowerCase().includes(q) ||
+            c.description.toLowerCase().includes(q)
+        );
+        if (currentFilter !== 'all') {
+            filtered = filtered.filter(c => c.difficulty === currentFilter);
+        }
+        renderCaseList(filtered);
+    }
+
+    /**
+     * 按难度过滤
+     */
+    function filterByDifficulty(diff) {
+        currentFilter = diff;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.difficulty === diff);
+        });
+        filterCases();
+    }
+
+    /**
+     * 选中案例，加载完整 OGE 代码
+     */
+    async function selectCase(caseId) {
+        // 更新选中状态
+        document.querySelectorAll('.case-card').forEach(card => {
+            card.classList.toggle('active', card.dataset.caseId === caseId);
+        });
+
+        try {
+            const res = await fetch(`/api/benchmark-case/${caseId}`);
+            const data = await res.json();
+            if (data.success) {
+                currentCase = data.case;
+                document.getElementById('main-title').textContent =
+                    `${currentCase.case_id} - ${currentCase.task_type}`;
+                document.getElementById('case-info').textContent =
+                    `难度: ${currentCase.difficulty} | 代码: ${currentCase.code.length} 字符`;
+                document.getElementById('oge-code-display').textContent = currentCase.code;
+                document.getElementById('gee-code-display').textContent =
+                    '// 点击"转换为 GEE 代码"按钮开始转换';
+                document.getElementById('gee-status').textContent = '';
+                document.getElementById('convert-btn').disabled = false;
+                document.getElementById('copy-oge-btn').disabled = false;
+            } else {
+                showToast(data.error, 'error');
+            }
+        } catch (err) {
+            showToast('加载案例失败: ' + err.message, 'error');
+        }
+    }
+
+    /**
+     * 执行 OGE→GEE 转换
+     */
+    async function convertToGee() {
+        if (!currentCase) return;
+
+        const btn = document.getElementById('convert-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> 转换中...';
+        document.getElementById('gee-status').textContent = '转换中...';
+        document.getElementById('gee-code-display').textContent = '// LLM 正在分析并生成 GEE 代码...';
+
+        try {
+            const res = await fetch('/api/oge-to-gee', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    oge_code: currentCase.code,
+                    description: currentCase.description
+                })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                currentGeeCode = data.gee_code;
+                document.getElementById('gee-code-display').textContent = data.gee_code || '// 转换完成，但未生成代码';
+                document.getElementById('gee-status').textContent =
+                    `✅ ${data.elapsed_ms}ms | ${data.feasible ? '可行' : '部分不可行'}`;
+                showResultModal(data);
+                showToast('转换成功', 'success');
+            } else {
+                document.getElementById('gee-code-display').textContent = '// 转换失败: ' + data.error;
+                document.getElementById('gee-status').textContent = '❌ 转换失败';
+                showToast(data.error, 'error');
+            }
+        } catch (err) {
+            document.getElementById('gee-code-display').textContent = '// 请求失败: ' + err.message;
+            document.getElementById('gee-status').textContent = '❌ 请求失败';
+            showToast('请求失败: ' + err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '🔄 转换为 GEE 代码';
+        }
+    }
+
+    /**
+     * 显示转换结果详情模态框
+     */
+    function showResultModal(data) {
+        const body = document.getElementById('result-modal-body');
+        let html = '';
+
+        // GEE 代码
+        html += `
+            <div class="result-section">
+                <h4>📝 GEE JavaScript 代码</h4>
+                <pre>${escapeHtml(data.gee_code || '(无)')}</pre>
+            </div>
+        `;
+
+        // 转换说明
+        if (data.explanations && data.explanations.length > 0) {
+            html += `
+                <div class="result-section">
+                    <h4>💡 转换说明</h4>
+                    <ul class="result-explanations">
+                        ${data.explanations.map(e => `<li>${escapeHtml(e)}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // 警告
+        if (data.warnings && data.warnings.length > 0) {
+            html += `
+                <div class="result-section">
+                    <h4>⚠️ 注意事项</h4>
+                    <ul class="result-warnings">
+                        ${data.warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // 可行性
+        html += `
+            <div class="result-section">
+                <h4>📊 可行性评估</h4>
+                <p style="font-size:13px; color:${data.feasible ? '#3fb950' : '#f85149'};">
+                    ${data.feasible ? '✅ 代码可完全转换为 GEE' : '⚠️ 部分功能无法直接映射到 GEE'}
+                </p>
+            </div>
+        `;
+
+        body.innerHTML = html;
+        document.getElementById('result-time').textContent = `⏱ ${data.elapsed_ms}ms`;
+        document.getElementById('result-overlay').classList.add('show');
+    }
+
+    /**
+     * 关闭结果模态框
+     */
+    function closeResultModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('result-overlay').classList.remove('show');
+    }
+
+    /**
+     * 复制 OGE 代码
+     */
+    function copyOgeCode() {
+        if (!currentCase) return;
+        navigator.clipboard.writeText(currentCase.code).then(() => {
+            showToast('OGE 代码已复制', 'success');
+        }).catch(() => showToast('复制失败', 'error'));
+    }
+
+    /**
+     * 复制 GEE 代码
+     */
+    function copyGeeCode() {
+        if (!currentGeeCode) return;
+        navigator.clipboard.writeText(currentGeeCode).then(() => {
+            showToast('GEE 代码已复制', 'success');
+        }).catch(() => showToast('复制失败', 'error'));
+    }
+
+    /**
+     * 显示提示消息
+     */
+    function showToast(msg, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    /**
+     * HTML 转义
+     */
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // 页面加载
+    loadCases();
+</script>
+
+</body>
+</html>

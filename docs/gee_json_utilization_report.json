@@ -1,0 +1,734 @@
+[
+  {
+    "gee_name": "ee.Array",
+    "python_fn": "ee_array",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The ee.Array() function returns an array with given coordinate values. Th",
+    "gee_usage": "ee.Array(values, pixelType )",
+    "gee_arguments": [
+      "values",
+      "pixelType"
+    ],
+    "gee_returns": "Array"
+  },
+  {
+    "gee_name": "ee.Array.matrixDeterminant",
+    "python_fn": "ee_array_matrix_determinant",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Computes the determinant of the matrix.",
+    "gee_usage": "Array. matrixDeterminant ()",
+    "gee_arguments": [
+      "this: input"
+    ],
+    "gee_returns": "Number"
+  },
+  {
+    "gee_name": "ee.Array.matrixInverse",
+    "python_fn": "ee_array_matrix_inverse",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Computes the inverse of the matrix.",
+    "gee_usage": "Array. matrixInverse ()",
+    "gee_arguments": [
+      "this: input"
+    ],
+    "gee_returns": "Array"
+  },
+  {
+    "gee_name": "ee.Array.matrixTrace",
+    "python_fn": "ee_array_matrix_trace",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Computes the trace of the matrix.",
+    "gee_usage": "Array. matrixTrace ()",
+    "gee_arguments": [
+      "this: input"
+    ],
+    "gee_returns": "Number"
+  },
+  {
+    "gee_name": "ee.Date",
+    "python_fn": "ee_date",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The ee.Date() constructor creates a new Date object. The ee.Date() constr",
+    "gee_usage": "ee.Date(date, tz )",
+    "gee_arguments": [
+      "date",
+      "tz"
+    ],
+    "gee_returns": "Date"
+  },
+  {
+    "gee_name": "ee.Date.advance",
+    "python_fn": "ee_date_advance",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The Date.advance method creates a new Date by adding a specified delta an",
+    "gee_usage": "Date. advance (delta, unit, timeZone )",
+    "gee_arguments": [
+      "this: date",
+      "delta",
+      "unit",
+      "timeZone"
+    ],
+    "gee_returns": "Date"
+  },
+  {
+    "gee_name": "ee.Date.dayOfYear",
+    "python_fn": "ee_date_day_of_year",
+    "has_gee_json": false,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true
+  },
+  {
+    "gee_name": "ee.Date.difference",
+    "python_fn": "ee_date_difference",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The Date.difference method calculates the difference between two dates. T",
+    "gee_usage": "Date. difference (start, unit)",
+    "gee_arguments": [
+      "this: date",
+      "start",
+      "unit"
+    ],
+    "gee_returns": "Float"
+  },
+  {
+    "gee_name": "ee.Date.format",
+    "python_fn": "ee_date_format",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The Date.format() method converts a date to a string. The method takes op",
+    "gee_usage": "Date. format ( format , timeZone )",
+    "gee_arguments": [
+      "this: date",
+      "format",
+      "timeZone"
+    ],
+    "gee_returns": "String"
+  },
+  {
+    "gee_name": "ee.Date.get",
+    "python_fn": "ee_date_get",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The Date.get() method returns the specified unit of a date as a Long valu",
+    "gee_usage": "Date. get (unit, timeZone )",
+    "gee_arguments": [
+      "this: date",
+      "unit",
+      "timeZone"
+    ],
+    "gee_returns": "Long"
+  },
+  {
+    "gee_name": "ee.Date.getRelative",
+    "python_fn": "ee_date_get_relative",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The getRelative method returns a 0-based unit of a date relative to a lar",
+    "gee_usage": "Date. getRelative (unit, inUnit, timeZone )",
+    "gee_arguments": [
+      "this: date",
+      "unit",
+      "inUnit",
+      "timeZone"
+    ],
+    "gee_returns": "Long"
+  },
+  {
+    "gee_name": "ee.Date.parse",
+    "python_fn": "ee_date_parse",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag ee.Date.parse is used to convert a date string into a Date object, given ",
+    "gee_usage": "ee.Date.parse(format, date, timeZone )",
+    "gee_arguments": [
+      "format",
+      "date",
+      "timeZone"
+    ],
+    "gee_returns": "Date"
+  },
+  {
+    "gee_name": "ee.Date.subtract",
+    "python_fn": "ee_date_subtract",
+    "has_gee_json": false,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true
+  },
+  {
+    "gee_name": "ee.DateRange",
+    "python_fn": "ee_date_range",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag A DateRange is created with a start (inclusive) and end (exclusive) date,",
+    "gee_usage": "ee.DateRange(start, end , timeZone )",
+    "gee_arguments": [
+      "start",
+      "end",
+      "timeZone"
+    ],
+    "gee_returns": "DateRange"
+  },
+  {
+    "gee_name": "ee.Dictionary",
+    "python_fn": "ee_dictionary",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The ee.Dictionary() constructor creates a new Dictionary in Earth Engine.",
+    "gee_usage": "ee.Dictionary( dict )",
+    "gee_arguments": [
+      "dict"
+    ],
+    "gee_returns": "Dictionary"
+  },
+  {
+    "gee_name": "ee.Dictionary.get",
+    "python_fn": "ee_dictionary_get",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The get method extracts a named value from a dictionary. If the specified",
+    "gee_usage": "Dictionary. get (key, defaultValue )",
+    "gee_arguments": [
+      "this: dictionary",
+      "key",
+      "defaultValue"
+    ],
+    "gee_returns": "Object"
+  },
+  {
+    "gee_name": "ee.Dictionary.getInfo",
+    "python_fn": "ee_dictionary_get_info",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The getInfo() method retrieves the value of an object from the server. It",
+    "gee_usage": "Dictionary. getInfo ( callback )",
+    "gee_arguments": [
+      "this: computedobject",
+      "callback"
+    ],
+    "gee_returns": "Object"
+  },
+  {
+    "gee_name": "ee.Dictionary.set",
+    "python_fn": "ee_dictionary_set",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag Dictionary.set(key, value) is used to set a value in a dictionary. This m",
+    "gee_usage": "Dictionary. set (key, value)",
+    "gee_arguments": [
+      "this: dictionary",
+      "key",
+      "value"
+    ],
+    "gee_returns": "Dictionary"
+  },
+  {
+    "gee_name": "ee.Dictionary.toList",
+    "python_fn": "ee_dictionary_to_list",
+    "has_gee_json": false,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true
+  },
+  {
+    "gee_name": "ee.FeatureCollection.iterate",
+    "python_fn": "ee_feature_collection_iterate",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The iterate function applies a user-supplied function to each element of ",
+    "gee_usage": "FeatureCollection. iterate (algorithm, first )",
+    "gee_arguments": [
+      "this: collection",
+      "algorithm",
+      "first"
+    ],
+    "gee_returns": "ComputedObject"
+  },
+  {
+    "gee_name": "ee.FeatureCollection.map",
+    "python_fn": "ee_feature_collection_map",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The map function applies an algorithm to each element of a collection. It",
+    "gee_usage": "FeatureCollection. map (algorithm, dropNulls )",
+    "gee_arguments": [
+      "this: collection",
+      "algorithm",
+      "dropNulls"
+    ],
+    "gee_returns": "Collection"
+  },
+  {
+    "gee_name": "ee.List",
+    "python_fn": "ee_list",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The ee.List(list) function constructs a new list in Earth Engine. The fun",
+    "gee_usage": "ee.List(list)",
+    "gee_arguments": [
+      "list"
+    ],
+    "gee_returns": "List"
+  },
+  {
+    "gee_name": "ee.List.contains",
+    "python_fn": "ee_list_contains",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Returns true if list contains element.",
+    "gee_usage": "List. contains (element)",
+    "gee_arguments": [
+      "this: list",
+      "element"
+    ],
+    "gee_returns": "Boolean"
+  },
+  {
+    "gee_name": "ee.List.filter",
+    "python_fn": "ee_list_filter",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The filter method is used to filter a list based on a given filter criter",
+    "gee_usage": "List. filter (filter)",
+    "gee_arguments": [
+      "this: list",
+      "filter"
+    ],
+    "gee_returns": "List"
+  },
+  {
+    "gee_name": "ee.List.flatten",
+    "python_fn": "ee_list_flatten",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Flattens any sublists into a single list.",
+    "gee_usage": "List. flatten ()",
+    "gee_arguments": [
+      "this: list"
+    ],
+    "gee_returns": "List"
+  },
+  {
+    "gee_name": "ee.List.get",
+    "python_fn": "ee_list_get",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag Use List.get(index) to retrieve an element from a list at a specific posi",
+    "gee_usage": "List. get (index)",
+    "gee_arguments": [
+      "this: list",
+      "index"
+    ],
+    "gee_returns": "Object"
+  },
+  {
+    "gee_name": "ee.List.group",
+    "python_fn": "ee_list_group",
+    "has_gee_json": false,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true
+  },
+  {
+    "gee_name": "ee.List.join",
+    "python_fn": "ee_list_join",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Returns a string containing the elements of the list joined together with the specified separator be",
+    "gee_usage": "List. join ( separator )",
+    "gee_arguments": [
+      "this: list",
+      "separator"
+    ],
+    "gee_returns": "String"
+  },
+  {
+    "gee_name": "ee.List.map",
+    "python_fn": "ee_list_map",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Map an algorithm over a list. The algorithm is expected to take an Object and return an Object.",
+    "gee_usage": "List. map (baseAlgorithm, dropNulls )",
+    "gee_arguments": [
+      "this: list",
+      "baseAlgorithm",
+      "dropNulls"
+    ],
+    "gee_returns": "List"
+  },
+  {
+    "gee_name": "ee.List.remove",
+    "python_fn": "ee_list_remove",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Removes the first occurrence of the specified element from list, if it is present.",
+    "gee_usage": "List. remove (element)",
+    "gee_arguments": [
+      "this: list",
+      "element"
+    ],
+    "gee_returns": "List"
+  },
+  {
+    "gee_name": "ee.List.repeat",
+    "python_fn": "ee_list_repeat",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Returns a new list containing value repeated count times.",
+    "gee_usage": "ee.List.repeat(value, count)",
+    "gee_arguments": [
+      "value",
+      "count"
+    ],
+    "gee_returns": "List"
+  },
+  {
+    "gee_name": "ee.List.sequence",
+    "python_fn": "ee_list_sequence",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag Generates a sequence of numbers between a start and end point with option",
+    "gee_usage": "ee.List.sequence(start, end , step , count )",
+    "gee_arguments": [
+      "start",
+      "end",
+      "step",
+      "count"
+    ],
+    "gee_returns": "List"
+  },
+  {
+    "gee_name": "ee.List.size",
+    "python_fn": "ee_list_size",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Returns the number of elements in list.",
+    "gee_usage": "List. size ()",
+    "gee_arguments": [
+      "this: list"
+    ],
+    "gee_returns": "Integer"
+  },
+  {
+    "gee_name": "ee.List.slice",
+    "python_fn": "ee_list_slice",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Returns a portion of list between the start index, inclusive, and end index, exclusive. Negative val",
+    "gee_usage": "List. slice (start, end , step )",
+    "gee_arguments": [
+      "this: list",
+      "start",
+      "end",
+      "step"
+    ],
+    "gee_returns": "List"
+  },
+  {
+    "gee_name": "ee.List.sort",
+    "python_fn": "ee_list_sort",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Sorts the list into ascending order. If the 'keys' argument is provided, then it is sorted first, an",
+    "gee_usage": "List. sort ( keys )",
+    "gee_arguments": [
+      "this: list",
+      "keys"
+    ],
+    "gee_returns": "List"
+  },
+  {
+    "gee_name": "ee.List.zip",
+    "python_fn": "ee_listzip",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Pairs the elements of two lists to create a list of two-element lists. When the input lists are of d",
+    "gee_usage": "List. zip (other)",
+    "gee_arguments": [
+      "this: list",
+      "other"
+    ],
+    "gee_returns": "List"
+  },
+  {
+    "gee_name": "ee.Number",
+    "python_fn": "ee_number",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The ee.Number(number) constructor creates a new Number object in Earth En",
+    "gee_usage": "ee.Number(number)",
+    "gee_arguments": [
+      "number"
+    ],
+    "gee_returns": "Number"
+  },
+  {
+    "gee_name": "ee.Number.divide",
+    "python_fn": "ee_number_divide",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The divide function divides the first value by the second value. Division",
+    "gee_usage": "Number. divide (right)",
+    "gee_arguments": [
+      "this: left",
+      "right"
+    ],
+    "gee_returns": "Number"
+  },
+  {
+    "gee_name": "ee.Number.format",
+    "python_fn": "ee_number_format",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The Number.format() method converts a number to a string using printf-sty",
+    "gee_usage": "Number. format ( pattern )",
+    "gee_arguments": [
+      "this: number",
+      "pattern"
+    ],
+    "gee_returns": "String"
+  },
+  {
+    "gee_name": "ee.Number.gte",
+    "python_fn": "ee_number_gte",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag",
+    "gee_usage": "Number. gte (right)",
+    "gee_arguments": [
+      "this: left",
+      "right"
+    ],
+    "gee_returns": "Number"
+  },
+  {
+    "gee_name": "ee.Number.lte",
+    "python_fn": "ee_number_lte",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag",
+    "gee_usage": "Number. lte (right)",
+    "gee_arguments": [
+      "this: left",
+      "right"
+    ],
+    "gee_returns": "Number"
+  },
+  {
+    "gee_name": "ee.Number.multiply",
+    "python_fn": "ee_number_multiply",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The multiply function multiplies the first number by the second number. T",
+    "gee_usage": "Number. multiply (right)",
+    "gee_arguments": [
+      "this: left",
+      "right"
+    ],
+    "gee_returns": "Number"
+  },
+  {
+    "gee_name": "ee.String",
+    "python_fn": "ee_string",
+    "has_gee_json": true,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true,
+    "gee_description": "Page Summary outlined_flag The ee.String() constructor creates a new Earth Engine String object. It ",
+    "gee_usage": "ee.String(string)",
+    "gee_arguments": [
+      "string"
+    ],
+    "gee_returns": "String"
+  },
+  {
+    "gee_name": "ee.String.format",
+    "python_fn": "ee_string_format",
+    "has_gee_json": false,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": true
+  },
+  {
+    "gee_name": "print",
+    "python_fn": "gee_print",
+    "has_gee_json": false,
+    "has_description": true,
+    "has_usage": true,
+    "has_args_doc": true,
+    "has_returns": true,
+    "has_example": false
+  }
+]

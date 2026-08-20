@@ -1,0 +1,2680 @@
+{
+  "total_unmatched": 189,
+  "status_counts": {
+    "待分析": 96,
+    "可Python实现": 75,
+    "可OGE映射": 5,
+    "可OGE或Python": 13
+  },
+  "results": [
+    {
+      "gee": "Map.onClick",
+      "method": "onClick",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "Map.setControlVisibility",
+      "method": "setControlVisibility",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "require",
+      "method": "",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Button",
+      "method": "Button",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart",
+      "method": "Chart",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.array.values",
+      "method": "values",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "获取值",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(获取值)"
+    },
+    {
+      "gee": "ui.Chart.feature.byFeature",
+      "method": "byFeature",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.feature.byProperty",
+      "method": "byProperty",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.feature.groups",
+      "method": "groups",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.feature.series",
+      "method": "series",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.image.byClass",
+      "method": "byClass",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.image.byRegion",
+      "method": "byRegion",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.image.doySeriesByRegion",
+      "method": "doySeriesByRegion",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.image.histogram",
+      "method": "histogram",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "直方图",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(直方图)"
+    },
+    {
+      "gee": "ui.Chart.image.regions",
+      "method": "regions",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.image.series",
+      "method": "series",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.image.seriesByRegion",
+      "method": "seriesByRegion",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.setChartType",
+      "method": "setChartType",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.setOptions",
+      "method": "setOptions",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.setSeriesColumns",
+      "method": "setSeriesColumns",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Chart.setSeriesOptions",
+      "method": "setSeriesOptions",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Checkbox",
+      "method": "Checkbox",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Date",
+      "method": "Date",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [
+        "Coverage.date"
+      ],
+      "status": "可OGE映射",
+      "suggestion": "OGE: Coverage.date"
+    },
+    {
+      "gee": "ui.DatePicker",
+      "method": "DatePicker",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.DateSlider",
+      "method": "DateSlider",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Draw",
+      "method": "Draw",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Dropdown",
+      "method": "Dropdown",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Label",
+      "method": "Label",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Label.setStyle",
+      "method": "setStyle",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Label.setText",
+      "method": "setText",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Layout",
+      "method": "Layout",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Legend",
+      "method": "Legend",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Map",
+      "method": "Map",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "映射",
+      "oge_matches": [
+        "FeatureCollection.map"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: FeatureCollection.map 或 Python(映射)"
+    },
+    {
+      "gee": "ui.Map.Layer",
+      "method": "Layer",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Map.add",
+      "method": "add",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "添加",
+      "oge_matches": [
+        "Coverage.add"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: Coverage.add 或 Python(添加)"
+    },
+    {
+      "gee": "ui.Map.addLayer",
+      "method": "addLayer",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "添加",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(添加)"
+    },
+    {
+      "gee": "ui.Map.centerObject",
+      "method": "centerObject",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Map.clear",
+      "method": "clear",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "清空",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(清空)"
+    },
+    {
+      "gee": "ui.Map.layers",
+      "method": "layers",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Map.onClick",
+      "method": "onClick",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Map.setCenter",
+      "method": "setCenter",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Map.setOptions",
+      "method": "setOptions",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Panel",
+      "method": "Panel",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Panel.Layout",
+      "method": "Layout",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Panel.add",
+      "method": "add",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "添加",
+      "oge_matches": [
+        "Coverage.add"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: Coverage.add 或 Python(添加)"
+    },
+    {
+      "gee": "ui.Panel.removeAll",
+      "method": "removeAll",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "移除",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(移除)"
+    },
+    {
+      "gee": "ui.Panel.setLayout",
+      "method": "setLayout",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Panel.setStyle",
+      "method": "setStyle",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Panel.setVisible",
+      "method": "setVisible",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.RadioButtons",
+      "method": "RadioButtons",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Select",
+      "method": "Select",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "选择",
+      "oge_matches": [
+        "Feature.select",
+        "FeatureCollection.select"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: Feature.select 或 Python(选择)"
+    },
+    {
+      "gee": "ui.Select.onChange",
+      "method": "onChange",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Slider",
+      "method": "Slider",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Slider.onChange",
+      "method": "onChange",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.SplitPanel",
+      "method": "SplitPanel",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "分割",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(分割)"
+    },
+    {
+      "gee": "ui.Table",
+      "method": "Table",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Textbox",
+      "method": "Textbox",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ui.Thumbnail",
+      "method": "Thumbnail",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "Export.video.toDrive",
+      "method": "toDrive",
+      "returns": "",
+      "description": "Page Summary outlined_flag Export.video.toDrive creates a batch task to export an ImageCollection as",
+      "args": [
+        "collection",
+        "description",
+        "folder",
+        "fileNamePrefix",
+        "framesPerSecond",
+        "dimensions",
+        "region",
+        "scale",
+        "crs",
+        "crsTransform",
+        "maxPixels",
+        "maxFrames",
+        "priority"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Algorithms.CannyEdgeDetector",
+      "method": "CannyEdgeDetector",
+      "returns": "Image",
+      "description": "Applies the Canny edge detection algorithm to an image. The output is an image whose bands have the ",
+      "args": [
+        "image",
+        "threshold",
+        "sigma"
+      ],
+      "can_python": true,
+      "python_cat": "逻辑或",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(逻辑或)"
+    },
+    {
+      "gee": "ee.Algorithms.If",
+      "method": "If",
+      "returns": "Object",
+      "description": "Page Summary outlined_flag The ee.Algorithms.If function selects one of its inputs based on a condit",
+      "args": [
+        "condition",
+        "trueCase",
+        "falseCase"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Algorithms.Image.Segmentation.SNIC",
+      "method": "Image.Segmentation.SNIC",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The SNIC algorithm performs superpixel clustering on an input image. The ",
+      "args": [
+        "image",
+        "size",
+        "compactness",
+        "connectivity",
+        "neighborhoodSize",
+        "seeds"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Algorithms.Landsat.TOA",
+      "method": "Landsat.TOA",
+      "returns": "Image",
+      "description": "Calibrates Landsat DN to TOA reflectance and brightness temperature for Landsat and similar data. Fo",
+      "args": [
+        "input"
+      ],
+      "can_python": true,
+      "python_cat": "逻辑与",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(逻辑与)"
+    },
+    {
+      "gee": "ee.Algorithms.Terrain",
+      "method": "Terrain",
+      "returns": "Image",
+      "description": "Calculates slope, aspect, and a simple hillshade from a terrain DEM. Expects an image containing eit",
+      "args": [
+        "input"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Classifier",
+      "method": "Classifier",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Classifier.amnhMaxent",
+      "method": "amnhMaxent",
+      "returns": "Classifier",
+      "description": "Page Summary outlined_flag Maxent is a Maximum Entropy classifier used for modeling species distribu",
+      "args": [
+        "categoricalNames",
+        "outputFormat",
+        "autoFeature",
+        "linear",
+        "quadratic",
+        "product",
+        "threshold",
+        "hinge",
+        "hingeThreshold",
+        "l2lqThreshold",
+        "lq2lqptThreshold",
+        "addSamplesToBackground",
+        "addAllSamplesToBackground",
+        "betaMultiplier",
+        "betaHinge",
+        "betaLqp",
+        "betaCategorical",
+        "betaThreshold",
+        "extrapolate",
+        "doClamp",
+        "writeClampGrid",
+        "randomTestPoints",
+        "seed"
+      ],
+      "can_python": true,
+      "python_cat": "最大值",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(最大值)"
+    },
+    {
+      "gee": "ee.Classifier.confusionMatrix",
+      "method": "confusionMatrix",
+      "returns": "ConfusionMatrix",
+      "description": "Page Summary outlined_flag The confusion matrix computes a 2D matrix for a classifier based on its t",
+      "args": [
+        "this: classifier"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Classifier.explain",
+      "method": "explain",
+      "returns": "Dictionary",
+      "description": "Page Summary outlined_flag The Classifier.explain() method returns a dictionary describing the resul",
+      "args": [
+        "this: classifier"
+      ],
+      "can_python": true,
+      "python_cat": "指数",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(指数)"
+    },
+    {
+      "gee": "ee.Classifier.setOutputMode",
+      "method": "setOutputMode",
+      "returns": "Classifier",
+      "description": "Sets a classifier's output format. Refer to https://developers.google.com/earth-engine/guides/classi",
+      "args": [
+        "this: classifier",
+        "mode"
+      ],
+      "can_python": true,
+      "python_cat": "取模",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(取模)"
+    },
+    {
+      "gee": "ee.ConfusionMatrix",
+      "method": "ConfusionMatrix",
+      "returns": "ConfusionMatrix",
+      "description": "Page Summary outlined_flag A ConfusionMatrix is created from a square, 2D array of integers where ro",
+      "args": [
+        "array",
+        "order"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.ConfusionMatrix.accuracy",
+      "method": "accuracy",
+      "returns": "Float",
+      "description": "Page Summary outlined_flag The ConfusionMatrix.accuracy() method computes the overall accuracy of a ",
+      "args": [
+        "this: confusionMatrix"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.ConfusionMatrix.array",
+      "method": "array",
+      "returns": "Array",
+      "description": "Page Summary outlined_flag The array() method returns a confusion matrix as an Array . The array() m",
+      "args": [
+        "this: confusionMatrix"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.ConfusionMatrix.consumersAccuracy",
+      "method": "consumersAccuracy",
+      "returns": "Array",
+      "description": "Page Summary outlined_flag ConfusionMatrix.consumersAccuracy() computes the consumer's accuracy for ",
+      "args": [
+        "this: confusionMatrix"
+      ],
+      "can_python": true,
+      "python_cat": "求和",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(求和)"
+    },
+    {
+      "gee": "ee.ConfusionMatrix.kappa",
+      "method": "kappa",
+      "returns": "Float",
+      "description": "Page Summary outlined_flag The ConfusionMatrix.kappa() method computes the Kappa statistic for a con",
+      "args": [
+        "this: confusionMatrix"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.ConfusionMatrix.producersAccuracy",
+      "method": "producersAccuracy",
+      "returns": "Array",
+      "description": "Page Summary outlined_flag The ConfusionMatrix.producersAccuracy() method calculates the producer's ",
+      "args": [
+        "this: confusionMatrix"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.FeatureCollection.classify",
+      "method": "classify",
+      "returns": "FeatureCollection",
+      "description": "Page Summary outlined_flag This function classifies each feature within a collection. It takes a Fea",
+      "args": [
+        "this: features",
+        "classifier",
+        "outputName"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.FeatureCollection.draw",
+      "method": "draw",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag Paints a vector collection to an Image for visualization. Not intended fo",
+      "args": [
+        "this: collection",
+        "color",
+        "pointRadius",
+        "strokeWidth"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.FeatureCollection.filter",
+      "method": "filter",
+      "returns": "Collection",
+      "description": "Page Summary outlined_flag The filter method is used to apply a filter to a collection. The filter m",
+      "args": [
+        "this: collection",
+        "filter"
+      ],
+      "can_python": true,
+      "python_cat": "过滤",
+      "oge_matches": [
+        "FeatureCollection.filter",
+        "Coverage.filter"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: FeatureCollection.filter 或 Python(过滤)"
+    },
+    {
+      "gee": "ee.FeatureCollection.first",
+      "method": "first",
+      "returns": "Element",
+      "description": "Page Summary outlined_flag",
+      "args": [
+        "this: collection"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.FeatureCollection.flatten",
+      "method": "flatten",
+      "returns": "FeatureCollection",
+      "description": "Page Summary outlined_flag FeatureCollection.flatten() is used to flatten collections of collections",
+      "args": [
+        "this: collection"
+      ],
+      "can_python": true,
+      "python_cat": "展平",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(展平)"
+    },
+    {
+      "gee": "ee.FeatureCollection.randomPoints",
+      "method": "randomPoints",
+      "returns": "FeatureCollection",
+      "description": "Page Summary outlined_flag ee.FeatureCollection.randomPoints generates points that are uniformly ran",
+      "args": [
+        "region",
+        "points",
+        "seed",
+        "maxError"
+      ],
+      "can_python": true,
+      "python_cat": "逻辑与",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(逻辑与)"
+    },
+    {
+      "gee": "ee.FeatureCollection.reduceColumns",
+      "method": "reduceColumns",
+      "returns": "Dictionary",
+      "description": "Page Summary outlined_flag FeatureCollection.reduceColumns applies a reducer to each element of a co",
+      "args": [
+        "this: collection",
+        "reducer",
+        "selectors",
+        "weightSelectors"
+      ],
+      "can_python": true,
+      "python_cat": "归约",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(归约)"
+    },
+    {
+      "gee": "ee.Image.reduceRegions",
+      "method": "reduceRegions",
+      "returns": "FeatureCollection",
+      "description": "Page Summary outlined_flag The reduceRegions function applies a reducer over the area of each featur",
+      "args": [
+        "this: image",
+        "collection",
+        "reducer",
+        "scale",
+        "crs",
+        "crsTransform",
+        "tileScale",
+        "maxPixelsPerRegion"
+      ],
+      "can_python": true,
+      "python_cat": "归约",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(归约)"
+    },
+    {
+      "gee": "ee.FeatureCollection.toList",
+      "method": "toList",
+      "returns": "List",
+      "description": "Page Summary outlined_flag The toList method returns the elements of a FeatureCollection as a list. ",
+      "args": [
+        "this: collection",
+        "count",
+        "offset"
+      ],
+      "can_python": true,
+      "python_cat": "转列表",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(转列表)"
+    },
+    {
+      "gee": "ee.Filter.equals",
+      "method": "equals",
+      "returns": "Filter",
+      "description": "Page Summary outlined_flag ee.Filter.equals creates a filter that passes if two operands are equal. ",
+      "args": [
+        "leftField",
+        "rightValue",
+        "rightField",
+        "leftValue"
+      ],
+      "can_python": true,
+      "python_cat": "相等判断",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(相等判断)"
+    },
+    {
+      "gee": "ee.Filter.inList",
+      "method": "inList",
+      "returns": "Filter",
+      "description": "Filter on metadata contained in a list.",
+      "args": [
+        "leftField",
+        "rightValue",
+        "rightField",
+        "leftValue"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Filter.notEquals",
+      "method": "notEquals",
+      "returns": "Filter",
+      "description": "Page Summary outlined_flag The ee.Filter.notEquals function creates a filter that passes elements un",
+      "args": [
+        "leftField",
+        "rightValue",
+        "rightField",
+        "leftValue"
+      ],
+      "can_python": true,
+      "python_cat": "相等判断",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(相等判断)"
+    },
+    {
+      "gee": "ee.Filter.stringContains",
+      "method": "stringContains",
+      "returns": "Filter",
+      "description": "Creates a unary or binary filter that passes if the left operand, a string, contains the right opera",
+      "args": [
+        "leftField",
+        "rightValue",
+        "rightField",
+        "leftValue"
+      ],
+      "can_python": true,
+      "python_cat": "包含",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(包含)"
+    },
+    {
+      "gee": "ee.Filter.stringEquals",
+      "method": "stringEquals",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "相等判断",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(相等判断)"
+    },
+    {
+      "gee": "ee.Filter.stringStartsWith",
+      "method": "stringStartsWith",
+      "returns": "Filter",
+      "description": "Creates a unary or binary filter that passes if the left operand, a string, starts with the right op",
+      "args": [
+        "leftField",
+        "rightValue",
+        "rightField",
+        "leftValue"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Geometry.Rectangle.coordinates",
+      "method": "Rectangle.coordinates",
+      "returns": "List",
+      "description": "Page Summary outlined_flag The coordinates() method returns a GeoJSON-style list of a geometry's coo",
+      "args": [
+        "this: geometry"
+      ],
+      "can_python": true,
+      "python_cat": "逻辑或",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(逻辑或)"
+    },
+    {
+      "gee": "ee.Geometry.coordinates",
+      "method": "coordinates",
+      "returns": "List",
+      "description": "Page Summary outlined_flag The Geometry.coordinates() method returns a GeoJSON-style list of the geo",
+      "args": [
+        "this: geometry"
+      ],
+      "can_python": true,
+      "python_cat": "逻辑或",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(逻辑或)"
+    },
+    {
+      "gee": "ee.Image.argmax",
+      "method": "argmax",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "最大值",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(最大值)"
+    },
+    {
+      "gee": "ee.Image.argmin",
+      "method": "argmin",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "最小值",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(最小值)"
+    },
+    {
+      "gee": "ee.Image.arrayGet",
+      "method": "arrayGet",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag For each band, an output band of the same name is created with the value ",
+      "args": [
+        "this: image",
+        "position"
+      ],
+      "can_python": true,
+      "python_cat": "获取属性",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(获取属性)"
+    },
+    {
+      "gee": "ee.Image.arraySlice",
+      "method": "arraySlice",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The function creates a subarray by slicing an input array along a specifi",
+      "args": [
+        "this: input",
+        "axis",
+        "start",
+        "end",
+        "step"
+      ],
+      "can_python": true,
+      "python_cat": "切片",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(切片)"
+    },
+    {
+      "gee": "ee.Image.arraySort",
+      "method": "arraySort",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The arraySort method sorts elements of each array pixel along one axis. A",
+      "args": [
+        "this: image",
+        "keys"
+      ],
+      "can_python": true,
+      "python_cat": "排序",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(排序)"
+    },
+    {
+      "gee": "ee.Image.azimuth",
+      "method": "azimuth",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.bitwiseRightShift",
+      "method": "bitwiseRightShift",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.bitwiseShiftRight",
+      "method": "bitwiseShiftRight",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.cast",
+      "method": "cast",
+      "returns": "Image",
+      "description": "Casts some or all bands of an image to the specified types.",
+      "args": [
+        "this: image",
+        "bandTypes",
+        "bandOrder"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.cat",
+      "method": "cat",
+      "returns": "Image",
+      "description": "Combines the given images into a single image which contains all bands from all of the images. If tw",
+      "args": [
+        "var_args"
+      ],
+      "can_python": true,
+      "python_cat": "拼接",
+      "oge_matches": [
+        "Coverage.cat"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: Coverage.cat 或 Python(拼接)"
+    },
+    {
+      "gee": "ee.Image.connectedComponents",
+      "method": "connectedComponents",
+      "returns": "Image",
+      "description": "Finds connected components with the same value of the first band of the input and labels them with a",
+      "args": [
+        "this: image",
+        "connectedness",
+        "maxSize"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.connectedPixelCount",
+      "method": "connectedPixelCount",
+      "returns": "Image",
+      "description": "Generate an image where each pixel contains the number of 4- or 8-connected neighbors (including its",
+      "args": [
+        "this: input",
+        "maxSize",
+        "eightConnected"
+      ],
+      "can_python": true,
+      "python_cat": "计数",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(计数)"
+    },
+    {
+      "gee": "ee.Image.constant",
+      "method": "constant",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The ee.Image.constant(value) method generates an image where every pixel ",
+      "args": [
+        "value"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.exp",
+      "method": "exp",
+      "returns": "Image",
+      "description": "Computes the Euler's number e raised to the power of the input.",
+      "args": [
+        "this: value"
+      ],
+      "can_python": true,
+      "python_cat": "指数",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(指数)"
+    },
+    {
+      "gee": "ee.Image.expression",
+      "method": "expression",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The expression method evaluates an arithmetic expression on an image, pot",
+      "args": [
+        "this: image",
+        "expression",
+        "map"
+      ],
+      "can_python": true,
+      "python_cat": "指数",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(指数)"
+    },
+    {
+      "gee": "ee.Image.gapfill",
+      "method": "gapfill",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.geometry",
+      "method": "geometry",
+      "returns": "Geometry",
+      "description": "Returns the geometry of a given feature in a given projection.",
+      "args": [
+        "this: feature",
+        "maxError",
+        "proj",
+        "geodesics"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [
+        "Feature.geometry"
+      ],
+      "status": "可OGE映射",
+      "suggestion": "OGE: Feature.geometry"
+    },
+    {
+      "gee": "ee.Image.getRegion",
+      "method": "getRegion",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "获取属性",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(获取属性)"
+    },
+    {
+      "gee": "ee.Image.glcmTexture",
+      "method": "glcmTexture",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag GLCM texture metrics are computed by analyzing how often different pixel ",
+      "args": [
+        "this: image",
+        "size",
+        "kernel",
+        "average"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.interpolate",
+      "method": "interpolate",
+      "returns": "Image",
+      "description": "Interpolates each point in the first band of the input image into the piecewise-linear function spec",
+      "args": [
+        "this: image",
+        "x",
+        "y",
+        "behavior"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.matrixMultiply",
+      "method": "matrixMultiply",
+      "returns": "Image",
+      "description": "Returns the matrix multiplication A * B for each matched pair of bands in image1 and image2. If eith",
+      "args": [
+        "this: image1",
+        "image2"
+      ],
+      "can_python": true,
+      "python_cat": "乘法",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(乘法)"
+    },
+    {
+      "gee": "ee.Image.pixelLonLat",
+      "method": "pixelLonLat",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The ee.Image.pixelLonLat() method creates an image with 'longitude' and '",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.qualityMosaic",
+      "method": "qualityMosaic",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "镶嵌",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(镶嵌)"
+    },
+    {
+      "gee": "ee.Image.random",
+      "method": "random",
+      "returns": "Image",
+      "description": "Generates a random number at each pixel location. When using the 'uniform' distribution, outputs are",
+      "args": [
+        "seed",
+        "distribution"
+      ],
+      "can_python": true,
+      "python_cat": "逻辑与",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(逻辑与)"
+    },
+    {
+      "gee": "ee.Image.reduce",
+      "method": "reduce",
+      "returns": "Image",
+      "description": "Applies a reducer to all of the bands of an image. The reducer must have a single input and will be ",
+      "args": [
+        "this: image",
+        "reducer"
+      ],
+      "can_python": true,
+      "python_cat": "归约",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(归约)"
+    },
+    {
+      "gee": "ee.Image.reduceConnectedComponents",
+      "method": "reduceConnectedComponents",
+      "returns": "Image",
+      "description": "Applies a reducer to all of the pixels inside of each 'object'. Pixels are considered to belong to a",
+      "args": [
+        "this: image",
+        "reducer",
+        "labelBand",
+        "maxSize"
+      ],
+      "can_python": true,
+      "python_cat": "归约",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(归约)"
+    },
+    {
+      "gee": "ee.Image.reduceNeighborhood",
+      "method": "reduceNeighborhood",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The reduceNeighborhood function applies a reducer to the neighborhood of ",
+      "args": [
+        "this: image",
+        "reducer",
+        "kernel",
+        "inputWeight",
+        "skipMasked",
+        "optimization"
+      ],
+      "can_python": true,
+      "python_cat": "归约",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(归约)"
+    },
+    {
+      "gee": "ee.Image.reduceRegion",
+      "method": "reduceRegion",
+      "returns": "Dictionary",
+      "description": "Page Summary outlined_flag The reduceRegion function applies a reducer to all pixels within a specif",
+      "args": [
+        "this: image",
+        "reducer",
+        "geometry",
+        "scale",
+        "crs",
+        "crsTransform",
+        "bestEffort",
+        "maxPixels",
+        "tileScale"
+      ],
+      "can_python": true,
+      "python_cat": "归约",
+      "oge_matches": [
+        "Coverage.reduceRegion"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: Coverage.reduceRegion 或 Python(归约)"
+    },
+    {
+      "gee": "ee.Image.rgbToGrayscale",
+      "method": "rgbToGrayscale",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "缩放",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(缩放)"
+    },
+    {
+      "gee": "ee.Image.sampleRegions",
+      "method": "sampleRegions",
+      "returns": "FeatureCollection",
+      "description": "Page Summary outlined_flag This function converts intersecting image pixels within given regions to ",
+      "args": [
+        "this: image",
+        "collection",
+        "properties",
+        "scale",
+        "projection",
+        "tileScale",
+        "geometries"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [
+        "Coverage.sampleRegions"
+      ],
+      "status": "可OGE映射",
+      "suggestion": "OGE: Coverage.sampleRegions"
+    },
+    {
+      "gee": "ee.Image.selfMask",
+      "method": "selfMask",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The selfMask() method updates an image's mask using the image's own pixel",
+      "args": [
+        "this: image"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.set",
+      "method": "set",
+      "returns": "Element",
+      "description": "Overrides one or more metadata properties of an Element.",
+      "args": [
+        "this: element",
+        "var_args"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [
+        "Feature.set"
+      ],
+      "status": "可OGE映射",
+      "suggestion": "OGE: Feature.set"
+    },
+    {
+      "gee": "ee.Image.setMulti",
+      "method": "setMulti",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "小于",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(小于)"
+    },
+    {
+      "gee": "ee.Image.shiftLeft",
+      "method": "shiftLeft",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.shiftRight",
+      "method": "shiftRight",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.square",
+      "method": "square",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.stratifiedSample",
+      "method": "stratifiedSample",
+      "returns": "FeatureCollection",
+      "description": "Page Summary outlined_flag Extracts a stratified random sample of points from an image, returning a ",
+      "args": [
+        "this: image",
+        "numPoints",
+        "classBand",
+        "region",
+        "scale",
+        "projection",
+        "seed",
+        "classValues",
+        "classPoints",
+        "dropNulls",
+        "tileScale",
+        "geometries"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Image.toBands",
+      "method": "toBands",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "逻辑与",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(逻辑与)"
+    },
+    {
+      "gee": "ee.Image.unitScale",
+      "method": "unitScale",
+      "returns": "Image",
+      "description": "Scales the input so that the range of input values [low, high] becomes [0, 1]. Values outside the ra",
+      "args": [
+        "this: input",
+        "low",
+        "high"
+      ],
+      "can_python": true,
+      "python_cat": "缩放",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(缩放)"
+    },
+    {
+      "gee": "ee.Image.where",
+      "method": "where",
+      "returns": "Image",
+      "description": "Performs conditional replacement of values. For each pixel in each band of 'input', if the correspon",
+      "args": [
+        "this: input",
+        "test",
+        "value"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.ImageCollection.count",
+      "method": "count",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The count() method reduces an ImageCollection by calculating the number o",
+      "args": [
+        "this: collection"
+      ],
+      "can_python": true,
+      "python_cat": "计数",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(计数)"
+    },
+    {
+      "gee": "ee.ImageCollection.filter",
+      "method": "filter",
+      "returns": "Collection",
+      "description": "Page Summary outlined_flag The filter method is used to apply a filter to an ImageCollection . This ",
+      "args": [
+        "this: collection",
+        "filter"
+      ],
+      "can_python": true,
+      "python_cat": "过滤",
+      "oge_matches": [
+        "FeatureCollection.filter",
+        "Coverage.filter"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: FeatureCollection.filter 或 Python(过滤)"
+    },
+    {
+      "gee": "ee.ImageCollection.first",
+      "method": "first",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The first() method returns the initial entry from an ImageCollection . Th",
+      "args": [
+        "this: imagecollection"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.ImageCollection.iterate",
+      "method": "iterate",
+      "returns": "ComputedObject",
+      "description": "Applies a user-supplied function to each element of a collection. The user-supplied function is give",
+      "args": [
+        "this: collection",
+        "algorithm",
+        "first"
+      ],
+      "can_python": true,
+      "python_cat": "迭代",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(迭代)"
+    },
+    {
+      "gee": "ee.ImageCollection.last",
+      "method": "last",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.ImageCollection.map",
+      "method": "map",
+      "returns": "Collection",
+      "description": "Maps an algorithm over a collection.",
+      "args": [
+        "this: collection",
+        "algorithm",
+        "dropNulls"
+      ],
+      "can_python": true,
+      "python_cat": "映射",
+      "oge_matches": [
+        "FeatureCollection.map"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: FeatureCollection.map 或 Python(映射)"
+    },
+    {
+      "gee": "ee.ImageCollection.max",
+      "method": "max",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag ImageCollection.max() reduces an image collection by calculating the maxi",
+      "args": [
+        "this: collection"
+      ],
+      "can_python": true,
+      "python_cat": "最大值",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(最大值)"
+    },
+    {
+      "gee": "ee.ImageCollection.mean",
+      "method": "mean",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The ImageCollection.mean() method reduces an image collection by calculat",
+      "args": [
+        "this: collection"
+      ],
+      "can_python": true,
+      "python_cat": "均值",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(均值)"
+    },
+    {
+      "gee": "ee.ImageCollection.median",
+      "method": "median",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The median() method reduces an image collection by calculating the median",
+      "args": [
+        "this: collection"
+      ],
+      "can_python": true,
+      "python_cat": "中位数",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(中位数)"
+    },
+    {
+      "gee": "ee.ImageCollection.merge",
+      "method": "merge",
+      "returns": "ImageCollection",
+      "description": "Page Summary outlined_flag The merge method combines two image collections into a single collection ",
+      "args": [
+        "this: collection1",
+        "collection2"
+      ],
+      "can_python": true,
+      "python_cat": "合并",
+      "oge_matches": [
+        "FeatureCollection.merge"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: FeatureCollection.merge 或 Python(合并)"
+    },
+    {
+      "gee": "ee.ImageCollection.min",
+      "method": "min",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The ImageCollection.min() method reduces an image collection by calculati",
+      "args": [
+        "this: collection"
+      ],
+      "can_python": true,
+      "python_cat": "最小值",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(最小值)"
+    },
+    {
+      "gee": "ee.ImageCollection.qualityMosaic",
+      "method": "qualityMosaic",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag ImageCollection.qualityMosaic composites images in a collection using a q",
+      "args": [
+        "this: collection",
+        "qualityBand"
+      ],
+      "can_python": true,
+      "python_cat": "镶嵌",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(镶嵌)"
+    },
+    {
+      "gee": "ee.ImageCollection.reduce",
+      "method": "reduce",
+      "returns": "Image",
+      "description": "Applies a reducer across all of the images in a collection. If the reducer has a single input, it wi",
+      "args": [
+        "this: collection",
+        "reducer",
+        "parallelScale"
+      ],
+      "can_python": true,
+      "python_cat": "归约",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(归约)"
+    },
+    {
+      "gee": "ee.ImageCollection.select",
+      "method": "select",
+      "returns": "ImageCollection",
+      "description": "Page Summary outlined_flag ImageCollection.select is used to choose specific bands from each image w",
+      "args": [
+        "this: imagecollection",
+        "selectors",
+        "names"
+      ],
+      "can_python": true,
+      "python_cat": "选择",
+      "oge_matches": [
+        "Feature.select",
+        "FeatureCollection.select"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: Feature.select 或 Python(选择)"
+    },
+    {
+      "gee": "ee.ImageCollection.size",
+      "method": "size",
+      "returns": "Integer",
+      "description": "Page Summary outlined_flag The size() method returns the number of elements in a collection. Using s",
+      "args": [
+        "this: collection"
+      ],
+      "can_python": true,
+      "python_cat": "大小",
+      "oge_matches": [
+        "FeatureCollection.size"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: FeatureCollection.size 或 Python(大小)"
+    },
+    {
+      "gee": "ee.ImageCollection.sort",
+      "method": "sort",
+      "returns": "Collection",
+      "description": "Page Summary outlined_flag The sort method sorts a collection by a specified property. It returns th",
+      "args": [
+        "this: collection",
+        "property",
+        "ascending"
+      ],
+      "can_python": true,
+      "python_cat": "排序",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(排序)"
+    },
+    {
+      "gee": "ee.ImageCollection.toArray",
+      "method": "toArray",
+      "returns": "Image",
+      "description": "Converts an image collection into an image of 2D arrays. At each pixel, the images that have valid (",
+      "args": [
+        "this: collection"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [
+        "Feature.toArray"
+      ],
+      "status": "可OGE映射",
+      "suggestion": "OGE: Feature.toArray"
+    },
+    {
+      "gee": "ee.ImageCollection.toBands",
+      "method": "toBands",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The toBands() method converts an ImageCollection into a single multi-band",
+      "args": [
+        "this: collection"
+      ],
+      "can_python": true,
+      "python_cat": "逻辑与",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(逻辑与)"
+    },
+    {
+      "gee": "ee.ImageCollection.toList",
+      "method": "toList",
+      "returns": "List",
+      "description": "Page Summary outlined_flag The toList method returns elements of a collection as a list. It can fetc",
+      "args": [
+        "this: collection",
+        "count",
+        "offset"
+      ],
+      "can_python": true,
+      "python_cat": "转列表",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(转列表)"
+    },
+    {
+      "gee": "ee.Join",
+      "method": "Join",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "连接",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(连接)"
+    },
+    {
+      "gee": "ee.Join.apply",
+      "method": "apply",
+      "returns": "FeatureCollection",
+      "description": "Joins two collections.",
+      "args": [
+        "this: join",
+        "primary",
+        "secondary",
+        "condition"
+      ],
+      "can_python": true,
+      "python_cat": "应用",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(应用)"
+    },
+    {
+      "gee": "ee.Join.inner",
+      "method": "inner",
+      "returns": "Join",
+      "description": "Returns a join that pairs elements from the primary collection with matching elements from the secon",
+      "args": [
+        "primaryKey",
+        "secondaryKey",
+        "measureKey"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Join.saveAll",
+      "method": "saveAll",
+      "returns": "Join",
+      "description": "Returns a join that pairs each element from the first collection with a group of matching elements f",
+      "args": [
+        "matchesKey",
+        "ordering",
+        "ascending",
+        "measureKey",
+        "outer"
+      ],
+      "can_python": true,
+      "python_cat": "保存",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(保存)"
+    },
+    {
+      "gee": "ee.Join.saveFirst",
+      "method": "saveFirst",
+      "returns": "Join",
+      "description": "Returns a join that pairs each element from the first collection with a matching element from the se",
+      "args": [
+        "matchKey",
+        "ordering",
+        "ascending",
+        "measureKey",
+        "outer"
+      ],
+      "can_python": true,
+      "python_cat": "保存",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(保存)"
+    },
+    {
+      "gee": "ee.Kernel",
+      "method": "Kernel",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Reducer",
+      "method": "Reducer",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "归约",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(归约)"
+    },
+    {
+      "gee": "ee.Reducer.all",
+      "method": "all",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Reducer.allNonZero",
+      "method": "allNonZero",
+      "returns": "Reducer",
+      "description": "Returns a Reducer that returns 1 if all of its inputs are non-zero, 0 otherwise. Where applicable, t",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Reducer.centeredVariance",
+      "method": "centeredVariance",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "方差",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(方差)"
+    },
+    {
+      "gee": "ee.Reducer.composite",
+      "method": "composite",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "合成",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(合成)"
+    },
+    {
+      "gee": "ee.Reducer.count",
+      "method": "count",
+      "returns": "Reducer",
+      "description": "Page Summary outlined_flag Computes the number of non-null inputs. The output name is \"count\". No ar",
+      "args": [],
+      "can_python": true,
+      "python_cat": "计数",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(计数)"
+    },
+    {
+      "gee": "ee.Reducer.covariance",
+      "method": "covariance",
+      "returns": "Reducer",
+      "description": "Creates a reducer that reduces some number of 1-D arrays of the same length N to a covariance matrix",
+      "args": [],
+      "can_python": true,
+      "python_cat": "方差",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(方差)"
+    },
+    {
+      "gee": "ee.Reducer.eigen",
+      "method": "eigen",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Reducer.first",
+      "method": "first",
+      "returns": "Reducer",
+      "description": "Returns a Reducer that returns the first of its inputs. Where applicable, the output name is \"first\"",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Reducer.firstNonNull",
+      "method": "firstNonNull",
+      "returns": "Reducer",
+      "description": "Returns a Reducer that returns the first of its non-null inputs. Where applicable, the output name i",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Reducer.frequencyHistogram",
+      "method": "frequencyHistogram",
+      "returns": "Reducer",
+      "description": "Returns a Reducer that returns a (weighted) frequency table of its inputs. Where applicable, the out",
+      "args": [],
+      "can_python": true,
+      "python_cat": "等于",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(等于)"
+    },
+    {
+      "gee": "ee.Reducer.group",
+      "method": "group",
+      "returns": "Reducer",
+      "description": "Groups reducer records by the value of a given input and reduces each group with the given reducer.",
+      "args": [
+        "this: reducer",
+        "groupField",
+        "groupName"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Reducer.histogram",
+      "method": "histogram",
+      "returns": "Reducer",
+      "description": "Create a reducer that will compute a histogram of the inputs.",
+      "args": [
+        "maxBuckets",
+        "minBucketWidth",
+        "maxRaw"
+      ],
+      "can_python": true,
+      "python_cat": "直方图",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(直方图)"
+    },
+    {
+      "gee": "ee.Reducer.linearFit",
+      "method": "linearFit",
+      "returns": "Reducer",
+      "description": "Returns a Reducer that computes the slope and offset for a (weighted) linear regression of 2 inputs.",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Reducer.linearRegression",
+      "method": "linearRegression",
+      "returns": "Reducer",
+      "description": "Creates a reducer that computes a linear least squares regression with numX independent variables an",
+      "args": [
+        "numX",
+        "numY"
+      ],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.Reducer.mean",
+      "method": "mean",
+      "returns": "Reducer",
+      "description": "Returns a Reducer that computes the (weighted) arithmetic mean of its inputs. Where applicable, the ",
+      "args": [],
+      "can_python": true,
+      "python_cat": "均值",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(均值)"
+    },
+    {
+      "gee": "ee.Reducer.median",
+      "method": "median",
+      "returns": "Reducer",
+      "description": "Create a reducer that will compute the median of the inputs. For small numbers of inputs (up to maxR",
+      "args": [
+        "maxBuckets",
+        "minBucketWidth",
+        "maxRaw"
+      ],
+      "can_python": true,
+      "python_cat": "中位数",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(中位数)"
+    },
+    {
+      "gee": "ee.Reducer.minMax",
+      "method": "minMax",
+      "returns": "Reducer",
+      "description": "Page Summary outlined_flag Computes the minimum and maximum of inputs. Output names are \"min\" and \"m",
+      "args": [],
+      "can_python": true,
+      "python_cat": "最大值",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(最大值)"
+    },
+    {
+      "gee": "ee.Reducer.mode",
+      "method": "mode",
+      "returns": "Reducer",
+      "description": "Create a reducer that will compute the mode of the inputs. For small numbers of inputs (up to maxRaw",
+      "args": [
+        "maxBuckets",
+        "minBucketWidth",
+        "maxRaw"
+      ],
+      "can_python": true,
+      "python_cat": "取模",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(取模)"
+    },
+    {
+      "gee": "ee.Reducer.percentile",
+      "method": "percentile",
+      "returns": "Reducer",
+      "description": "Create a reducer that will compute the specified percentiles, e.g. given [0, 50, 100] will produce o",
+      "args": [
+        "percentiles",
+        "outputNames",
+        "maxBuckets",
+        "minBucketWidth",
+        "maxRaw"
+      ],
+      "can_python": true,
+      "python_cat": "百分位数",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(百分位数)"
+    },
+    {
+      "gee": "ee.Reducer.range",
+      "method": "range",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "生成范围",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(生成范围)"
+    },
+    {
+      "gee": "ee.Reducer.stdDev",
+      "method": "stdDev",
+      "returns": "Reducer",
+      "description": "Returns a Reducer that computes the standard deviation of its inputs. Where applicable, the output n",
+      "args": [],
+      "can_python": true,
+      "python_cat": "标准差",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(标准差)"
+    },
+    {
+      "gee": "ee.Reducer.sum",
+      "method": "sum",
+      "returns": "Reducer",
+      "description": "Returns a Reducer that computes the (weighted) sum of its inputs. Where applicable, the output name ",
+      "args": [],
+      "can_python": true,
+      "python_cat": "求和",
+      "oge_matches": [
+        "CoverageCollection.sum"
+      ],
+      "status": "可OGE或Python",
+      "suggestion": "OGE: CoverageCollection.sum 或 Python(求和)"
+    },
+    {
+      "gee": "ee.Reducer.toList",
+      "method": "toList",
+      "returns": "Reducer",
+      "description": "Creates a reducer that collects its inputs into a list, optionally grouped into tuples.",
+      "args": [
+        "tupleSize",
+        "numOptional"
+      ],
+      "can_python": true,
+      "python_cat": "转列表",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(转列表)"
+    },
+    {
+      "gee": "ee.Reducer.variance",
+      "method": "variance",
+      "returns": "Reducer",
+      "description": "Returns a Reducer that computes the variance of its inputs. Where applicable, the output name is \"va",
+      "args": [],
+      "can_python": true,
+      "python_cat": "方差",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(方差)"
+    },
+    {
+      "gee": "ee.Terrain.products",
+      "method": "products",
+      "returns": "Image",
+      "description": "Page Summary outlined_flag The ee.Terrain.products function calculates slope, aspect, and hillshade ",
+      "args": [
+        "input"
+      ],
+      "can_python": true,
+      "python_cat": "乘积",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(乘积)"
+    },
+    {
+      "gee": "ee.batch.Export.table.toAsset",
+      "method": "toAsset",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.batch.Export.table.toCloudStorage",
+      "method": "toCloudStorage",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": true,
+      "python_cat": "逻辑或",
+      "oge_matches": [],
+      "status": "可Python实现",
+      "suggestion": "Python(逻辑或)"
+    },
+    {
+      "gee": "ee.batch.Export.table.toDrive",
+      "method": "toDrive",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.batch.Task",
+      "method": "Task",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.batch.Task.start",
+      "method": "start",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    },
+    {
+      "gee": "ee.ui.Panel",
+      "method": "Panel",
+      "returns": "",
+      "description": "",
+      "args": [],
+      "can_python": false,
+      "python_cat": "",
+      "oge_matches": [],
+      "status": "待分析",
+      "suggestion": "需人工分析"
+    }
+  ]
+}
