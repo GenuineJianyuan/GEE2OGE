@@ -18,9 +18,16 @@
         }
         .sidebar-header {
             padding: 16px 20px; border-bottom: 1px solid #30363d;
-            background: #161b22; position: sticky; top: 0; z-index: 10;
+            background: #161b22; position: sticky; top: 42px; z-index: 10;
         }
         .sidebar-header h2 { font-size: 16px; color: #e6edf3; margin-bottom: 12px; }
+        .source-picker { margin-bottom: 10px; }
+        .source-picker label { display:block; margin-bottom:5px; color:#8b949e; font-size:11px; }
+        .source-picker select {
+            width:100%; padding:8px 10px; background:#0d1117; border:1px solid #30363d;
+            border-radius:6px; color:#c9d1d9; font-size:12px; outline:none;
+        }
+        .source-picker select:focus { border-color:#58a6ff; }
         .sidebar-header .search-box { position: relative; }
         .sidebar-header input {
             width: 100%; padding: 8px 12px 8px 32px;
@@ -82,7 +89,17 @@
         .btn-primary { background: #1f6feb; border-color: #1f6feb; color: #fff; }
         .btn-primary:hover { background: #388bfd; }
         .btn-success { background: #238636; border-color: #238636; color: #fff; }
+        .btn-batch { background:#8250df; border-color:#8250df; color:#fff; }
+        .btn-batch:hover { background:#986ee2; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .batch-status { font-size:11px; color:#8b949e; max-width:255px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .provider-select { max-width:210px; padding:6px 9px; background:#0d1117; border:1px solid #30363d; border-radius:6px; color:#c9d1d9; font-size:12px; outline:none; }
+        .api-config { display:none; position:absolute; right:20px; top:62px; z-index:20; width:530px; padding:14px; background:#161b22; border:1px solid #3b4654; border-radius:9px; box-shadow:0 16px 35px rgba(0,0,0,.35); }
+        .api-config.show { display:block; }
+        .api-config-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+        .api-config label { display:grid; gap:4px; color:#8b949e; font-size:11px; }
+        .api-config input,.api-config select { width:100%; padding:7px 9px; background:#0d1117; border:1px solid #30363d; border-radius:5px; color:#c9d1d9; font-size:12px; outline:none; }
+        .api-config small { display:block; margin:10px 0; color:#8b949e; line-height:1.5; }
 
         .content-area { flex: 1; display: flex; overflow: hidden; }
         .code-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -156,10 +173,23 @@
 </head>
 <body>
 
+<!-- 顶部返回栏 -->
+<div style="background:#161b22;border-bottom:1px solid #30363d;padding:10px 20px;display:flex;align-items:center;gap:12px;">
+  <a href="/" style="color:#58a6ff;text-decoration:none;font-size:13px;">← 返回主页</a>
+  <span style="color:#30363d">|</span>
+  <span style="color:#8b949e;font-size:13px;">Benchmark 测试集 · OGE→GEE 反向转换</span>
+</div>
+
 <!-- 左侧案例列表 -->
 <div class="sidebar">
     <div class="sidebar-header">
         <h2>Benchmark 测试集</h2>
+        <div class="source-picker">
+            <label for="source-select">数据源（相对 web/static/testdata）</label>
+            <select id="source-select" onchange="changeSource()" disabled>
+                <option>正在读取可选数据源…</option>
+            </select>
+        </div>
         <div class="search-box">
             <span class="search-icon">🔍</span>
             <input type="text" id="search-input" placeholder="搜索案例 ID 或描述..." oninput="filterCases()">
@@ -182,12 +212,36 @@
         <h1 id="main-title">请选择一个案例</h1>
         <div class="case-info" id="case-info"></div>
         <div class="action-bar">
+            <select id="benchmark-provider" class="provider-select" title="批量转换使用的 API / 模型" onchange="switchBenchmarkProvider()" disabled>
+                <option>正在读取 API…</option>
+            </select>
+            <button class="btn" onclick="toggleApiConfig()">配置 API</button>
+            <span class="batch-status" id="batch-status">可将当前数据源全部转换并保存</span>
+            <button class="btn btn-batch" id="batch-convert-btn" onclick="convertAllToGee()" disabled>
+                ⚡ 一键全部转换并保存
+            </button>
             <button class="btn btn-success" id="convert-btn" onclick="convertToGee()" disabled>
                 🔄 转换为 GEE 代码
             </button>
             <button class="btn" id="copy-oge-btn" onclick="copyOgeCode()" disabled>
                 📋 复制 OGE
             </button>
+        </div>
+        <div id="api-config" class="api-config">
+            <div style="display:flex;align-items:center;margin-bottom:10px"><strong style="font-size:13px;color:#e6edf3">新增 OpenAI-compatible API</strong><button class="btn" style="margin-left:auto;padding:4px 9px" onclick="toggleApiConfig(false)">取消</button></div>
+            <div class="api-config-grid">
+                <label>配置名称<input id="api-label" placeholder="例如：我的 OpenAI Responses"></label>
+                <label>模型名<input id="api-model" placeholder="例如：gpt-4.1-mini"></label>
+                <label>Base URL<input id="api-base-url" placeholder="https://api.openai.com/v1"></label>
+                <label>协议<select id="api-protocol"><option value="chat_completions">Chat Completions</option><option value="responses">OpenAI Responses API</option></select></label>
+                <label>最大输出 Tokens<input id="api-max-tokens" type="number" min="1" max="32768" value="4096"></label>
+                <label>温度<input id="api-temperature" type="number" min="0" max="2" step="0.1" value="0.1"></label>
+                <label>推理强度（Responses）<select id="api-reasoning"><option value="">不指定</option><option value="low">low</option><option value="medium" selected>medium</option><option value="high">high</option></select></label>
+                <label style="display:flex;align-items:center;gap:7px;padding-top:17px"> <input id="api-store" type="checkbox" style="width:auto">允许服务端保存 Responses</label>
+                <label style="grid-column:1 / -1">API Key<input id="api-key" type="password" placeholder="由你填写；保存后不会回显"></label>
+            </div>
+            <small>Responses API 会请求 <code>Base URL + /responses</code>。例如 Base URL 填 <code>https://api.openai.com/v1</code>；默认不保存响应（等同 <code>store: false</code>）。</small>
+            <div style="display:flex;gap:8px;align-items:center"><button class="btn btn-primary" onclick="saveBenchmarkApi()">保存并选用</button><span id="api-config-notice" style="font-size:11px;color:#8b949e"></span></div>
         </div>
     </div>
     <div class="content-area">
@@ -239,19 +293,108 @@
     let currentCase = null;
     let currentGeeCode = '';
     let currentFilter = 'all';
+    let currentSource = '';
+    let batchPollTimer = null;
+    let benchmarkProviders = [];
 
     /**
      * 页面加载时获取所有 benchmark 案例
      */
+    async function loadSources() {
+        try {
+            const res = await fetch('/api/benchmark-sources');
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || '数据源读取失败');
+            const select = document.getElementById('source-select');
+            select.innerHTML = data.sources.map(source =>
+                `<option value="${escapeHtml(source.path)}">${escapeHtml(source.label)} · ${source.format}</option>`
+            ).join('');
+            currentSource = data.default_source;
+            select.value = currentSource;
+            select.disabled = false;
+            document.getElementById('batch-convert-btn').disabled = false;
+            await loadBenchmarkProviders();
+            await loadCases();
+        } catch (err) {
+            document.getElementById('case-list').innerHTML = '<div class="loading">数据源加载失败: ' + escapeHtml(err.message) + '</div>';
+        }
+    }
+
+    async function loadBenchmarkProviders() {
+        const res = await fetch('/api/llm-provider');
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'API 列表读取失败');
+        benchmarkProviders = data.providers || [];
+        const select = document.getElementById('benchmark-provider');
+        select.innerHTML = benchmarkProviders.map(provider =>
+            `<option value="${escapeHtml(provider.id)}">${escapeHtml(provider.label)} · ${escapeHtml(provider.model)}</option>`
+        ).join('');
+        select.value = data.active.id;
+        select.disabled = false;
+    }
+
+    async function switchBenchmarkProvider() {
+        const select = document.getElementById('benchmark-provider');
+        const provider = select.value;
+        select.disabled = true;
+        try {
+            const res = await fetch('/api/llm-provider', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({provider})});
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || 'API 切换失败');
+            showToast('已选择 ' + data.active.label, 'success');
+        } catch (err) {
+            showToast(err.message, 'error');
+            await loadBenchmarkProviders();
+        } finally {
+            select.disabled = false;
+        }
+    }
+
+    function toggleApiConfig(force) {
+        const panel = document.getElementById('api-config');
+        panel.classList.toggle('show', typeof force === 'boolean' ? force : !panel.classList.contains('show'));
+        document.getElementById('api-config-notice').textContent = '';
+    }
+
+    async function saveBenchmarkApi() {
+        const notice = document.getElementById('api-config-notice');
+        notice.textContent = '正在保存…';
+        try {
+            const payload = {
+                label: document.getElementById('api-label').value.trim() || '我的自定义 API',
+                model: document.getElementById('api-model').value.trim(),
+                base_url: document.getElementById('api-base-url').value.trim(),
+                api_key: document.getElementById('api-key').value,
+                api_protocol: document.getElementById('api-protocol').value,
+                max_tokens: document.getElementById('api-max-tokens').value,
+                temperature: document.getElementById('api-temperature').value,
+                reasoning_effort: document.getElementById('api-reasoning').value,
+                response_store: document.getElementById('api-store').checked
+            };
+            const res = await fetch('/api/llm-provider/custom', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || '保存失败');
+            document.getElementById('api-key').value = '';
+            await loadBenchmarkProviders();
+            document.getElementById('benchmark-provider').value = data.active.id;
+            notice.textContent = '已保存并选用。';
+            showToast('API 已保存并选用', 'success');
+            setTimeout(() => toggleApiConfig(false), 600);
+        } catch (err) {
+            notice.textContent = '保存失败：' + err.message;
+        }
+    }
+
     async function loadCases() {
         try {
-            const res = await fetch('/api/benchmark-cases');
+            const res = await fetch('/api/benchmark-cases?source=' + encodeURIComponent(currentSource));
             const data = await res.json();
             if (data.success) {
                 allCases = data.cases;
                 renderCaseList(allCases);
                 document.querySelector('.sidebar-header h2').textContent =
                     `Benchmark 测试集 (${data.total} 个案例)`;
+                document.getElementById('batch-status').textContent = '当前数据源：' + data.source_path;
             } else {
                 document.getElementById('case-list').innerHTML =
                     '<div class="loading">加载失败: ' + data.error + '</div>';
@@ -260,6 +403,19 @@
             document.getElementById('case-list').innerHTML =
                 '<div class="loading">加载失败: ' + err.message + '</div>';
         }
+    }
+
+    function changeSource() {
+        currentSource = document.getElementById('source-select').value;
+        currentCase = null;
+        currentGeeCode = '';
+        document.getElementById('main-title').textContent = '请选择一个案例';
+        document.getElementById('case-info').textContent = '';
+        document.getElementById('oge-code-display').textContent = '// 请从左侧选择一个案例';
+        document.getElementById('gee-code-display').textContent = '// 转换结果将显示在这里';
+        document.getElementById('convert-btn').disabled = true;
+        document.getElementById('copy-oge-btn').disabled = true;
+        loadCases();
     }
 
     /**
@@ -325,7 +481,7 @@
         });
 
         try {
-            const res = await fetch(`/api/benchmark-case/${caseId}`);
+            const res = await fetch(`/api/benchmark-case/${encodeURIComponent(caseId)}?source=${encodeURIComponent(currentSource)}`);
             const data = await res.json();
             if (data.success) {
                 currentCase = data.case;
@@ -345,6 +501,55 @@
         } catch (err) {
             showToast('加载案例失败: ' + err.message, 'error');
         }
+    }
+
+    async function convertAllToGee() {
+        if (!currentSource) return;
+        const btn = document.getElementById('batch-convert-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> 正在启动…';
+        document.getElementById('batch-status').textContent = '正在创建批量转换任务…';
+        try {
+            const res = await fetch('/api/benchmark-batch-convert', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({source_path: currentSource, provider: document.getElementById('benchmark-provider').value, force: true})
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || '批量任务启动失败');
+            document.getElementById('batch-status').textContent = `已启动：0/${data.total}，保存至 ${data.output_dir}`;
+            pollBatchStatus(data.task_id, data.output_dir);
+        } catch (err) {
+            showToast(err.message, 'error');
+            document.getElementById('batch-status').textContent = '批量转换未启动：' + err.message;
+            btn.disabled = false;
+            btn.innerHTML = '⚡ 一键全部转换并保存';
+        }
+    }
+
+    function pollBatchStatus(taskId, outputDir) {
+        if (batchPollTimer) clearTimeout(batchPollTimer);
+        const poll = async () => {
+            try {
+                const res = await fetch('/api/benchmark-batch-status?task_id=' + encodeURIComponent(taskId));
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || '进度读取失败');
+                const task = data.data;
+                document.getElementById('batch-status').textContent =
+                    `${task.status === 'completed' ? '已完成' : '转换中'} ${Math.round(task.progress)}% · 成功 ${task.converted} · 失败 ${task.failed} · ${outputDir}`;
+                if (task.status === 'completed') {
+                    document.getElementById('batch-convert-btn').disabled = false;
+                    document.getElementById('batch-convert-btn').innerHTML = '⚡ 一键全部转换并保存';
+                    showToast(`批量转换完成：成功 ${task.converted}，失败 ${task.failed}`, task.failed ? 'error' : 'success');
+                    return;
+                }
+                batchPollTimer = setTimeout(poll, 1200);
+            } catch (err) {
+                document.getElementById('batch-status').textContent = '批量进度读取失败：' + err.message;
+                document.getElementById('batch-convert-btn').disabled = false;
+                document.getElementById('batch-convert-btn').innerHTML = '⚡ 一键全部转换并保存';
+            }
+        };
+        poll();
     }
 
     /**
@@ -496,7 +701,7 @@
     }
 
     // 页面加载
-    loadCases();
+    loadSources();
 </script>
 
 </body>

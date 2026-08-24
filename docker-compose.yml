@@ -1,0 +1,23 @@
+services:
+  gee-to-oge:
+    build: .
+    image: gee-to-oge:latest
+    ports:
+      - "5000:5000"
+    environment:
+      # 不要提交真实值；生产环境请通过平台 Secret 注入。
+      GEE_PRIVATE_KEY_FILE: /run/secrets/gee-service-account.json
+      GEE_PROJECT: your-google-cloud-project-id
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5.4}
+      HTTPS_PROXY: ${HTTPS_PROXY:-}
+      HTTP_PROXY: ${HTTP_PROXY:-}
+    volumes:
+      - ./secrets/gee-service-account.json:/run/secrets/gee-service-account.json:ro
+      - gee_runner_runs:/app/web/gee_runner/runs
+      - ./resource:/app/resource
+    restart: unless-stopped
+
+volumes:
+  gee_runner_runs:

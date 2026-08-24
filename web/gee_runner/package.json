@@ -1,0 +1,22 @@
+{
+  "name": "gee-runner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Run Google Earth Engine JavaScript scripts locally",
+  "type": "module",
+  "bin": {
+    "gee-runner": "./bin/gee-runner.js"
+  },
+  "scripts": {
+    "start": "node ./bin/gee-runner.js",
+    "web": ".venv\\Scripts\\python.exe ./app.py",
+    "setup": "setup.bat",
+    "check": ".venv\\Scripts\\python.exe -m py_compile runner.py examples/ndvi_export.py"
+  },
+  "dependencies": {
+    "@google/earthengine": "^1.5.12",
+    "dotenv": "^16.6.1",
+    "global-agent": "^4.1.3",
+    "https-proxy-agent": "^9.1.0"
+  }
+}

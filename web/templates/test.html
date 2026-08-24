@@ -2116,27 +2116,6 @@ const API_DEFS = [
       }
     }
   },
-  {
-    id: 'convert-llm', group: '代码转换',
-    method: 'POST', path: '/api/convert-llm',
-    description: 'LLM 增强转换（主力接口）：先跑规则引擎拿中间产物，再用 LLM 生成高质量 OGE 代码并自动修正。',
-    params: [
-      { key: 'gee_code', label: 'GEE 代码', type: 'textarea', required: true, valueType: 'string',
-        default: 'geom = ee.Geometry.Point([-119.56, 37.67]);\nfc = ee.FeatureCollection([\n  ee.Feature(geom, {"prop": 10, "system:time_start": ee.Date("2021-06-10")}),\n  ee.Feature(geom, {"prop": 11, "system:time_start": ee.Date("2021-06-20")})\n]);\nfc.filter(ee.Filter.date("2021-07-01", "2021-08-01"));',
-        placeholder: '粘贴 GEE JavaScript 代码', class: 'code' },
-      { key: 'case_name', label: '案例名', type: 'text', valueType: 'string', default: 'LLM 增强测试案例' }
-    ],
-    spec: {
-      input: 'Body JSON: { gee_code: string (必填), case_name: string (可选) }',
-      output: 'success, result(含 llm_oge_code/llm_analysis), engine="llm_enhanced", llm_available',
-      example: {
-        success: true,
-        engine: 'llm_enhanced',
-        llm_available: true,
-        result: { llm_oge_code: 'import oge\noge.initialize()...' }
-      }
-    }
-  },
   // --- 知识库查询 ---
   {
     id: 'mappings', group: '知识库查询',
@@ -3530,17 +3509,7 @@ function copyDetailCode(type) {
 
 function sendDetailToConvert(code) {
   closeDetailModal();
-  switchView('api');
-  selectApi('convert-llm');
-  setTimeout(() => {
-    const codeEl = document.getElementById('param-convert-llm-gee_code');
-    if (codeEl) {
-      codeEl.value = code;
-      codeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      codeEl.style.borderColor = '#0969da';
-      setTimeout(() => codeEl.style.borderColor = '#d0d7de', 2000);
-    }
-  }, 100);
+  window.location.href = '/convert?gee_code=' + encodeURIComponent(code);
 }
 
 /* ============================================================

@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GEE Runner</title>
+  <style>
+    :root { color-scheme: light; font-family: Arial, sans-serif; color: #17212b; background: #f4f6f8; }
+    body { margin: 0; }
+    header { background: #146c62; color: white; padding: 16px 24px; font-size: 20px; }
+    main { max-width: 1280px; margin: 20px auto; padding: 0 20px; }
+    .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+    select, button { height: 36px; border: 1px solid #aeb8c2; border-radius: 4px; padding: 0 10px; background: white; }
+    button { cursor: pointer; background: #146c62; color: white; border-color: #146c62; }
+    button:disabled { opacity: .55; cursor: wait; }
+    button.stop { background: #b42318; border-color: #b42318; }
+    textarea, pre { box-sizing: border-box; width: 100%; min-height: 420px; margin: 0; border: 1px solid #aeb8c2; border-radius: 4px; padding: 14px; font: 13px/1.5 Consolas, monospace; white-space: pre-wrap; }
+    textarea { resize: vertical; background: #fff; }
+    .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 16px; }
+    h2 { font-size: 16px; margin: 16px 0 8px; }
+    #status { margin-left: auto; font-weight: bold; }
+    #output { min-height: 650px; max-height: 780px; background: #101820; color: #d8e2ea; overflow: auto; border: 1px solid #26333d; border-radius: 4px; }
+    .log-line { display:flex; gap:10px; align-items:flex-start; padding:7px 9px; border-bottom:1px solid #26333d; white-space:pre-wrap; }
+    .log-time { flex:0 0 78px; color:#7f95a6; font-size:11px; }
+    .log-kind { flex:0 0 58px; text-align:center; border-radius:3px; padding:1px 4px; font-size:11px; font-weight:bold; background:#26333d; color:#b9c7d2; }
+    .log-message { flex:1; min-width:0; color:#d8e2ea; }
+    .log-error { background:#351b22; } .log-error .log-kind,.log-error .log-message { color:#ff9b9b; }
+    .log-phase { background:#182b3b; } .log-phase .log-kind,.log-phase .log-message { color:#8fd3ff; }
+    .log-success { background:#173025; } .log-success .log-kind,.log-success .log-message { color:#91e6ad; }
+    .success { color: #087c3d; } .failed { color: #b42318; } .running { color: #9a6700; } .stopped { color: #8b6914; }
+    .engine-group { display: flex; gap: 4px; align-items: center; }
+    .engine-group label { font-size: 13px; cursor: pointer; }
+    .batch { margin: 18px 0; padding: 14px; border: 1px dashed #629b94; border-radius: 6px; background: #edf7f5; }
+    .batch.drag { background: #d8efeb; border-style: solid; }
+    .batch-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .batch input[type=text], .batch select { height:36px; min-width:200px; border:1px solid #aeb8c2; border-radius:4px; padding:0 10px; background:#fff; }
+    #batchLog { min-height:260px; max-height:460px; overflow:auto; background:#101820; color:#d8e2ea; margin-top:10px; padding:10px; border-radius:4px; font:13px/1.5 Consolas,monospace; white-space:pre-wrap; }
+    #batchCodePreview { max-height:260px; overflow:auto; background:#fff; color:#17212b; margin-top:10px; padding:10px; border:1px solid #aeb8c2; border-radius:4px; font:13px/1.5 Consolas,monospace; white-space:pre-wrap; }
+    .batch-code-card { margin: 0 0 12px; border: 1px solid #b8c3cb; border-radius: 4px; overflow: hidden; }
+    .batch-code-card:last-child { margin-bottom: 0; }
+    .batch-code-title { display:flex; align-items:center; justify-content:space-between; gap:10px; background: #e6f1ef; color: #0d4d46; padding: 7px 10px; font: bold 13px Arial,sans-serif; }
+    .copy-code { height:28px; padding:0 9px; background:#146c62; color:#fff; border:0; border-radius:3px; font-size:12px; }
+    .batch-code-body { width: auto; min-height: 0; margin: 0; padding: 10px; overflow: auto; background: #fbfcfd; font: 13px/1.5 Consolas,monospace; white-space: pre-wrap; }
+    .case-list { display:grid; gap:14px; margin-top:12px; }
+    .case-card { border:1px solid #b8c3cb; border-radius:6px; overflow:hidden; background:#fff; }
+    .case-card-head { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:9px 12px; background:#e6f1ef; color:#0d4d46; font-weight:bold; }
+    .case-card-status { font-size:12px; padding:3px 7px; border-radius:10px; background:#eef2f5; color:#607080; }
+    .case-card-status.ok { background:#d8f3df; color:#087c3d; } .case-card-status.bad { background:#fde2e2; color:#b42318; }
+    .case-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:10px; }
+    .case-pane { min-width:0; } .case-pane-title { font-size:12px; font-weight:bold; color:#52616d; margin:0 0 5px; }
+    .case-pane pre { min-height:150px; max-height:300px; margin:0; padding:10px; overflow:auto; border:1px solid #d2dbe2; border-radius:4px; background:#f8fafc; color:#253342; font:12px/1.5 Consolas,monospace; white-space:pre-wrap; }
+    .case-pane.debug pre { background:#101820; color:#d8e2ea; }
+    @media (max-width: 900px) { .case-grid { grid-template-columns:1fr; } }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } textarea, pre { min-height: 300px; } }
+  </style>
+</head>
+<body>
+  <header>GEE Runner</header>
+  <main>
+    <div class="toolbar">
+      <select id="scripts"></select>
+      <div class="engine-group" title="选择执行引擎">
+        <label><input type="radio" name="engine" value="js" checked> JS</label>
+        <label><input type="radio" name="engine" value="py"> PY</label>
+      </div>
+      <button id="save">保存</button>
+      <button id="run">运行并自动修复</button>
+      <button id="stop" class="stop" style="display:none">停止</button>
+      <span id="status">就绪</span>
+    </div>
+    <div class="grid">
+      <section><h2>GEE 脚本</h2><textarea id="editor" spellcheck="false"></textarea></section>
+      <section><h2>运行日志</h2><div id="output"></div></section>
+    </div>
+    <section class="batch" id="batchDrop">
+      <h2>批量运行 JSON / CSV</h2>
+      <div class="batch-row"><input id="batchFile" type="file" accept=".json,.csv,application/json,text/csv"><select id="batchMode"><option value="rows">CSV 按行解析</option><option value="columns">CSV 按列合并</option></select><select id="identifier"><option value="">先选择文件</option></select><button id="previewBatch">提取预览</button><select id="rerunMode"><option value="continue">历史批次：继续运行</option><option value="restart">历史批次：从头重新运行</option></select><select id="resumePoint"><option value="">起始记录</option></select><button id="runBatch">批量运行并修复</button><button id="stopBatch" class="stop" disabled>停止批量任务</button><select id="batchHistory"><option value="">历史批次</option></select><button id="loadBatch">加载记录</button><span id="batchStatus"></span></div>
+      <div id="batchLog">拖入 JSON/CSV 文件，系统会自动列出包含 GEE 代码的列名或 JSON 路径。</div>
+      <div id="batchCodePreview">批量成功后的代码预览会显示在这里。</div>
+      <div id="caseList" class="case-list" aria-live="polite"></div>
+    </section>
+    <h2>成功后的 <span id="resultLabel">GEE JavaScript</span></h2>
+    <pre id="finalCode">运行成功后显示。</pre>
+  </main>
+  <script>
+    const scripts = document.querySelector('#scripts'), editor = document.querySelector('#editor');
+    const output = document.querySelector('#output'), finalCode = document.querySelector('#finalCode');
+    const status = document.querySelector('#status'), run = document.querySelector('#run'), stop = document.querySelector('#stop');
+    const resultLabel = document.querySelector('#resultLabel');
+    let activeJob;
+    let stopped = false;
+    let batchFileContent = '', batchFileName = '', batchId = '';
+
+    /** 调用后端 API */
+    async function api(url, options) {
+      const r = await fetch(url, options);
+      const body = await r.json();
+      if (!r.ok) throw new Error(body.error);
+      return body;
+    }
+
+    /** 加载脚本列表并加载选中的脚本 */
+    async function loadScript() {
+      const data = await api('/api/gee-runner/script?path=' + encodeURIComponent(scripts.value));
+      editor.value = data.code;
+      output.textContent = '';
+      finalCode.textContent = '运行成功后显示。';
+      resultLabel.textContent = 'GEE ' + (document.querySelector('input[name="engine"]:checked').value === 'py' ? 'Python' : 'JavaScript');
+    }
+
+    /** 初始化：加载脚本列表 */
+    async function init() {
+      const data = await api('/api/gee-runner/scripts');
+      scripts.innerHTML = data.scripts.map(x => '<option>' + x + '</option>').join('');
+      await loadScript();
+    }
+
+    /** 保存当前脚本 */
+    async function save() {
+      await api('/api/gee-runner/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: scripts.value, code: editor.value })
+      });
+      status.textContent = '已保存';
+    }
+
+    /** 渲染日志输出 */
+    function renderLog(text) {
+      output.innerHTML = '';
+      const lines = text ? text.split('\n') : [];
+      if (lines.length === 0 || lines.every(l => !l)) {
+        const item = document.createElement('div');
+        item.className = 'log-line';
+        item.style.color = '#888';
+        item.textContent = '等待 runner.py 输出...';
+        output.appendChild(item);
+        return;
+      }
+      for (const line of lines) {
+        if (!line) continue;
+        const item = document.createElement('div');
+        const type = /FAILED|失败|Error|错误|NETWORK|408|429|aborted|disconnected/i.test(line) ? 'error' : /SUCCESS|成功|完成/.test(line) ? 'success' : /AUTO-FIX|修复|Authenticating|Running|开始处理|重试|WORKER|BATCH/.test(line) ? 'phase' : 'info';
+        item.className = 'log-line log-' + type;
+        const time = document.createElement('span'); time.className='log-time'; time.textContent=new Date().toLocaleTimeString();
+        const kind = document.createElement('span'); kind.className='log-kind'; kind.textContent=type==='error'?'错误':type==='success'?'成功':type==='phase'?'阶段':'输出';
+        const message = document.createElement('span'); message.className='log-message'; message.textContent=line;
+        item.append(time, kind, message);
+        /*
+        item.className = 'log-line ' + (
+          line.includes('FAILED') || line.includes('Error') || line.includes('socket hang up') || line.includes('aborted') || line.includes('ECONNRESET') || line.includes('NETWORK ERROR')
+            ? 'log-error'
+            : line.includes('SUCCESS') ? 'log-success'
+            : line.includes('AUTO-FIX') || line.includes('Authenticating') || line.includes('Running') || line.includes('attempt') || line.includes('WORKER')
+              ? 'log-phase' : ''
+        );*/
+        output.appendChild(item);
+      }
+      output.scrollTop = output.scrollHeight;
+    }
+
+    /** 轮询任务状态 */
+    let pollCount = 0;
+    async function poll() {
+      pollCount++;
+      if (pollCount > 600) {
+        run.disabled = false;
+        stop.style.display = 'none';
+        status.textContent = 'TIMEOUT';
+        status.className = 'failed';
+        return;
+      }
+      const job = await api('/api/gee-runner/job?id=' + activeJob);
+      renderLog(job.output);
+      if (job.running && !stopped) {
+        setTimeout(poll, 700);
+        return;
+      }
+      run.disabled = false;
+      stop.style.display = 'none';
+      if (stopped) {
+        status.textContent = '已停止';
+        status.className = 'stopped';
+      } else if (job.success) {
+        status.textContent = 'SUCCESS';
+        status.className = 'success';
+        finalCode.textContent = job.code;
+      } else {
+        status.textContent = 'FAILED';
+        status.className = 'failed';
+      }
+    }
+
+    /** 运行按钮点击 */
+    run.onclick = async () => {
+      stopped = false;
+      pollCount = 0;
+      run.disabled = true;
+      stop.style.display = '';
+      status.textContent = '运行中';
+      status.className = 'running';
+      finalCode.textContent = '等待成功结果...';
+      const engine = document.querySelector('input[name="engine"]:checked').value;
+      resultLabel.textContent = 'GEE ' + (engine === 'py' ? 'Python' : 'JavaScript');
+      try {
+        const data = await api('/api/gee-runner/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: scripts.value, code: editor.value, maxFixes: -1, engine })
+        });
+        activeJob = data.jobId;
+        poll();
+      } catch (e) {
+        run.disabled = false;
+        stop.style.display = 'none';
+        status.textContent = 'FAILED: ' + e.message;
+        status.className = 'failed';
+      }
+    };
+
+    /** 停止按钮点击 */
+    stop.onclick = async () => {
+      if (!activeJob) return;
+      stopped = true;
+      stop.disabled = true;
+      try {
+        await api('/api/gee-runner/stop?id=' + activeJob);
+      } catch (e) { /* ignore */ }
+      stop.disabled = false;
+    };
+
+    async function analyzeBatch() {
+      const data = await api('/api/gee-runner/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:batchFileName,content:batchFileContent})});
+      const select = document.querySelector('#identifier');
+      select.innerHTML = '';
+      if (!data.identifiers.length) { select.innerHTML = '<option value="">未发现包含 ee. 的代码</option>'; return data; }
+      data.identifiers.forEach(item => { const option=document.createElement('option'); option.value=item.id; option.textContent=item.label; select.appendChild(option); });
+      document.querySelector('#batchMode').style.display = data.kind === 'csv' ? '' : 'none';
+      batchLog.textContent = data.kind === 'csv' ? `CSV 已读取 ${data.rows} 行，共 ${data.identifiers.length} 列，请选择解析方式和列名。` : `JSON 已发现 ${data.identifiers.length} 个代码路径，请选择路径。`;
+      return data;
+    }
+    async function readBatchFile(file) {
+      batchFileName = file.name;
+      batchFileContent = btoa(unescape(encodeURIComponent(await file.text())));
+      document.querySelector('#batchStatus').textContent = `已选择：${file.name}`;
+      try { await analyzeBatch(); } catch (e) { batchLog.textContent = '错误：' + e.message; }
+    }
+    const drop = document.querySelector('#batchDrop'), batchLog = document.querySelector('#batchLog');
+    const stopBatch = document.querySelector('#stopBatch');
+    function renderBatchLog(text) {
+      batchLog.innerHTML = '';
+      for (const line of (text || '').split('\n')) {
+        if (!line) continue;
+        const item = document.createElement('div');
+        const type = /FAILED|失败|Error|错误|NETWORK|408|429|aborted|disconnected/i.test(line) ? 'error' : /SUCCESS|成功|完成/.test(line) ? 'success' : /AUTO-FIX|修复|Authenticating|Running|开始处理|重试|WORKER|BATCH/.test(line) ? 'phase' : 'info';
+        item.className = 'log-line log-' + type;
+        const time = document.createElement('span'); time.className='log-time'; time.textContent=new Date().toLocaleTimeString();
+        const kind = document.createElement('span'); kind.className='log-kind'; kind.textContent=type==='error'?'错误':type==='success'?'成功':type==='phase'?'阶段':'输出';
+        const message = document.createElement('span'); message.className='log-message'; message.textContent=line;
+        item.append(time, kind, message);
+        batchLog.appendChild(item);
+      }
+      batchLog.scrollTop = batchLog.scrollHeight;
+    }
+    function renderBatchCodePreview(results) {
+      const preview = document.querySelector('#batchCodePreview');
+      preview.innerHTML = '';
+      const successful = (results || []).filter(item => item.success && item.code);
+      if (!successful.length) { preview.textContent = '暂无成功代码。'; return; }
+      successful.forEach(item => {
+        const card = document.createElement('section'); card.className = 'batch-code-card';
+        const title = document.createElement('div'); title.className = 'batch-code-title';
+        const label = document.createElement('span'); label.textContent = `源记录 ${item.row} · 成功 · ${item.finished || ''}`;
+        const copy = document.createElement('button'); copy.className='copy-code'; copy.textContent='复制代码';
+        copy.onclick = async () => { try { await navigator.clipboard.writeText(item.code); copy.textContent='已复制'; setTimeout(() => copy.textContent='复制代码', 1200); } catch (e) { copy.textContent='复制失败'; } };
+        title.append(label, copy);
+        const code = document.createElement('pre'); code.className = 'batch-code-body'; code.textContent = item.code;
+        card.append(title, code); preview.appendChild(card);
+      });
+    }
+    document.querySelector('#batchFile').onchange = e => e.target.files[0] && readBatchFile(e.target.files[0]);
+    ['dragenter','dragover'].forEach(type => drop.addEventListener(type, e => { e.preventDefault(); drop.classList.add('drag'); }));
+    ['dragleave','drop'].forEach(type => drop.addEventListener(type, e => { e.preventDefault(); drop.classList.remove('drag'); }));
+    drop.addEventListener('drop', e => { const file=e.dataTransfer.files[0]; if (file) readBatchFile(file); });
+    function batchBody() { if (!batchFileContent) throw Error('请先选择或拖入 JSON/CSV 文件。'); const identifier=document.querySelector('#identifier').value; if (!identifier) throw Error('文件中没有可用的 GEE 代码字段。'); return {filename:batchFileName,content:batchFileContent,identifier,mode:document.querySelector('#batchMode').value,maxFixes:-1}; }
+    document.querySelector('#previewBatch').onclick = async () => { try { const d=await api('/api/gee-runner/extract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(batchBody())}); const skipped=(d.skippedEmpty||0)+(d.skippedNonGee||0); batchLog.textContent=`已提取 ${d.count} 条 GEE 代码（共 ${d.total||d.count} 行，跳过 ${skipped} 行）。\n源记录：${d.rows.join(', ')}`; renderCaseList(d.items || [], []); } catch(e) { batchLog.textContent='错误：'+e.message; } };
+    async function pollBatch() { const d=await api('/api/gee-runner/batch?id='+batchId); renderBatchLog(d.output || ''); document.querySelector('#batchStatus').textContent=`进度：${d.completed||0}/${d.total||0}`; stopBatch.disabled=!d.running; renderBatchCodePreview(d.results); if (d.running) return setTimeout(pollBatch,800); renderBatchLog((d.output || '') + `\n完成：${d.success?'全部成功':'存在失败'}。`); loadBatchHistory().catch(() => {}); }
+    function updateResumePoints(total, completed) { const select=document.querySelector('#resumePoint'); select.innerHTML='<option value="">自动断点（第 '+((completed||0)+1)+' 条）</option>'; for (let i=1;i<=total;i++){ const o=document.createElement('option'); o.value=i; o.textContent='从第 '+i+' 条开始'; select.appendChild(o); } }
+    document.querySelector('#runBatch').onclick = async () => { try {
+      if (batchId && !batchFileContent) {
+        const mode=document.querySelector('#rerunMode').value;
+        const selected=document.querySelector('#resumePoint').value;
+        const payload={batchId,mode,maxFixes:-1}; if (selected) payload.start=Number(selected);
+        const d=await api('/api/gee-runner/batch-rerun',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        renderBatchLog(`[BATCH] 已${mode==='restart'?'从头':'从上次未成功处'}启动，起点：${d.start}。`);
+      } else {
+        const d=await api('/api/gee-runner/batch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(batchBody())}); batchId=d.batchId; renderBatchLog(`[BATCH] 已启动 ${d.count} 条任务。`);
+      }
+      pollBatch();
+    } catch(e) { renderBatchLog('错误：'+e.message); } };
+    stopBatch.onclick = async () => { if (!batchId) return; stopBatch.disabled=true; try { await api('/api/gee-runner/batch-stop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({batchId})}); await pollBatch(); } catch(e) { renderBatchLog('错误：'+e.message); } };
+    async function loadBatchHistory() { const d=await api('/api/gee-runner/batch-history'); const select=document.querySelector('#batchHistory'); select.innerHTML='<option value="">历史批次</option>'; d.batches.forEach(item=>{ const o=document.createElement('option'); o.value=item.id; o.textContent=`${item.id.slice(0,8)} · ${item.completed}/${item.total} · ${item.success?'成功':'未全部成功'}`; select.appendChild(o); }); }
+    document.querySelector('#loadBatch').onclick = async () => { const id=document.querySelector('#batchHistory').value; if (!id) return; batchId=id; batchFileContent=''; batchFileName=''; const batch=await api('/api/gee-runner/batch?id='+batchId); updateResumePoints(batch.total||0,batch.completed||0); document.querySelector('#batchStatus').textContent='已加载历史批次；请选择起始记录后点击“批量运行并修复”。'; await pollBatch(); };
+
+    // Continue scans from the first record; successful rows are skipped and failed rows rerun.
+    async function pollBatch() { const d=await api('/api/gee-runner/batch?id='+batchId); renderBatchLog(d.output || ''); document.querySelector('#batchStatus').textContent='进度：'+(d.completed||0)+'/'+(d.total||0)+' · 成功 '+(d.success_count||0)+' · 失败 '+(d.failed_count||0); stopBatch.disabled=!d.running; renderCaseList(d.items || [], d.results || []); renderBatchCodePreview(d.results); if (d.running) return setTimeout(pollBatch,800); renderBatchLog((d.output || '') + '\n完成：'+(d.success?'全部成功':'存在失败')+'。'); loadBatchHistory().catch(() => {}); }
+    async function loadBatchHistory() { const d=await api('/api/gee-runner/batch-history'); const select=document.querySelector('#batchHistory'); select.innerHTML='<option value="">历史批次</option>'; d.batches.forEach(item=>{ const o=document.createElement('option'); o.value=item.id; o.textContent=item.id.slice(0,8)+' · 成功 '+(item.success_count||0)+' · 失败 '+(item.failed_count||0)+' / '+item.total; select.appendChild(o); }); }
+    scripts.onchange = loadScript;
+    document.querySelector('#save').onclick = save;
+    loadBatchHistory().catch(() => {});
+    init().catch(e => {
+      status.textContent = e.message;
+      status.className = 'failed';
+    });
+  </script>
+</body>
+</html>
+    function escText(value) { return String(value ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c])); }
+    function renderCaseList(items, results) {
+      const root = document.querySelector('#caseList'); if (!root) return; const byRow = new Map((results || []).map(item => [String(item.row), item])); root.innerHTML = '';
+      (items || []).forEach(item => { const result=byRow.get(String(item.row)); const card=document.createElement('section'); card.className='case-card'; const head=document.createElement('div'); head.className='case-card-head'; const title=document.createElement('span'); title.textContent='源记录 '+item.row; const state=document.createElement('span'); state.className='case-card-status'+(result?.success?' ok':result?' bad':''); state.textContent=result?(result.success?'已成功':'失败'):'待运行'; head.append(title,state); card.appendChild(head); const grid=document.createElement('div'); grid.className='case-grid'; [['GEE 源代码',item.source,''],['Debug 日志',result?.output || '等待该记录运行…','debug'],['生成结果',result?.code || '尚未生成 OGE/修复后代码','']].forEach(([label,value,cls])=>{const pane=document.createElement('div');pane.className='case-pane '+cls;const h=document.createElement('div');h.className='case-pane-title';h.textContent=label;const pre=document.createElement('pre');pre.textContent=value;pane.append(h,pre);grid.appendChild(pane)}); card.appendChild(grid); root.appendChild(card); });
+    }

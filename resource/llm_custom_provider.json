@@ -1,0 +1,30 @@
+{
+  "active_provider": "custom_b3a5f7ca",
+  "custom_providers": {
+    "custom_b3a5f7ca": {
+      "label": "OPEN AI API",
+      "base_url": "https://llmapi.geoflow.cn/v1",
+      "api_key": "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",
+      "model": "gpt-5.6-terra",
+      "max_tokens": 4096,
+      "temperature": 0.1,
+      "timeout_seconds": 420,
+      "enable_thinking": false,
+      "api_protocol": "responses",
+      "reasoning_effort": "",
+      "response_store": false
+    }
+  },
+  "provider_overrides": {
+    "openlux": {
+      "label": "OpenLux · DeepSeek V4 Flash",
+      "base_url": "https://api.openlux.ai/v1",
+      "model": "deepseek-v4-flash",
+      "max_tokens": 4096,
+      "temperature": 0.1,
+      "timeout_seconds": 420,
+      "enable_thinking": false,
+      "api_protocol": "chat_completions"
+    }
+  }
+}

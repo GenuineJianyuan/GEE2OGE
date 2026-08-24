@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gee-to-oge-data
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gee-to-oge
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: gee-to-oge}
+  template:
+    metadata:
+      labels: {app: gee-to-oge}
+    spec:
+      containers:
+        - name: app
+          image: registry.example.com/gee-to-oge:1.0.0
+          ports: [{containerPort: 5000}]
+          env:
+            - name: GEE_PROJECT
+              value: your-google-cloud-project-id
+            - name: GEE_PRIVATE_KEY_FILE
+              value: /run/secrets/gee/service-account.json
+            - name: OPENAI_API_KEY
+              valueFrom: {secretKeyRef: {name: gee-to-oge-secrets, key: openai-api-key}}
+            - name: OPENAI_BASE_URL
+              valueFrom: {secretKeyRef: {name: gee-to-oge-secrets, key: openai-base-url}}
+          volumeMounts:
+            - {name: secrets, mountPath: /run/secrets/gee, readOnly: true}
+            - {name: data, mountPath: /app/web/gee_runner/runs}
+            - {name: data, mountPath: /app/resource}
+          readinessProbe: {httpGet: {path: /api/stats, port: 5000}, initialDelaySeconds: 10, periodSeconds: 15}
+      volumes:
+        - name: secrets
+          secret: {secretName: gee-to-oge-secrets}
+        - name: data
+          persistentVolumeClaim: {claimName: gee-to-oge-data}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gee-to-oge
+spec:
+  selector: {app: gee-to-oge}
+  ports: [{port: 80, targetPort: 5000}]

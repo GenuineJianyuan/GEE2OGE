@@ -1,7 +1,7 @@
 """
 GEE2OGE 迁移系统 - 本地大模型服务模块
 
-对接本地部署的 deepseek-v4-flash-0731 模型，
+对接可切换的 OpenAI-compatible LLM 提供商，默认使用 OpenLux 的 deepseek-v4-flash，
 为 GEE→OGE 转换流水线提供智能增强：
 1. 语义匹配增强：当数据库无精确映射时，用 LLM 推断最接近的 OGE API
 2. 自然语言解析：从代码上下文推断变量类型和 API 意图
@@ -14,12 +14,13 @@ import os
 import re
 import sys
 import traceback
+import uuid
 from typing import Any, Dict, List, Optional
 
 import requests
 
 # 项目根目录
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
 # ============================================================
@@ -28,14 +29,74 @@ sys.path.insert(0, PROJECT_ROOT)
 # 环境变量：LLM_BASE_URL / LLM_API_KEY / LLM_MODEL /
 #           LLM_TIMEOUT_SECONDS / LLM_ENABLE_THINKING
 # ============================================================
+CUSTOM_PROVIDER_FILE = os.path.join(PROJECT_ROOT, "resource", "llm_custom_provider.json")
+
+LLM_PROVIDERS = {
+    "openlux": {
+        "label": "OpenLux · DeepSeek V4 Flash",
+        "base_url": "https://api.openlux.ai/v1",
+        "api_key": os.environ.get("OPENLUX_API_KEY", "sk-tMbrkbN8gBXSiPUSWCIezZPHaEvJ1Kggkc8z91NcsELq6vE7"),
+        "model": "deepseek-v4-flash",
+    },
+    "chenwenjie": {
+        "label": "Chenwenjie · DeepSeek V4 Flash",
+        "base_url": os.environ.get("CHENWENJIE_BASE_URL", "http://111.37.195.37:8015/v1"),
+        "api_key": os.environ.get("CHENWENJIE_API_KEY", os.environ.get("LLM_API_KEY", "sk-chenwenjielocalhost")),
+        "model": os.environ.get("CHENWENJIE_MODEL", "deepseek-v4-flash-0731"),
+    },
+}
+BUILTIN_PROVIDER_OVERRIDES: Dict[str, Dict[str, Any]] = {}
+
+
+def _load_saved_provider() -> Dict[str, Any]:
+    try:
+        with open(CUSTOM_PROVIDER_FILE, "r", encoding="utf-8") as file:
+            saved = json.load(file)
+        customs = saved.get("custom_providers", {})
+        if not customs and isinstance(saved.get("custom"), dict):  # 兼容旧版单配置
+            customs = {"custom": saved["custom"]}
+        if isinstance(customs, dict):
+            for provider_id, custom in customs.items():
+                if provider_id.startswith("custom_") and isinstance(custom, dict) and custom.get("base_url") and custom.get("model"):
+                    LLM_PROVIDERS[provider_id] = custom
+        overrides = saved.get("provider_overrides", {})
+        if isinstance(overrides, dict):
+            for provider_id, override in overrides.items():
+                if provider_id in ("openlux", "chenwenjie") and isinstance(override, dict):
+                    allowed = {key: value for key, value in override.items()
+                               if key in {"label", "base_url", "model", "max_tokens", "temperature", "timeout_seconds", "enable_thinking", "api_protocol", "reasoning_effort", "response_store"}}
+                    LLM_PROVIDERS[provider_id].update(allowed)
+                    BUILTIN_PROVIDER_OVERRIDES[provider_id] = allowed
+        return saved if isinstance(saved, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _save_provider_config(active_provider: str) -> None:
+    payload = {"active_provider": active_provider}
+    customs = {key: value for key, value in LLM_PROVIDERS.items() if key.startswith("custom_")}
+    if customs:
+        payload["custom_providers"] = customs
+    if BUILTIN_PROVIDER_OVERRIDES:
+        payload["provider_overrides"] = BUILTIN_PROVIDER_OVERRIDES
+    os.makedirs(os.path.dirname(CUSTOM_PROVIDER_FILE), exist_ok=True)
+    with open(CUSTOM_PROVIDER_FILE, "w", encoding="utf-8") as file:
+        json.dump(payload, file, ensure_ascii=False, indent=2)
+
+
+_saved_provider = _load_saved_provider()
+_active_provider = _saved_provider.get("active_provider") or os.environ.get("LLM_PROVIDER", "openlux")
+if _active_provider not in LLM_PROVIDERS:
+    _active_provider = "openlux"
 LLM_CONFIG = {
-    "base_url": os.environ.get("LLM_BASE_URL", "http://111.37.195.37:8015/v1"),
-    "api_key": os.environ.get("LLM_API_KEY", "sk-chenwenjielocalhost"),
-    "model": os.environ.get("LLM_MODEL", "deepseek-v4-flash-0731"),
+    "provider": _active_provider,
     "max_tokens": 4096,
     "temperature": 0.1,
     "timeout_seconds": int(os.environ.get("LLM_TIMEOUT_SECONDS", "420")),
     "enable_thinking": os.environ.get("LLM_ENABLE_THINKING", "false").lower() in ("true", "1", "yes"),
+    "reasoning_effort": "",
+    "response_store": False,
+    **LLM_PROVIDERS[_active_provider],
 }
 
 # ============================================================
@@ -261,6 +322,8 @@ class LLMService:
         self.temperature = LLM_CONFIG["temperature"]
         self.timeout_seconds = LLM_CONFIG.get("timeout_seconds", 420)
         self.enable_thinking = LLM_CONFIG.get("enable_thinking", False)
+        self.reasoning_effort = LLM_CONFIG.get("reasoning_effort", "")
+        self.response_store = LLM_CONFIG.get("response_store", False)
         self._available: Optional[bool] = None
         self._last_call_error: str = ''
 
@@ -293,32 +356,160 @@ class LLMService:
         """重置可用性缓存，下次检查会重新探测"""
         self._available = None
 
+    def provider_info(self) -> Dict[str, Any]:
+        return {
+            "id": LLM_CONFIG["provider"], "label": LLM_CONFIG.get("label", ""),
+            "model": self.model, "base_url": self.base_url, "max_tokens": self.max_tokens,
+            "temperature": self.temperature, "timeout_seconds": self.timeout_seconds,
+            "enable_thinking": self.enable_thinking, "api_protocol": LLM_CONFIG.get("api_protocol", "chat_completions"),
+            "reasoning_effort": self.reasoning_effort, "response_store": self.response_store,
+        }
+
+    def switch_provider(self, provider: str) -> Dict[str, Any]:
+        if provider not in LLM_PROVIDERS:
+            raise ValueError(f"未知 LLM 提供商：{provider}")
+        LLM_CONFIG.update({"provider": provider, **LLM_PROVIDERS[provider]})
+        self.base_url = LLM_CONFIG["base_url"]
+        self.api_key = LLM_CONFIG["api_key"]
+        self.model = LLM_CONFIG["model"]
+        self.max_tokens = LLM_CONFIG["max_tokens"]
+        self.temperature = LLM_CONFIG["temperature"]
+        self.timeout_seconds = LLM_CONFIG["timeout_seconds"]
+        self.enable_thinking = LLM_CONFIG["enable_thinking"]
+        self.reasoning_effort = LLM_CONFIG.get("reasoning_effort", "")
+        self.response_store = LLM_CONFIG.get("response_store", False)
+        self.reset_availability()
+        _save_provider_config(provider)
+        return self.provider_info()
+
+    @staticmethod
+    def providers_info() -> List[Dict[str, Any]]:
+        fields = ("id", "label", "model", "base_url", "max_tokens", "temperature", "timeout_seconds", "enable_thinking", "api_protocol", "reasoning_effort", "response_store")
+        defaults = {"max_tokens": 4096, "temperature": 0.1, "timeout_seconds": 420,
+                    "enable_thinking": False, "api_protocol": "chat_completions", "reasoning_effort": "", "response_store": False}
+        return [{field: (key if field == "id" else value.get(field, LLM_CONFIG.get(field, defaults.get(field)))) for field in fields}
+                for key, value in LLM_PROVIDERS.items()]
+
+    def update_provider(self, provider: str, config: Dict[str, Any]) -> Dict[str, Any]:
+        """更新指定模型的可编辑配置；API Key 为空时保留原值。"""
+        if provider not in LLM_PROVIDERS:
+            raise ValueError("未知 LLM 提供商")
+        previous = LLM_PROVIDERS[provider]
+        base_url = (config.get("base_url") or previous.get("base_url", "")).strip().rstrip("/")
+        model = (config.get("model") or previous.get("model", "")).strip()
+        if not base_url.startswith(("http://", "https://")) or not model:
+            raise ValueError("Base URL 和模型名称不能为空")
+        try:
+            updates = {
+                "label": (config.get("label") or previous.get("label") or "未命名模型").strip()[:60],
+                "base_url": base_url,
+                "model": model,
+                "max_tokens": max(1, min(int(config.get("max_tokens", previous.get("max_tokens", 4096))), 32768)),
+                "temperature": max(0.0, min(float(config.get("temperature", previous.get("temperature", 0.1))), 2.0)),
+                "timeout_seconds": max(10, min(int(config.get("timeout_seconds", previous.get("timeout_seconds", 420))), 1800)),
+                "enable_thinking": bool(config.get("enable_thinking", previous.get("enable_thinking", False))),
+                "reasoning_effort": str(config.get("reasoning_effort", previous.get("reasoning_effort", ""))).strip(),
+                "response_store": bool(config.get("response_store", previous.get("response_store", False))),
+            }
+        except (TypeError, ValueError) as error:
+            raise ValueError("温度、最大输出和超时必须是有效数字") from error
+        updates["api_protocol"] = "responses" if base_url.endswith("/responses") else config.get("api_protocol", previous.get("api_protocol", "chat_completions"))
+        if updates["api_protocol"] == "responses" and base_url.endswith("/responses"):
+            updates["base_url"] = base_url[:-len("/responses")]
+        api_key = (config.get("api_key") or "").strip()
+        if api_key:
+            updates["api_key"] = api_key
+        LLM_PROVIDERS[provider].update(updates)
+        if provider in ("openlux", "chenwenjie"):
+            BUILTIN_PROVIDER_OVERRIDES[provider] = {key: value for key, value in updates.items() if key != "api_key"}
+        return self.switch_provider(provider)
+
+    def save_custom_provider(self, config: Dict[str, Any]) -> Dict[str, Any]:
+        """保存用户的 OpenAI-compatible 模型配置并立即启用。"""
+        provider_id = config.get("id") or f"custom_{uuid.uuid4().hex[:8]}"
+        if not provider_id.startswith("custom_"):
+            raise ValueError("无效的自定义模型 ID")
+        previous = LLM_PROVIDERS.get(provider_id, {})
+        api_key = (config.get("api_key") or "").strip() or previous.get("api_key", "")
+        base_url = (config.get("base_url") or "").strip().rstrip("/")
+        model = (config.get("model") or "").strip()
+        if not base_url.startswith(("http://", "https://")):
+            raise ValueError("Base URL 必须以 http:// 或 https:// 开头")
+        if not api_key or not model:
+            raise ValueError("API Key 和模型名称不能为空")
+        # Allow direct entry of a Responses endpoint such as
+        # https://api.openai.com/v1/responses in the existing Base URL field.
+        api_protocol = "responses" if (config.get("api_protocol") == "responses" or base_url.endswith("/responses")) else "chat_completions"
+        if api_protocol == "responses" and base_url.endswith("/responses"):
+            base_url = base_url[:-len("/responses")]
+        try:
+            max_tokens = max(1, min(int(config.get("max_tokens", 4096)), 32768))
+            timeout_seconds = max(10, min(int(config.get("timeout_seconds", 420)), 1800))
+            temperature = max(0.0, min(float(config.get("temperature", 0.1)), 2.0))
+        except (TypeError, ValueError) as error:
+            raise ValueError("温度、最大输出和超时必须是有效数字") from error
+        LLM_PROVIDERS[provider_id] = {
+            "label": (config.get("label") or "我的自定义模型").strip()[:60],
+            "base_url": base_url,
+            "api_key": api_key,
+            "model": model,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "timeout_seconds": timeout_seconds,
+            "enable_thinking": bool(config.get("enable_thinking", False)),
+            "api_protocol": api_protocol,
+            "reasoning_effort": str(config.get("reasoning_effort", "")).strip(),
+            "response_store": bool(config.get("response_store", False)),
+        }
+        return self.switch_provider(provider_id)
+
+    def delete_custom_provider(self, provider: str) -> None:
+        if not provider.startswith("custom_") or provider not in LLM_PROVIDERS:
+            raise ValueError("只能删除已保存的自定义模型")
+        del LLM_PROVIDERS[provider]
+        if LLM_CONFIG["provider"] == provider:
+            self.switch_provider("openlux")
+        else:
+            _save_provider_config(LLM_CONFIG["provider"])
+
     def _call_llm(self, prompt: str, max_tokens: Optional[int] = None,
-                  temperature: Optional[float] = None, max_retries: int = 2) -> Optional[str]:
+                  temperature: Optional[float] = None, max_retries: int = 3) -> Optional[str]:
         """发起单次 LLM API 调用（带重试机制）
 
-        通过 HTTP POST 请求调用本地部署的 deepseek-v4-flash-0731 模型，
+        通过 HTTP POST 请求调用当前选中的 OpenAI-compatible 模型，
         请求体中直接传入 enable_thinking 字段以控制是否启用思考模式。
+        对 502/503/504 等服务端错误自动重试，采用指数退避策略。
 
         Args:
             prompt: 用户提示词
             max_tokens: 覆盖默认最大 token 数
             temperature: 覆盖默认温度
-            max_retries: 最大重试次数
+            max_retries: 最大重试次数（默认 3）
 
         Returns:
             Optional[str]: 模型回复文本，失败返回 None
         """
         import time
 
-        url = f"{self.base_url}/chat/completions"
-        payload = {
-            "model": self.model,
-            "messages": [{"role": "user", "content": prompt}],
-            "max_tokens": max_tokens or self.max_tokens,
-            "temperature": temperature if temperature is not None else self.temperature,
-            "enable_thinking": self.enable_thinking,
-        }
+        protocol = LLM_CONFIG.get("api_protocol", "chat_completions")
+        if protocol == "responses":
+            url = f"{self.base_url}/responses"
+            payload = {
+                "model": self.model, "input": prompt,
+                "max_output_tokens": max_tokens or self.max_tokens,
+                "temperature": temperature if temperature is not None else self.temperature,
+                "store": self.response_store,
+            }
+            if self.reasoning_effort:
+                payload["reasoning"] = {"effort": self.reasoning_effort}
+        else:
+            url = f"{self.base_url}/chat/completions"
+            payload = {
+                "model": self.model, "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": max_tokens or self.max_tokens,
+                "temperature": temperature if temperature is not None else self.temperature,
+                "enable_thinking": self.enable_thinking,
+            }
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}"
@@ -329,18 +520,48 @@ class LLMService:
                 response = requests.post(url, json=payload, headers=headers, timeout=self.timeout_seconds)
                 response.raise_for_status()
                 data = response.json()
+                if protocol == "responses":
+                    if data.get("output_text"):
+                        return data["output_text"]
+                    return "".join(
+                        part.get("text", "") for output in data.get("output", [])
+                        for part in output.get("content", []) if part.get("type") == "output_text"
+                    )
                 return data["choices"][0]["message"]["content"]
             except requests.exceptions.HTTPError as e:
-                self._last_call_error = f"HTTP {e.response.status_code}: {e.response.text[:200]}"
-                if e.response.status_code in (502, 503, 504) and attempt < max_retries:
-                    time.sleep(2 * (attempt + 1))
+                status_code = e.response.status_code
+                self._last_call_error = f"HTTP {status_code}: {e.response.text[:200]}"
+                if status_code in (502, 503, 504) and attempt < max_retries:
+                    wait = 3 * (attempt + 1)
+                    print(f'[LLM] HTTP {status_code}，{wait}s 后重试 ({attempt+1}/{max_retries})...')
+                    time.sleep(wait)
+                    continue
+                traceback.print_exc()
+                return None
+            except requests.exceptions.ConnectionError as e:
+                self._last_call_error = f"ConnectionError: {str(e)[:200]}"
+                if attempt < max_retries:
+                    wait = 3 * (attempt + 1)
+                    print(f'[LLM] 连接失败，{wait}s 后重试 ({attempt+1}/{max_retries})...')
+                    time.sleep(wait)
+                    continue
+                traceback.print_exc()
+                return None
+            except requests.exceptions.Timeout as e:
+                self._last_call_error = f"Timeout: {str(e)[:200]}"
+                if attempt < max_retries:
+                    wait = 5 * (attempt + 1)
+                    print(f'[LLM] 超时，{wait}s 后重试 ({attempt+1}/{max_retries})...')
+                    time.sleep(wait)
                     continue
                 traceback.print_exc()
                 return None
             except Exception as e:
-                self._last_call_error = f"{type(e).__name__}: {str(e)}"
+                self._last_call_error = f"{type(e).__name__}: {str(e)[:200]}"
                 if attempt < max_retries:
-                    time.sleep(2 * (attempt + 1))
+                    wait = 3 * (attempt + 1)
+                    print(f'[LLM] {type(e).__name__}，{wait}s 后重试 ({attempt+1}/{max_retries})...')
+                    time.sleep(wait)
                     continue
                 traceback.print_exc()
                 return None

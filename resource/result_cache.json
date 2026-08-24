@@ -11100,12 +11100,9 @@
         "timestamp": "2026/8/4 16:28:21"
       },
       {
-        "id": "1787022797495_2l34w3",
-        "timestamp": "2026/8/18 11:13:17",
-        "oge_code": "# ============================================================\n# GEE → OGE 自动迁移生成的工作流\n# 任务目标: Task decomposed into 1 steps: Code Execution\n# ============================================================\n\nimport oge\n\n# 初始化\noge.initialize()\nservice = oge.Service()\n\n# ----- Step 1: Code Execution -----\nimport oge\noge.initialize()\nservice = oge.Service()\n\ndef ee_date(date_input, tz=None):\n    \"\"\"对应 GEE 的 ee.Date() 构造函数\n\n    GEE 描述: 创建新的 Date 对象。接受数字（毫秒时间戳）、ISO 日期字符串、\n             JavaScript Date 或 ComputedObject 等多种输入类型。\n\n    Args:\n        date_input: 日期输入（毫秒时间戳、ISO 字符串、datetime 对象等）\n        tz: 时区字符串（可选）\n\n    Returns:\n        datetime: Python datetime 对象（UTC 时区）\n\n    Example:\n        >>> ee_date('2023-01-01')\n        datetime.datetime(2023, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)\n        >>> ee_date(1672531200000)  # 毫秒时间戳\n        datetime.datetime(2023, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)\n    \"\"\"\n    return _parse_gee_date(date_input, tz)\n\nresult = service.getProcess(\"Feature.loadFromGeometry\").execute(...)\nresult = service.getProcess(\"Service.getFeatureCollection\").execute(...)\nresult = service.getProcess(\"FeatureCollection.filterDate\").execute(feature_collection, start, end, \"system:time_start\")\ngeometry = service.getProcess(\"Geometry.Point\").execute([lng, lat], \"EPSG:4326\")\n",
-        "feasibility": "full_feasible",
-        "engine": "llm_enhanced",
         "elapsed_ms": 424,
+        "engine": "llm_enhanced",
+        "feasibility": "full_feasible",
         "full_result": {
           "engine": "llm_enhanced",
           "error": null,
@@ -11290,6 +11287,708 @@
             "step5": 0,
             "step6": 0,
             "total": 0.1367783546447754
+          }
+        },
+        "id": "1787022797495_2l34w3",
+        "oge_code": "# ============================================================\n# GEE → OGE 自动迁移生成的工作流\n# 任务目标: Task decomposed into 1 steps: Code Execution\n# ============================================================\n\nimport oge\n\n# 初始化\noge.initialize()\nservice = oge.Service()\n\n# ----- Step 1: Code Execution -----\nimport oge\noge.initialize()\nservice = oge.Service()\n\ndef ee_date(date_input, tz=None):\n    \"\"\"对应 GEE 的 ee.Date() 构造函数\n\n    GEE 描述: 创建新的 Date 对象。接受数字（毫秒时间戳）、ISO 日期字符串、\n             JavaScript Date 或 ComputedObject 等多种输入类型。\n\n    Args:\n        date_input: 日期输入（毫秒时间戳、ISO 字符串、datetime 对象等）\n        tz: 时区字符串（可选）\n\n    Returns:\n        datetime: Python datetime 对象（UTC 时区）\n\n    Example:\n        >>> ee_date('2023-01-01')\n        datetime.datetime(2023, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)\n        >>> ee_date(1672531200000)  # 毫秒时间戳\n        datetime.datetime(2023, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)\n    \"\"\"\n    return _parse_gee_date(date_input, tz)\n\nresult = service.getProcess(\"Feature.loadFromGeometry\").execute(...)\nresult = service.getProcess(\"Service.getFeatureCollection\").execute(...)\nresult = service.getProcess(\"FeatureCollection.filterDate\").execute(feature_collection, start, end, \"system:time_start\")\ngeometry = service.getProcess(\"Geometry.Point\").execute([lng, lat], \"EPSG:4326\")\n",
+        "timestamp": "2026/8/18 11:13:17"
+      }
+    ]
+  },
+  "var region = ee.Geometry.BBox(108.5, 18.1, 111.0, ...[1199]": {
+    "gee_code": "var region = ee.Geometry.BBox(108.5, 18.1, 111.0, 20.1);\n\n// 使用可访问且稳定的全球 DEM 数据替代不可用资产\nvar demCollection = ee.ImageCollection('COPERNICUS/DEM/GLO30')\n  .filterBounds(region);\n\n// 1) 多景 DEM 镶嵌形成连续 DEM 表面\nvar originalDem = demCollection.select('DEM').mosaic().clip(region);\n\n// 可选：输出原始 DEM 的投影信息，便于确认后续分辨率参数\nvar crs = originalDem.projection();\nprint('DEM projection:', crs);\n\n// 2) 保留原始 DEM 作为基准版本\n// originalDem 直接作为基准版本使用\n\n// 3) 对另一份 DEM 执行平滑处理\nvar smoothDem = originalDem.reduceNeighborhood({\n  reducer: ee.Reducer.mean(),\n  kernel: ee.Kernel.circle(1),\n  skipMasked: true\n});\n\n\nvar originalHillshade = ee.Terrain.hillshade(originalDem, 315, 45);\n\n\nvar processedHillshade = ee.Terrain.hillshade(smoothDem, 315, 45);\n\n\nvar demVis = {\n  min: 0,\n  max: 1900,\n  palette: ['#274e13', '#5b8a3c', '#b7b26a', '#d9c59a', '#f5f5f5']\n};\n\nvar shadeVis = {\n  min: 0,\n  max: 255,\n  palette: ['#1f1f1f', '#555555', '#8a8a8a', '#c0c0c0', '#f2f2f2']\n};\n\n\nMap.addLayer(originalDem, demVis, 'original_dem');\nMap.addLayer(smoothDem, demVis, 'smooth_dem');\nMap.addLayer(originalHillshade, shadeVis, 'original_hillshade');\nMap.addLayer(processedHillshade, shadeVis, 'processed_hillshade');\n\n\nMap.centerObject(region, 9);",
+    "results": [
+      {
+        "id": "1787221919951_hvolbs",
+        "timestamp": "2026/8/20 18:31:59",
+        "oge_code": "import oge\noge.initialize()\nservice = oge.Service()\n\n# 定义研究区范围\nregion = [108.5, 18.1, 111.0, 20.1]\n\n# 读取 DEM 数据集合\nbbox = [108.5, 18.1, 111.0, 20.1]\ndatetime_range = [\"2020-01-01 00:00:00\", \"2023-12-31 00:00:00\"]\ndemCollection = service.getCoverageCollection(\n    productID=\"COPERNICUS/DEM/GLO30\",\n    bbox=bbox,\n    datetime=datetime_range\n)\n\n# 1) 多景 DEM 镶嵌形成连续 DEM 表面\noriginalDem = service.getProcess(\"CoverageCollection.mosaic\").execute(demCollection)\noriginalDem = service.getProcess(\"Coverage.clip\").execute(originalDem, region)\n\n# 可选：输出原始 DEM 的投影信息，便于确认后续分辨率参数\ncrs = originalDem.projection()\nprint('DEM projection:', crs)\n\n# 2) 保留原始 DEM 作为基准版本\n# originalDem 直接作为基准版本使用\n\n# 3) 对另一份 DEM 执行平滑处理\nkernel = service.getProcess(\"Kernel.circle\").execute(1)\nsmoothDem = service.getProcess(\"Coverage.reduceNeighborhood\").execute(originalDem, \"mean\", kernel, True)\n\n# 4) 计算山体阴影\noriginalHillshade = service.getProcess(\"Coverage.hillshade\").execute(originalDem, 315, 45)\nprocessedHillshade = service.getProcess(\"Coverage.hillshade\").execute(smoothDem, 315, 45)\n\n# 可视化参数\ndemVis = {\n    \"min\": 0,\n    \"max\": 1900,\n    \"palette\": [\"#274e13\", \"#5b8a3c\", \"#b7b26a\", \"#d9c59a\", \"#f5f5f5\"]\n}\n\nshadeVis = {\n    \"min\": 0,\n    \"max\": 255,\n    \"palette\": [\"#1f1f1f\", \"#555555\", \"#8a8a8a\", \"#c0c0c0\", \"#f2f2f2\"]\n}\n\n# 添加图层\noriginalDem.styles(demVis).getMap(\"original_dem\")\nsmoothDem.styles(demVis).getMap(\"smooth_dem\")\noriginalHillshade.styles(shadeVis).getMap(\"original_hillshade\")\nprocessedHillshade.styles(shadeVis).getMap(\"processed_hillshade\")\n\n# 设置地图中心\noge.mapclient.centerMap(109.75, 19.1, 9)\n",
+        "feasibility": "full_feasible",
+        "engine": "llm_enhanced",
+        "elapsed_ms": 28954,
+        "full_result": {
+          "engine": "llm_enhanced",
+          "error": null,
+          "llm_analysis": {
+            "api_calls": [
+              "ee.Geometry.BBox",
+              "ee.ImageCollection.filterBounds",
+              "ee.ImageCollection.select",
+              "ee.ImageCollection.mosaic",
+              "ee.Image.clip",
+              "ee.Image.projection",
+              "ee.Image.reduceNeighborhood",
+              "ee.Reducer.mean",
+              "ee.Kernel.circle",
+              "ee.Terrain.hillshade",
+              "Map.addLayer",
+              "Map.centerObject"
+            ],
+            "dataflow": "定义区域 -> 加载DEM集合 -> 镶嵌裁剪得到原始DEM -> 平滑得到平滑DEM -> 分别生成山体阴影 -> 可视化",
+            "key_params": {
+              "coordinates": [
+                {
+                  "lat": 18.1,
+                  "lng": 108.5
+                },
+                {
+                  "lat": 20.1,
+                  "lng": 111
+                }
+              ],
+              "datasets": [
+                "COPERNICUS/DEM/GLO30"
+              ],
+              "dates": [],
+              "filters": [
+                "filterBounds(region)"
+              ],
+              "operations": [
+                "mosaic",
+                "clip",
+                "reduceNeighborhood",
+                "hillshade"
+              ],
+              "other": {
+                "azimuth": 315,
+                "dem_vis_max": 1900,
+                "dem_vis_min": 0,
+                "elevation": 45,
+                "kernel_radius": 1,
+                "shade_vis_max": 255,
+                "shade_vis_min": 0
+              },
+              "properties": []
+            },
+            "steps": [
+              {
+                "code": "var region = ee.Geometry.BBox(108.5, 18.1, 111.0, 20.1);",
+                "description": "定义研究区域边界"
+              },
+              {
+                "code": "var demCollection = ee.ImageCollection('COPERNICUS/DEM/GLO30').filterBounds(region);",
+                "description": "加载并过滤DEM影像集合"
+              },
+              {
+                "code": "var originalDem = demCollection.select('DEM').mosaic().clip(region);",
+                "description": "镶嵌并裁剪DEM影像"
+              },
+              {
+                "code": "var crs = originalDem.projection(); print('DEM projection:', crs);",
+                "description": "输出DEM投影信息"
+              },
+              {
+                "code": "var smoothDem = originalDem.reduceNeighborhood({ reducer: ee.Reducer.mean(), kernel: ee.Kernel.circle(1), skipMasked: true });",
+                "description": "对DEM进行邻域均值平滑"
+              },
+              {
+                "code": "var originalHillshade = ee.Terrain.hillshade(originalDem, 315, 45);",
+                "description": "生成原始DEM山体阴影"
+              },
+              {
+                "code": "var processedHillshade = ee.Terrain.hillshade(smoothDem, 315, 45);",
+                "description": "生成平滑DEM山体阴影"
+              },
+              {
+                "code": "var demVis = { min: 0, max: 1900, palette: ['#274e13', '#5b8a3c', '#b7b26a', '#d9c59a', '#f5f5f5'] };",
+                "description": "定义DEM可视化参数"
+              },
+              {
+                "code": "var shadeVis = { min: 0, max: 255, palette: ['#1f1f1f', '#555555', '#8a8a8a', '#c0c0c0', '#f2f2f2'] };",
+                "description": "定义山体阴影可视化参数"
+              },
+              {
+                "code": "Map.addLayer(originalDem, demVis, 'original_dem'); Map.addLayer(smoothDem, demVis, 'smooth_dem'); Map.addLayer(originalHillshade, shadeVis, 'original_hillshade'); Map.addLayer(processedHillshade, shadeVis, 'processed_hillshade');",
+                "description": "添加图层到地图"
+              },
+              {
+                "code": "Map.centerObject(region, 9);",
+                "description": "设置地图中心"
+              }
+            ],
+            "suggestions": [
+              "考虑使用其他DEM数据源如SRTM或ASTER以兼容不同环境",
+              "平滑核大小可参数化以便调整",
+              "可添加导出功能保存处理结果"
+            ],
+            "task_goal": "对DEM进行平滑处理并生成山体阴影对比可视化",
+            "variable_types": {
+              "crs": "ee.Projection",
+              "demCollection": "ee.ImageCollection",
+              "demVis": "Object",
+              "originalDem": "ee.Image",
+              "originalHillshade": "ee.Image",
+              "processedHillshade": "ee.Image",
+              "region": "ee.Geometry",
+              "shadeVis": "Object",
+              "smoothDem": "ee.Image"
+            }
+          },
+          "llm_enhancements": [
+            "LLM 任务目标: 对DEM进行平滑处理并生成山体阴影对比可视化",
+            "考虑使用其他DEM数据源如SRTM或ASTER以兼容不同环境",
+            "平滑核大小可参数化以便调整",
+            "可添加导出功能保存处理结果"
+          ],
+          "llm_oge_code": "import oge\noge.initialize()\nservice = oge.Service()\n\n# 定义研究区范围\nregion = [108.5, 18.1, 111.0, 20.1]\n\n# 读取 DEM 数据集合\nbbox = [108.5, 18.1, 111.0, 20.1]\ndatetime_range = [\"2020-01-01 00:00:00\", \"2023-12-31 00:00:00\"]\ndemCollection = service.getCoverageCollection(\n    productID=\"COPERNICUS/DEM/GLO30\",\n    bbox=bbox,\n    datetime=datetime_range\n)\n\n# 1) 多景 DEM 镶嵌形成连续 DEM 表面\noriginalDem = service.getProcess(\"CoverageCollection.mosaic\").execute(demCollection)\noriginalDem = service.getProcess(\"Coverage.clip\").execute(originalDem, region)\n\n# 可选：输出原始 DEM 的投影信息，便于确认后续分辨率参数\ncrs = originalDem.projection()\nprint('DEM projection:', crs)\n\n# 2) 保留原始 DEM 作为基准版本\n# originalDem 直接作为基准版本使用\n\n# 3) 对另一份 DEM 执行平滑处理\nkernel = service.getProcess(\"Kernel.circle\").execute(1)\nsmoothDem = service.getProcess(\"Coverage.reduceNeighborhood\").execute(originalDem, \"mean\", kernel, True)\n\n# 4) 计算山体阴影\noriginalHillshade = service.getProcess(\"Coverage.hillshade\").execute(originalDem, 315, 45)\nprocessedHillshade = service.getProcess(\"Coverage.hillshade\").execute(smoothDem, 315, 45)\n\n# 可视化参数\ndemVis = {\n    \"min\": 0,\n    \"max\": 1900,\n    \"palette\": [\"#274e13\", \"#5b8a3c\", \"#b7b26a\", \"#d9c59a\", \"#f5f5f5\"]\n}\n\nshadeVis = {\n    \"min\": 0,\n    \"max\": 255,\n    \"palette\": [\"#1f1f1f\", \"#555555\", \"#8a8a8a\", \"#c0c0c0\", \"#f2f2f2\"]\n}\n\n# 添加图层\noriginalDem.styles(demVis).getMap(\"original_dem\")\nsmoothDem.styles(demVis).getMap(\"smooth_dem\")\noriginalHillshade.styles(shadeVis).getMap(\"original_hillshade\")\nprocessedHillshade.styles(shadeVis).getMap(\"processed_hillshade\")\n\n# 设置地图中心\noge.mapclient.centerMap(109.75, 19.1, 9)\n",
+          "match_rate": 1,
+          "step1": {
+            "key_params": {
+              "bands": [
+                "DEM"
+              ],
+              "coordinates": [
+                {
+                  "lat": 18.1,
+                  "lng": 108.5
+                },
+                {
+                  "lat": 20.1,
+                  "lng": 111
+                }
+              ],
+              "datasets": [
+                "COPERNICUS/DEM/GLO30"
+              ],
+              "dates": [],
+              "filters": [
+                "filterBounds(region)"
+              ],
+              "operations": [
+                "BBox",
+                "ImageCollection",
+                "addLayer",
+                "centerObject",
+                "circle",
+                "clip",
+                "filterBounds",
+                "hillshade",
+                "mean",
+                "mosaic",
+                "projection",
+                "reduceNeighborhood",
+                "select"
+              ],
+              "other": {
+                "azimuth": 315,
+                "dem_vis_max": 1900,
+                "dem_vis_min": 0,
+                "elevation": 45,
+                "kernel_radius": 1,
+                "shade_vis_max": 255,
+                "shade_vis_min": 0
+              },
+              "properties": [],
+              "variable_definitions": [
+                {
+                  "type": "ee.Geometry.BBox",
+                  "variable": "region"
+                },
+                {
+                  "type": "ee.ImageCollection",
+                  "variable": "demCollection"
+                },
+                {
+                  "type": "ee.Terrain.hillshade",
+                  "variable": "originalHillshade"
+                },
+                {
+                  "type": "ee.Terrain.hillshade",
+                  "variable": "processedHillshade"
+                }
+              ]
+            },
+            "llm_analysis": {
+              "api_calls": [
+                "ee.Geometry.BBox",
+                "ee.ImageCollection.filterBounds",
+                "ee.ImageCollection.select",
+                "ee.ImageCollection.mosaic",
+                "ee.Image.clip",
+                "ee.Image.projection",
+                "ee.Image.reduceNeighborhood",
+                "ee.Reducer.mean",
+                "ee.Kernel.circle",
+                "ee.Terrain.hillshade",
+                "Map.addLayer",
+                "Map.centerObject"
+              ],
+              "dataflow": "定义区域 -> 加载DEM集合 -> 镶嵌裁剪得到原始DEM -> 平滑得到平滑DEM -> 分别生成山体阴影 -> 可视化",
+              "key_params": {
+                "coordinates": [
+                  {
+                    "lat": 18.1,
+                    "lng": 108.5
+                  },
+                  {
+                    "lat": 20.1,
+                    "lng": 111
+                  }
+                ],
+                "datasets": [
+                  "COPERNICUS/DEM/GLO30"
+                ],
+                "dates": [],
+                "filters": [
+                  "filterBounds(region)"
+                ],
+                "operations": [
+                  "mosaic",
+                  "clip",
+                  "reduceNeighborhood",
+                  "hillshade"
+                ],
+                "other": {
+                  "azimuth": 315,
+                  "dem_vis_max": 1900,
+                  "dem_vis_min": 0,
+                  "elevation": 45,
+                  "kernel_radius": 1,
+                  "shade_vis_max": 255,
+                  "shade_vis_min": 0
+                },
+                "properties": []
+              },
+              "steps": [
+                {
+                  "code": "var region = ee.Geometry.BBox(108.5, 18.1, 111.0, 20.1);",
+                  "description": "定义研究区域边界"
+                },
+                {
+                  "code": "var demCollection = ee.ImageCollection('COPERNICUS/DEM/GLO30').filterBounds(region);",
+                  "description": "加载并过滤DEM影像集合"
+                },
+                {
+                  "code": "var originalDem = demCollection.select('DEM').mosaic().clip(region);",
+                  "description": "镶嵌并裁剪DEM影像"
+                },
+                {
+                  "code": "var crs = originalDem.projection(); print('DEM projection:', crs);",
+                  "description": "输出DEM投影信息"
+                },
+                {
+                  "code": "var smoothDem = originalDem.reduceNeighborhood({ reducer: ee.Reducer.mean(), kernel: ee.Kernel.circle(1), skipMasked: true });",
+                  "description": "对DEM进行邻域均值平滑"
+                },
+                {
+                  "code": "var originalHillshade = ee.Terrain.hillshade(originalDem, 315, 45);",
+                  "description": "生成原始DEM山体阴影"
+                },
+                {
+                  "code": "var processedHillshade = ee.Terrain.hillshade(smoothDem, 315, 45);",
+                  "description": "生成平滑DEM山体阴影"
+                },
+                {
+                  "code": "var demVis = { min: 0, max: 1900, palette: ['#274e13', '#5b8a3c', '#b7b26a', '#d9c59a', '#f5f5f5'] };",
+                  "description": "定义DEM可视化参数"
+                },
+                {
+                  "code": "var shadeVis = { min: 0, max: 255, palette: ['#1f1f1f', '#555555', '#8a8a8a', '#c0c0c0', '#f2f2f2'] };",
+                  "description": "定义山体阴影可视化参数"
+                },
+                {
+                  "code": "Map.addLayer(originalDem, demVis, 'original_dem'); Map.addLayer(smoothDem, demVis, 'smooth_dem'); Map.addLayer(originalHillshade, shadeVis, 'original_hillshade'); Map.addLayer(processedHillshade, shadeVis, 'processed_hillshade');",
+                  "description": "添加图层到地图"
+                },
+                {
+                  "code": "Map.centerObject(region, 9);",
+                  "description": "设置地图中心"
+                }
+              ],
+              "suggestions": [
+                "考虑使用其他DEM数据源如SRTM或ASTER以兼容不同环境",
+                "平滑核大小可参数化以便调整",
+                "可添加导出功能保存处理结果"
+              ],
+              "task_goal": "对DEM进行平滑处理并生成山体阴影对比可视化",
+              "variable_types": {
+                "crs": "ee.Projection",
+                "demCollection": "ee.ImageCollection",
+                "demVis": "Object",
+                "originalDem": "ee.Image",
+                "originalHillshade": "ee.Image",
+                "processedHillshade": "ee.Image",
+                "region": "ee.Geometry",
+                "shadeVis": "Object",
+                "smoothDem": "ee.Image"
+              }
+            },
+            "raw_snippets": [
+              {
+                "code_snippet": "var region = ee.Geometry.BBox(108.5, 18.1, 111.0, 20.1);",
+                "step_description": "定义研究区域边界"
+              },
+              {
+                "code_snippet": "var demCollection = ee.ImageCollection('COPERNICUS/DEM/GLO30').filterBounds(region);",
+                "step_description": "加载并过滤DEM影像集合"
+              },
+              {
+                "code_snippet": "var originalDem = demCollection.select('DEM').mosaic().clip(region);",
+                "step_description": "镶嵌并裁剪DEM影像"
+              },
+              {
+                "code_snippet": "var crs = originalDem.projection(); print('DEM projection:', crs);",
+                "step_description": "输出DEM投影信息"
+              },
+              {
+                "code_snippet": "var smoothDem = originalDem.reduceNeighborhood({ reducer: ee.Reducer.mean(), kernel: ee.Kernel.circle(1), skipMasked: true });",
+                "step_description": "对DEM进行邻域均值平滑"
+              },
+              {
+                "code_snippet": "var originalHillshade = ee.Terrain.hillshade(originalDem, 315, 45);",
+                "step_description": "生成原始DEM山体阴影"
+              },
+              {
+                "code_snippet": "var processedHillshade = ee.Terrain.hillshade(smoothDem, 315, 45);",
+                "step_description": "生成平滑DEM山体阴影"
+              },
+              {
+                "code_snippet": "var demVis = { min: 0, max: 1900, palette: ['#274e13', '#5b8a3c', '#b7b26a', '#d9c59a', '#f5f5f5'] };",
+                "step_description": "定义DEM可视化参数"
+              },
+              {
+                "code_snippet": "var shadeVis = { min: 0, max: 255, palette: ['#1f1f1f', '#555555', '#8a8a8a', '#c0c0c0', '#f2f2f2'] };",
+                "step_description": "定义山体阴影可视化参数"
+              },
+              {
+                "code_snippet": "Map.addLayer(originalDem, demVis, 'original_dem'); Map.addLayer(smoothDem, demVis, 'smooth_dem'); Map.addLayer(originalHillshade, shadeVis, 'original_hillshade'); Map.addLayer(processedHillshade, shadeVis, 'processed_hillshade');",
+                "step_description": "添加图层到地图"
+              },
+              {
+                "code_snippet": "Map.centerObject(region, 9);\nvar demCollection = ee.ImageCollection('COPERNICUS/DEM/GLO30')\n.filterBounds(region);\nvar crs = originalDem.projection();\nprint('DEM projection:', crs);\nvar smoothDem = originalDem.reduceNeighborhood({\nreducer: ee.Reducer.mean(),\nkernel: ee.Kernel.circle(1),\nskipMasked: true\n});\nvar demVis = {\nmin: 0,\nmax: 1900,\npalette: ['#274e13', '#5b8a3c', '#b7b26a', '#d9c59a', '#f5f5f5']\n};\nvar shadeVis = {\nmin: 0,\nmax: 255,\npalette: ['#1f1f1f', '#555555', '#8a8a8a', '#c0c0c0', '#f2f2f2']\n};\nMap.addLayer(originalDem, demVis, 'original_dem');\nMap.addLayer(smoothDem, demVis, 'smooth_dem');\nMap.addLayer(originalHillshade, shadeVis, 'original_hillshade');\nMap.addLayer(processedHillshade, shadeVis, 'processed_hillshade');",
+                "step_description": "设置地图中心"
+              }
+            ],
+            "task_goal": "对DEM进行平滑处理并生成山体阴影对比可视化",
+            "workflow_steps": [
+              "定义研究区域边界",
+              "加载并过滤DEM影像集合",
+              "镶嵌并裁剪DEM影像",
+              "输出DEM投影信息",
+              "对DEM进行邻域均值平滑",
+              "生成原始DEM山体阴影",
+              "生成平滑DEM山体阴影",
+              "定义DEM可视化参数",
+              "定义山体阴影可视化参数",
+              "添加图层到地图",
+              "设置地图中心"
+            ]
+          },
+          "step2": {
+            "all_apis": [
+              "Map.addLayer",
+              "Map.centerObject",
+              "ee.Geometry.BBox",
+              "ee.ImageCollection",
+              "ee.ImageCollection.select",
+              "ee.Kernel.circle",
+              "ee.Reducer.mean",
+              "ee.Terrain.hillshade",
+              "print"
+            ],
+            "api_count": 9,
+            "required_apis": [
+              [
+                "ee.Geometry.BBox"
+              ],
+              [
+                "ee.ImageCollection"
+              ],
+              [
+                "ee.ImageCollection.select"
+              ],
+              [
+                "print"
+              ],
+              [
+                "ee.Kernel.circle",
+                "ee.Reducer.mean"
+              ],
+              [
+                "ee.Terrain.hillshade"
+              ],
+              [
+                "ee.Terrain.hillshade"
+              ],
+              [],
+              [],
+              [
+                "Map.addLayer"
+              ],
+              [
+                "Map.addLayer",
+                "Map.centerObject",
+                "ee.ImageCollection",
+                "ee.Kernel.circle",
+                "ee.Reducer.mean",
+                "print"
+              ]
+            ],
+            "step_codes": [
+              "var region = ee.Geometry.BBox(108.5, 18.1, 111.0, 20.1);",
+              "var demCollection = ee.ImageCollection('COPERNICUS/DEM/GLO30').filterBounds(region);",
+              "var originalDem = demCollection.select('DEM').mosaic().clip(region);",
+              "var crs = originalDem.projection(); print('DEM projection:', crs);",
+              "var smoothDem = originalDem.reduceNeighborhood({ reducer: ee.Reducer.mean(), kernel: ee.Kernel.circle(1), skipMasked: true });",
+              "var originalHillshade = ee.Terrain.hillshade(originalDem, 315, 45);",
+              "var processedHillshade = ee.Terrain.hillshade(smoothDem, 315, 45);",
+              "var demVis = { min: 0, max: 1900, palette: ['#274e13', '#5b8a3c', '#b7b26a', '#d9c59a', '#f5f5f5'] };",
+              "var shadeVis = { min: 0, max: 255, palette: ['#1f1f1f', '#555555', '#8a8a8a', '#c0c0c0', '#f2f2f2'] };",
+              "Map.addLayer(originalDem, demVis, 'original_dem'); Map.addLayer(smoothDem, demVis, 'smooth_dem'); Map.addLayer(originalHillshade, shadeVis, 'original_hillshade'); Map.addLayer(processedHillshade, shadeVis, 'processed_hillshade');",
+              "Map.centerObject(region, 9);\nvar demCollection = ee.ImageCollection('COPERNICUS/DEM/GLO30')\n.filterBounds(region);\nvar crs = originalDem.projection();\nprint('DEM projection:', crs);\nvar smoothDem = originalDem.reduceNeighborhood({\nreducer: ee.Reducer.mean(),\nkernel: ee.Kernel.circle(1),\nskipMasked: true\n});\nvar demVis = {\nmin: 0,\nmax: 1900,\npalette: ['#274e13', '#5b8a3c', '#b7b26a', '#d9c59a', '#f5f5f5']\n};\nvar shadeVis = {\nmin: 0,\nmax: 255,\npalette: ['#1f1f1f', '#555555', '#8a8a8a', '#c0c0c0', '#f2f2f2']\n};\nMap.addLayer(originalDem, demVis, 'original_dem');\nMap.addLayer(smoothDem, demVis, 'smooth_dem');\nMap.addLayer(originalHillshade, shadeVis, 'original_hillshade');\nMap.addLayer(processedHillshade, shadeVis, 'processed_hillshade');"
+            ],
+            "step_descriptions": [
+              "定义研究区域边界",
+              "加载并过滤DEM影像集合",
+              "镶嵌并裁剪DEM影像",
+              "输出DEM投影信息",
+              "对DEM进行邻域均值平滑",
+              "生成原始DEM山体阴影",
+              "生成平滑DEM山体阴影",
+              "定义DEM可视化参数",
+              "定义山体阴影可视化参数",
+              "添加图层到地图",
+              "设置地图中心"
+            ]
+          },
+          "step3": {
+            "match_details": [
+              {
+                "gee_api": "Map.addLayer",
+                "has_python": false,
+                "mapping_type": "one_to_one",
+                "oge_api": "getMap",
+                "status": "matched"
+              },
+              {
+                "gee_api": "Map.centerObject",
+                "has_python": false,
+                "mapping_type": "one_to_one",
+                "oge_api": "oge.mapclient.centerMap",
+                "status": "matched"
+              },
+              {
+                "confidence": 0.95,
+                "gee_api": "ee.Geometry.BBox",
+                "mapping_type": "llm_semantic",
+                "oge_api": "Coverage.bbox",
+                "reason": "数据库中无映射记录",
+                "reasoning": "ee.Geometry.BBox 用于创建矩形边界框几何，OGE 中 Coverage.bbox 用于创建覆盖范围的边界框，功能类似。",
+                "status": "matched"
+              },
+              {
+                "gee_api": "ee.ImageCollection",
+                "has_python": false,
+                "mapping_type": "one_to_one",
+                "oge_api": "Service.getCoverageCollection",
+                "status": "matched"
+              },
+              {
+                "confidence": 0.95,
+                "gee_api": "ee.ImageCollection.select",
+                "mapping_type": "llm_semantic",
+                "oge_api": "ImageCollection.select",
+                "reason": "数据库中无映射记录",
+                "reasoning": "OGE 的 ImageCollection 类提供了与 GEE 的 ee.ImageCollection.select 功能相同的 select 方法，用于从影像集合中按波段名称或索引选择波段。",
+                "status": "matched"
+              },
+              {
+                "gee_api": "ee.Kernel.circle",
+                "has_python": false,
+                "mapping_type": "one_to_one",
+                "oge_api": "Kernel.circle",
+                "status": "matched"
+              },
+              {
+                "gee_api": "ee.Reducer.mean",
+                "has_python": true,
+                "mapping_type": "native_python",
+                "oge_api": null,
+                "status": "matched"
+              },
+              {
+                "confidence": 0.95,
+                "gee_api": "ee.Terrain.hillshade",
+                "mapping_type": "llm_semantic",
+                "oge_api": "Terrain.hillshade",
+                "reason": "数据库中无映射记录",
+                "reasoning": "OGE (Open Geospatial Engine) 提供了与 GEE 类似的 Terrain 模块，其中包含 hillshade 函数，用于计算山体阴影。功能与 GEE 的 ee.Terrain.hillshade 一致。",
+                "status": "matched"
+              },
+              {
+                "gee_api": "print",
+                "has_python": true,
+                "mapping_type": "native_python",
+                "oge_api": null,
+                "status": "matched"
+              }
+            ],
+            "match_rate": 1,
+            "matched_count": 9,
+            "missing_apis": [],
+            "missing_count": 0
+          },
+          "step4": {
+            "feasibility_flags": [
+              {
+                "feasibility": "infeasible",
+                "step_description": "定义研究区域边界",
+                "step_index": 1
+              },
+              {
+                "feasibility": "direct_feasible",
+                "step_description": "加载并过滤DEM影像集合",
+                "step_index": 2
+              },
+              {
+                "feasibility": "infeasible",
+                "step_description": "镶嵌并裁剪DEM影像",
+                "step_index": 3
+              },
+              {
+                "feasibility": "direct_feasible",
+                "step_description": "输出DEM投影信息",
+                "step_index": 4
+              },
+              {
+                "feasibility": "direct_feasible",
+                "step_description": "对DEM进行邻域均值平滑",
+                "step_index": 5
+              },
+              {
+                "feasibility": "infeasible",
+                "step_description": "生成原始DEM山体阴影",
+                "step_index": 6
+              },
+              {
+                "feasibility": "infeasible",
+                "step_description": "生成平滑DEM山体阴影",
+                "step_index": 7
+              },
+              {
+                "feasibility": "direct_feasible",
+                "step_description": "定义DEM可视化参数",
+                "step_index": 8
+              },
+              {
+                "feasibility": "direct_feasible",
+                "step_description": "定义山体阴影可视化参数",
+                "step_index": 9
+              },
+              {
+                "feasibility": "direct_feasible",
+                "step_description": "添加图层到地图",
+                "step_index": 10
+              },
+              {
+                "feasibility": "direct_feasible",
+                "step_description": "设置地图中心",
+                "step_index": 11
+              }
+            ],
+            "step_codes": [
+              {
+                "feasibility": "infeasible",
+                "gee_code": "var region = ee.Geometry.BBox(108.5, 18.1, 111.0, 20.1);",
+                "oge_code": "# [BLOCKED] 缺失 API 无法实现\n# 缺失的 GEE API: ee.Geometry.BBox\n",
+                "step_description": "定义研究区域边界",
+                "step_index": 1
+              },
+              {
+                "feasibility": "direct_feasible",
+                "gee_code": "var demCollection = ee.ImageCollection('COPERNICUS/DEM/GLO30').filterBounds(region);",
+                "oge_code": "import oge\noge.initialize()\nservice = oge.Service()\n\nresult = service.getProcess(\"Service.getCoverageCollection\").execute(coverage, ...)",
+                "step_description": "加载并过滤DEM影像集合",
+                "step_index": 2
+              },
+              {
+                "feasibility": "infeasible",
+                "gee_code": "var originalDem = demCollection.select('DEM').mosaic().clip(region);",
+                "oge_code": "# [BLOCKED] 缺失 API 无法实现\n# 缺失的 GEE API: ee.ImageCollection.select\n",
+                "step_description": "镶嵌并裁剪DEM影像",
+                "step_index": 3
+              },
+              {
+                "feasibility": "direct_feasible",
+                "gee_code": "var crs = originalDem.projection(); print('DEM projection:', crs);",
+                "oge_code": "import oge\noge.initialize()\nservice = oge.Service()\n\ndef gee_print(*args, **kwargs) -> None:\n    \"\"\"对应 GEE 的 print() 函数，输出到控制台\n\n    GEE 描述: Outputs a specified value or object to the console for debugging.\n              将指定的值或对象输出到控制台，用于调试和查看中间结果。\n\n    Args:\n        *args: 要输出的值\n        **kwargs: 传递给 Python print 的其他参数\n\n    Returns:\n        None\n    \"\"\"\n    print(*args, **kwargs)\n\n# 输出结果\nprint(result)\n",
+                "step_description": "输出DEM投影信息",
+                "step_index": 4
+              },
+              {
+                "feasibility": "direct_feasible",
+                "gee_code": "var smoothDem = originalDem.reduceNeighborhood({ reducer: ee.Reducer.mean(), kernel: ee.Kernel.circle(1), skipMasked: true });",
+                "oge_code": "import oge\noge.initialize()\nservice = oge.Service()\n\nresult = service.getProcess(\"Kernel.circle\").execute(...)\ndef ee_reducer_mean():\n    \"\"\"均值归约器\n    \n    GEE: ee.Reducer.mean\n    Returns a Reducer that computes the arithmetic mean.\n    \n    Returns:\n        str: 'mean'\n    \"\"\"\n    return 'mean'\n",
+                "step_description": "对DEM进行邻域均值平滑",
+                "step_index": 5
+              },
+              {
+                "feasibility": "infeasible",
+                "gee_code": "var originalHillshade = ee.Terrain.hillshade(originalDem, 315, 45);",
+                "oge_code": "# [BLOCKED] 缺失 API 无法实现\n# 缺失的 GEE API: ee.Terrain.hillshade\n",
+                "step_description": "生成原始DEM山体阴影",
+                "step_index": 6
+              },
+              {
+                "feasibility": "infeasible",
+                "gee_code": "var processedHillshade = ee.Terrain.hillshade(smoothDem, 315, 45);",
+                "oge_code": "# [BLOCKED] 缺失 API 无法实现\n# 缺失的 GEE API: ee.Terrain.hillshade\n",
+                "step_description": "生成平滑DEM山体阴影",
+                "step_index": 7
+              },
+              {
+                "feasibility": "direct_feasible",
+                "gee_code": "var demVis = { min: 0, max: 1900, palette: ['#274e13', '#5b8a3c', '#b7b26a', '#d9c59a', '#f5f5f5'] };",
+                "oge_code": "",
+                "step_description": "定义DEM可视化参数",
+                "step_index": 8
+              },
+              {
+                "feasibility": "direct_feasible",
+                "gee_code": "var shadeVis = { min: 0, max: 255, palette: ['#1f1f1f', '#555555', '#8a8a8a', '#c0c0c0', '#f2f2f2'] };",
+                "oge_code": "",
+                "step_description": "定义山体阴影可视化参数",
+                "step_index": 9
+              },
+              {
+                "feasibility": "direct_feasible",
+                "gee_code": "Map.addLayer(originalDem, demVis, 'original_dem'); Map.addLayer(smoothDem, demVis, 'smooth_dem'); Map.addLayer(originalHillshade, shadeVis, 'original_hillshade'); Map.addLayer(processedHillshade, shadeVis, 'processed_hillshade');",
+                "oge_code": "import oge\noge.initialize()\nservice = oge.Service()\n\nresult = service.getProcess(\"getMap\").execute(...)\n# 可视化输出\noge.mapclient.centerMap(lon, lat, zoom)\n",
+                "step_description": "添加图层到地图",
+                "step_index": 10
+              },
+              {
+                "feasibility": "direct_feasible",
+                "gee_code": "Map.centerObject(region, 9);\nvar demCollection = ee.ImageCollection('COPERNICUS/DEM/GLO30')\n.filterBounds(region);\nvar crs = originalDem.projection();\nprint('DEM projection:', crs);\nvar smoothDem = originalDem.reduceNeighborhood({\nreducer: ee.Reducer.mean(),\nkernel: ee.Kernel.circle(1),\nskipMasked: true\n});\nvar demVis = {\nmin: 0,\nmax: 1900,\npalette: ['#274e13', '#5b8a3c', '#b7b26a', '#d9c59a', '#f5f5f5']\n};\nvar shadeVis = {\nmin: 0,\nmax: 255,\npalette: ['#1f1f1f', '#555555', '#8a8a8a', '#c0c0c0', '#f2f2f2']\n};\nMap.addLayer(originalDem, demVis, 'original_dem');\nMap.addLayer(smoothDem, demVis, 'smooth_dem');\nMap.addLayer(originalHillshade, shadeVis, 'original_hillshade');\nMap.addLayer(processedHillshade, shadeVis, 'processed_hillshade');",
+                "oge_code": "import oge\noge.initialize()\nservice = oge.Service()\n\nresult = service.getProcess(\"getMap\").execute(...)\nresult = service.getProcess(\"oge.mapclient.centerMap\").execute(...)\nresult = service.getProcess(\"Service.getCoverageCollection\").execute(coverage, ...)\nresult = service.getProcess(\"Kernel.circle\").execute(...)\ndef ee_reducer_mean():\n    \"\"\"均值归约器\n    \n    GEE: ee.Reducer.mean\n    Returns a Reducer that computes the arithmetic mean.\n    \n    Returns:\n        str: 'mean'\n    \"\"\"\n    return 'mean'\n\ndef gee_print(*args, **kwargs) -> None:\n    \"\"\"对应 GEE 的 print() 函数，输出到控制台\n\n    GEE 描述: Outputs a specified value or object to the console for debugging.\n              将指定的值或对象输出到控制台，用于调试和查看中间结果。\n\n    Args:\n        *args: 要输出的值\n        **kwargs: 传递给 Python print 的其他参数\n\n    Returns:\n        None\n    \"\"\"\n    print(*args, **kwargs)\n\n# 输出结果\nprint(result)\n\n# 可视化输出\noge.mapclient.centerMap(lon, lat, zoom)\n",
+                "step_description": "设置地图中心",
+                "step_index": 11
+              }
+            ]
+          },
+          "step5": {
+            "blocking_apis": [],
+            "non_blocking_gaps": [],
+            "overall_feasible": true,
+            "rescue_suggestions": []
+          },
+          "step6": {
+            "feasibility": "full_feasible",
+            "llm_generated": true,
+            "missing_report": null,
+            "oge_code": "import oge\noge.initialize()\nservice = oge.Service()\n\n# 定义研究区范围\nregion = [108.5, 18.1, 111.0, 20.1]\n\n# 读取 DEM 数据集合\nbbox = [108.5, 18.1, 111.0, 20.1]\ndatetime_range = [\"2020-01-01 00:00:00\", \"2023-12-31 00:00:00\"]\ndemCollection = service.getCoverageCollection(\n    productID=\"COPERNICUS/DEM/GLO30\",\n    bbox=bbox,\n    datetime=datetime_range\n)\n\n# 1) 多景 DEM 镶嵌形成连续 DEM 表面\noriginalDem = service.getProcess(\"CoverageCollection.mosaic\").execute(demCollection)\noriginalDem = service.getProcess(\"Coverage.clip\").execute(originalDem, region)\n\n# 可选：输出原始 DEM 的投影信息，便于确认后续分辨率参数\ncrs = originalDem.projection()\nprint('DEM projection:', crs)\n\n# 2) 保留原始 DEM 作为基准版本\n# originalDem 直接作为基准版本使用\n\n# 3) 对另一份 DEM 执行平滑处理\nkernel = service.getProcess(\"Kernel.circle\").execute(1)\nsmoothDem = service.getProcess(\"Coverage.reduceNeighborhood\").execute(originalDem, \"mean\", kernel, True)\n\n# 4) 计算山体阴影\noriginalHillshade = service.getProcess(\"Coverage.hillshade\").execute(originalDem, 315, 45)\nprocessedHillshade = service.getProcess(\"Coverage.hillshade\").execute(smoothDem, 315, 45)\n\n# 可视化参数\ndemVis = {\n    \"min\": 0,\n    \"max\": 1900,\n    \"palette\": [\"#274e13\", \"#5b8a3c\", \"#b7b26a\", \"#d9c59a\", \"#f5f5f5\"]\n}\n\nshadeVis = {\n    \"min\": 0,\n    \"max\": 255,\n    \"palette\": [\"#1f1f1f\", \"#555555\", \"#8a8a8a\", \"#c0c0c0\", \"#f2f2f2\"]\n}\n\n# 添加图层\noriginalDem.styles(demVis).getMap(\"original_dem\")\nsmoothDem.styles(demVis).getMap(\"smooth_dem\")\noriginalHillshade.styles(shadeVis).getMap(\"original_hillshade\")\nprocessedHillshade.styles(shadeVis).getMap(\"processed_hillshade\")\n\n# 设置地图中心\noge.mapclient.centerMap(109.75, 19.1, 9)\n"
+          },
+          "success": true,
+          "timing": {
+            "api_total": 28.349693536758423,
+            "llm_code_gen": 10.670483112335205,
+            "pipeline_total": 17.679210424423218,
+            "step1": 13.309789419174194,
+            "step2": 0.0020439624786376953,
+            "step3": 4.367377042770386,
+            "step4": 0,
+            "step5": 0,
+            "step6": 0,
+            "total": 17.679210424423218
           }
         }
       }

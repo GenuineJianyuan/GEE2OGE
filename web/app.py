@@ -17,6 +17,8 @@ import time
 import threading
 import traceback
 import uuid
+import csv
+import re
 from flask import Flask, request, jsonify, render_template
 
 # 项目根目录配置
@@ -26,8 +28,13 @@ sys.path.insert(0, PROJECT_ROOT)
 from db_dao import GeeOgeDao
 from case_study_pipeline import CaseStudyPipeline
 from llm_service import get_llm_service
+try:
+    from web.gee_runner.backend import bp as gee_runner_bp
+except ImportError:
+    from gee_runner.backend import bp as gee_runner_bp
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+app.register_blueprint(gee_runner_bp)
 
 # ============================================================
 # 结果缓存持久化
@@ -127,6 +134,109 @@ def benchmark_page():
     return render_template('benchmark.html')
 
 
+@app.route('/parser')
+def parser_page():
+    """CSV/JSON GEE/OGE 代码解析与批量翻译页面。"""
+    return render_template('parser.html')
+
+
+@app.route('/gee-runner')
+def gee_runner_page():
+    """GEE JavaScript execution, validation, auto-repair, and batch runner."""
+    return render_template('gee_runner.html')
+
+
+@app.route('/convert')
+def convert_page():
+    """Interactive single GEE JavaScript to OGE conversion page."""
+    return render_template('convert.html')
+
+
+@app.route('/console')
+def console_page():
+    """System dashboard with live API and runner status."""
+    return render_template('console.html')
+
+
+PARSER_RESULT_FILE = os.path.join(PROJECT_ROOT, 'resource', 'parser_results.json')
+
+
+@app.route('/api/parser/parse', methods=['POST'])
+def api_parser_parse():
+    """解析上传的 CSV/JSON 文件并返回可翻译代码条目。"""
+    try:
+        # 兼容 `python web/app.py`、`python -m web.app` 及 WSGI 从项目根目录启动
+        try:
+            from web.algri.file_parser import parse_content
+        except ImportError:
+            from algri.file_parser import parse_content
+        upload = request.files.get('file')
+        if upload:
+            filename = upload.filename or 'upload.json'
+            content = upload.read().decode('utf-8-sig')
+        else:
+            data = request.get_json() or {}
+            filename = data.get('filename', 'upload.json')
+            content = data.get('content', '')
+        data = request.form if upload else (request.get_json() or {})
+        selected_keys = data.get('selected_keys', []) if data else []
+        selected_columns = data.get('selected_columns', []) if data else []
+        if isinstance(selected_keys, str):
+            selected_keys = json.loads(selected_keys) if selected_keys.startswith('[') else [selected_keys]
+        if isinstance(selected_columns, str):
+            selected_columns = json.loads(selected_columns) if selected_columns.startswith('[') else [selected_columns]
+        result = parse_content(content, filename, selected_keys, selected_columns)
+        result['filename'] = filename
+        return jsonify({'success': True, 'data': result})
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'文件解析失败: {e}'}), 400
+
+
+@app.route('/api/parser/translate', methods=['POST'])
+def api_parser_translate():
+    """翻译一个解析条目；direction 为 gee_to_oge 或 oge_to_gee。"""
+    data = request.get_json() or {}
+    direction = data.get('direction', 'gee_to_oge')
+    code = (data.get('code') or '').strip()
+    if not code:
+        return jsonify({'success': False, 'error': '代码不能为空'}), 400
+    try:
+        llm = get_llm_service()
+        if not llm.is_available():
+            return jsonify({'success': False, 'error': 'LLM 服务不可用'}), 503
+        if direction == 'oge_to_gee':
+            result = llm.oge_to_gee(code, data.get('description', ''))
+            output = result.get('gee_code', '')
+        else:
+            result = llm.generate_oge_code(code, data.get('mapping_context', ''))
+            output = result.get('oge_code', '')
+        return jsonify({'success': True, 'output': output, 'details': result})
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'翻译失败: {e}'}), 500
+
+
+@app.route('/api/parser/save', methods=['GET', 'POST', 'DELETE'])
+def api_parser_save():
+    """保存、读取或清空解析器工作区结果。"""
+    try:
+        if request.method == 'GET':
+            if os.path.exists(PARSER_RESULT_FILE):
+                with open(PARSER_RESULT_FILE, 'r', encoding='utf-8') as file:
+                    return jsonify({'success': True, 'data': json.load(file)})
+            return jsonify({'success': True, 'data': {}})
+        if request.method == 'DELETE':
+            if os.path.exists(PARSER_RESULT_FILE):
+                os.remove(PARSER_RESULT_FILE)
+            return jsonify({'success': True})
+        payload = request.get_json() or {}
+        os.makedirs(os.path.dirname(PARSER_RESULT_FILE), exist_ok=True)
+        with open(PARSER_RESULT_FILE, 'w', encoding='utf-8') as file:
+            json.dump(payload, file, ensure_ascii=False, indent=2)
+        return jsonify({'success': True, 'saved_at': time.strftime('%Y-%m-%d %H:%M:%S')})
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'保存失败: {e}'}), 500
+
+
 @app.route('/gee-convert')
 def gee_convert_page():
     """GEE→OGE 批量转换页面"""
@@ -144,14 +254,57 @@ def api_llm_status():
         svc = get_llm_service()
         svc.reset_availability()
         available = svc.is_available()
+        info = svc.provider_info()
         return jsonify({
             'success': True,
             'available': available,
-            'model': svc.model if available else None,
-            'base_url': svc.base_url if available else None
+            'provider': info['id'],
+            'provider_label': info['label'],
+            'model': info['model'] if available else None,
+            'base_url': info['base_url'] if available else None,
+            'max_tokens': info['max_tokens'],
+            'temperature': info['temperature'],
+            'timeout_seconds': info['timeout_seconds'],
+            'enable_thinking': info['enable_thinking'],
+            'api_protocol': info['api_protocol'],
+            'providers': svc.providers_info(),
         })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e), 'available': False})
+
+
+@app.route('/api/llm-provider', methods=['GET', 'POST'])
+def api_llm_provider():
+    """读取或切换 GEE/OGE 共用的 LLM 提供商。"""
+    try:
+        svc = get_llm_service()
+        if request.method == 'POST':
+            data = request.get_json() or {}
+            provider = data.get('provider', '')
+            if data.get('save_config'):
+                info = svc.update_provider(provider, data)
+            else:
+                info = svc.switch_provider(provider)
+        else:
+            info = svc.provider_info()
+        return jsonify({'success': True, 'active': info, 'providers': svc.providers_info()})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 400
+
+
+@app.route('/api/llm-provider/custom', methods=['POST', 'DELETE'])
+def api_llm_provider_custom():
+    """保存或删除自定义 OpenAI-compatible LLM。"""
+    try:
+        svc = get_llm_service()
+        data = request.get_json() or {}
+        if request.method == 'DELETE':
+            svc.delete_custom_provider(data.get('provider', ''))
+            return jsonify({'success': True, 'active': svc.provider_info(), 'providers': svc.providers_info()})
+        info = svc.save_custom_provider(data)
+        return jsonify({'success': True, 'active': info, 'providers': svc.providers_info()})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 400
 
 
 @app.route('/api/convert', methods=['POST'])
@@ -739,7 +892,8 @@ def api_oge_detail():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-@app.route('/api/classes', methods=['GET'])
+@app.route('/api/history', methods=['GET'])
+@app.route('/api/classes', methods=['GET'])  # 保留旧路径兼容已有页面
 def api_history():
     """查询历史转换记录列表"""
     try:
@@ -1680,6 +1834,85 @@ def analyze_example_metadata():
 # Benchmark 测试集 & OGE→GEE 反向转换
 # ============================================================
 
+BENCHMARK_DATA_ROOT = os.path.join(os.path.dirname(__file__), 'static', 'testdata')
+DEFAULT_BENCHMARK_SOURCE = 'benchmark_with_dag_rebalanced_v4.json'
+
+
+def _resolve_benchmark_source(source_path=''):
+    """将前端传入的相对路径安全地限制在 static/testdata 内。"""
+    source_path = (source_path or DEFAULT_BENCHMARK_SOURCE).replace('\\', '/').lstrip('/')
+    if '..' in source_path.split('/'):
+        return None, None, '数据源路径不能包含 ..'
+    if not source_path.lower().endswith(('.json', '.csv')):
+        return None, None, '仅支持 JSON 或 CSV 数据源'
+
+    root = os.path.realpath(BENCHMARK_DATA_ROOT)
+    full_path = os.path.realpath(os.path.join(root, source_path))
+    try:
+        if os.path.commonpath([root, full_path]) != root:
+            return None, None, '数据源必须位于 web/static/testdata 内'
+    except ValueError:
+        return None, None, '无效的数据源路径'
+    if not os.path.isfile(full_path):
+        return None, None, f'数据源不存在：{source_path}'
+    return full_path, source_path, None
+
+
+def _normalise_benchmark_case(case, index):
+    """把 JSON / CSV 的行统一成 benchmark 页面使用的案例结构。"""
+    code = (case.get('code') or case.get('oge_code') or '').strip()
+    case_id = str(case.get('case_id') or case.get('id') or f'case_{index + 1:04d}').strip()
+    return {
+        **case,
+        'case_id': case_id,
+        'task_type': str(case.get('task_type') or '未分类').strip(),
+        'description': str(case.get('description') or case.get('notes') or '').strip(),
+        'difficulty': str(case.get('difficulty') or '未标注').strip(),
+        'lang': str(case.get('lang') or 'zh').strip(),
+        'code': code,
+        'code_length': len(code),
+    }
+
+
+def _load_benchmark_cases(source_path=''):
+    """从项目内 JSON 或 CSV 数据源加载并标准化 benchmark 案例。"""
+    full_path, relative_path, err = _resolve_benchmark_source(source_path)
+    if err:
+        return None, None, err
+    try:
+        if full_path.lower().endswith('.csv'):
+            with open(full_path, 'r', encoding='utf-8-sig', newline='') as f:
+                raw_cases = list(csv.DictReader(f))
+        else:
+            with open(full_path, 'r', encoding='utf-8') as f:
+                raw_cases = json.load(f)
+        if not isinstance(raw_cases, list):
+            return None, None, '数据源内容应为案例列表'
+        cases = [_normalise_benchmark_case(case, i) for i, case in enumerate(raw_cases)]
+        return cases, relative_path, None
+    except Exception as e:
+        return None, None, f'读取数据源失败：{str(e)}'
+
+
+@app.route('/api/benchmark-sources', methods=['GET'])
+def get_benchmark_sources():
+    """列出项目 testdata 目录中的可选 benchmark 数据源。"""
+    sources = []
+    for root, _, names in os.walk(BENCHMARK_DATA_ROOT):
+        for name in names:
+            if not name.lower().endswith(('.json', '.csv')):
+                continue
+            full_path = os.path.join(root, name)
+            relative_path = os.path.relpath(full_path, BENCHMARK_DATA_ROOT).replace(os.sep, '/')
+            sources.append({
+                'path': relative_path,
+                'label': relative_path,
+                'format': os.path.splitext(name)[1][1:].upper(),
+            })
+    sources.sort(key=lambda item: (item['path'] != DEFAULT_BENCHMARK_SOURCE, item['path']))
+    return jsonify({'success': True, 'sources': sources, 'default_source': DEFAULT_BENCHMARK_SOURCE})
+
+
 @app.route('/api/benchmark-cases', methods=['GET'])
 def get_benchmark_cases():
     """获取 benchmark 测试集案例列表
@@ -1690,15 +1923,10 @@ def get_benchmark_cases():
     Returns:
         JSON: {success: bool, cases: [...], total: int}
     """
-    import json
-    json_path = os.path.join(os.path.dirname(__file__), 'static', 'testdata',
-                             'benchmark_with_dag_rebalanced_v4.json')
-    if not os.path.exists(json_path):
-        return jsonify({'success': False, 'error': 'Benchmark 文件不存在'}), 404
-
     try:
-        with open(json_path, 'r', encoding='utf-8') as f:
-            cases = json.load(f)
+        cases, source_path, err = _load_benchmark_cases(request.args.get('source', ''))
+        if err:
+            return jsonify({'success': False, 'error': err}), 404
 
         # 只返回摘要信息（不含 dag 等大字段，减少传输量）
         summaries = []
@@ -1714,7 +1942,7 @@ def get_benchmark_cases():
                 'data_ref': c.get('data_ref', '')
             })
 
-        return jsonify({'success': True, 'cases': summaries, 'total': len(summaries)})
+        return jsonify({'success': True, 'cases': summaries, 'total': len(summaries), 'source_path': source_path})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'success': False, 'error': f'读取 benchmark 失败: {str(e)}'}), 500
@@ -1730,19 +1958,14 @@ def get_benchmark_case_detail(case_id):
     Returns:
         JSON: {success: bool, case: {...}}
     """
-    import json
-    json_path = os.path.join(os.path.dirname(__file__), 'static', 'testdata',
-                             'benchmark_with_dag_rebalanced_v4.json')
-    if not os.path.exists(json_path):
-        return jsonify({'success': False, 'error': 'Benchmark 文件不存在'}), 404
-
     try:
-        with open(json_path, 'r', encoding='utf-8') as f:
-            cases = json.load(f)
+        cases, source_path, err = _load_benchmark_cases(request.args.get('source', ''))
+        if err:
+            return jsonify({'success': False, 'error': err}), 404
 
         for c in cases:
             if c.get('case_id') == case_id:
-                return jsonify({'success': True, 'case': c})
+                return jsonify({'success': True, 'case': c, 'source_path': source_path})
 
         return jsonify({'success': False, 'error': f'案例 {case_id} 不存在'}), 404
     except Exception as e:
@@ -1802,57 +2025,59 @@ def api_oge_to_gee():
 # Benchmark 批量转换接口
 # ============================================================
 
-BENCHMARK_RESULT_FILE = os.path.join(
-    PROJECT_ROOT, 'resource', 'benchmark_convert_results.json'
-)
+BENCHMARK_OUTPUT_ROOT = os.path.join(PROJECT_ROOT, 'resource', 'benchmark_outputs')
 
 # 全局后台任务状态：{task_id: {status, progress, ...}}
 _benchmark_tasks = {}
 _benchmark_tasks_lock = threading.Lock()
 
 
-def _load_benchmark_cases():
-    """加载 benchmark 测试集案例
-
-    Returns:
-        list: 案例列表，每个案例包含 case_id、code、gee、description 等字段
-    """
-    json_path = os.path.join(
-        os.path.dirname(__file__), 'static', 'testdata',
-        'benchmark_with_dag_rebalanced_v4.json'
-    )
-    if not os.path.exists(json_path):
-        return None, 'Benchmark 文件不存在'
-
-    with open(json_path, 'r', encoding='utf-8') as f:
-        cases = json.load(f)
-    return cases, None
+def _benchmark_output_dir(source_path):
+    """每个数据源使用独立、可读的输出目录。"""
+    stem = os.path.splitext(os.path.basename(source_path))[0]
+    safe_stem = re.sub(r'[^A-Za-z0-9._-]+', '_', stem).strip('._') or 'benchmark'
+    return os.path.join(BENCHMARK_OUTPUT_ROOT, safe_stem)
 
 
-def _save_benchmark_results(results):
+def _benchmark_result_file(source_path):
+    return os.path.join(_benchmark_output_dir(source_path), 'results.json')
+
+
+def _save_benchmark_results(results, source_path):
     """保存批量转换结果到 JSON 文件
 
     Args:
         results: 批量转换结果字典
     """
-    os.makedirs(os.path.dirname(BENCHMARK_RESULT_FILE), exist_ok=True)
-    with open(BENCHMARK_RESULT_FILE, 'w', encoding='utf-8') as f:
+    result_file = _benchmark_result_file(source_path)
+    os.makedirs(os.path.dirname(result_file), exist_ok=True)
+    with open(result_file, 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
 
-def _load_benchmark_results():
+def _load_benchmark_results(source_path):
     """加载已保存的批量转换结果
 
     Returns:
         dict or None: 已保存的结果，不存在返回 None
     """
-    if os.path.exists(BENCHMARK_RESULT_FILE):
-        with open(BENCHMARK_RESULT_FILE, 'r', encoding='utf-8') as f:
+    result_file = _benchmark_result_file(source_path)
+    if os.path.exists(result_file):
+        with open(result_file, 'r', encoding='utf-8') as f:
             return json.load(f)
     return None
 
 
-def _run_benchmark_batch(task_id, cases, llm, force):
+def _write_benchmark_gee_file(source_path, case_id, gee_code):
+    safe_case_id = re.sub(r'[^A-Za-z0-9._-]+', '_', str(case_id)).strip('._') or 'case'
+    output_file = os.path.join(_benchmark_output_dir(source_path), f'{safe_case_id}.js')
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    with open(output_file, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(gee_code or '')
+    return output_file
+
+
+def _run_benchmark_batch(task_id, cases, llm, force, source_path):
     """
     后台线程：逐个转换 benchmark 案例并实时保存
 
@@ -1865,13 +2090,13 @@ def _run_benchmark_batch(task_id, cases, llm, force):
     # 加载已有结果（用于断点续跑）
     existing = {}
     if not force:
-        saved = _load_benchmark_results()
+        saved = _load_benchmark_results(source_path)
         if saved:
             for r in saved.get('results', []):
                 existing[r.get('case_id')] = r
 
     batch_start = time.time()
-    results = list(existing.values())
+    results = [existing[c.get('case_id')] for c in cases if c.get('case_id') in existing]
     # 从已有结果中恢复计数
     converted = sum(1 for r in results if r.get('status') == 'success')
     skipped = sum(1 for r in results if r.get('status') == 'skipped')
@@ -1900,7 +2125,7 @@ def _run_benchmark_batch(task_id, cases, llm, force):
             failed += 1
             results.append({
                 'case_id': case_id,
-                'status': 'skipped',
+                'status': 'failed',
                 'error': 'OGE 代码为空',
                 'timestamp': time.strftime('%Y-%m-%dT%H:%M:%S')
             })
@@ -1912,6 +2137,8 @@ def _run_benchmark_batch(task_id, cases, llm, force):
                 elapsed = time.time() - t0
 
                 ground_truth_gee = case.get('gee', '')
+                gee_code = result.get('gee_code', '')
+                output_file = _write_benchmark_gee_file(source_path, case_id, gee_code)
                 results.append({
                     'case_id': case_id,
                     'task_type': case.get('task_type', ''),
@@ -1919,7 +2146,8 @@ def _run_benchmark_batch(task_id, cases, llm, force):
                     'description': description,
                     'oge_code': oge_code,
                     'ground_truth_gee': ground_truth_gee,
-                    'llm_gee_code': result.get('gee_code', ''),
+                    'llm_gee_code': gee_code,
+                    'output_file': output_file,
                     'explanations': result.get('explanations', []),
                     'warnings': result.get('warnings', []),
                     'feasible': result.get('feasible', True),
@@ -1944,6 +2172,8 @@ def _run_benchmark_batch(task_id, cases, llm, force):
 
         # 每处理完一个案例就保存一次
         batch_data = {
+            'source_path': source_path,
+            'output_dir': _benchmark_output_dir(source_path),
             'total': total,
             'converted': converted,
             'skipped': skipped,
@@ -1951,7 +2181,7 @@ def _run_benchmark_batch(task_id, cases, llm, force):
             'elapsed_ms': round((time.time() - batch_start) * 1000, 1),
             'results': results
         }
-        _save_benchmark_results(batch_data)
+        _save_benchmark_results(batch_data, source_path)
 
         with _benchmark_tasks_lock:
             _benchmark_tasks[task_id]['converted'] = converted
@@ -1964,6 +2194,8 @@ def _run_benchmark_batch(task_id, cases, llm, force):
 
     # 最终保存
     batch_data = {
+        'source_path': source_path,
+        'output_dir': _benchmark_output_dir(source_path),
         'total': total,
         'converted': converted,
         'skipped': skipped,
@@ -1971,7 +2203,7 @@ def _run_benchmark_batch(task_id, cases, llm, force):
         'elapsed_ms': round(total_elapsed * 1000, 1),
         'results': results
     }
-    _save_benchmark_results(batch_data)
+    _save_benchmark_results(batch_data, source_path)
 
     with _benchmark_tasks_lock:
         _benchmark_tasks[task_id]['status'] = 'completed'
@@ -2008,9 +2240,11 @@ def api_benchmark_batch_convert():
     task_type = data.get('task_type', '').strip()
     resume = data.get('resume', True)
     force = data.get('force', False)
+    source_path = data.get('source_path', '')
+    provider = data.get('provider', '').strip()
 
     # 加载 benchmark 案例
-    cases, err = _load_benchmark_cases()
+    cases, source_path, err = _load_benchmark_cases(source_path)
     if err:
         return jsonify({'success': False, 'error': err}), 404
 
@@ -2025,6 +2259,11 @@ def api_benchmark_batch_convert():
 
     # 检查 LLM 可用性
     llm = get_llm_service()
+    if provider:
+        try:
+            llm.switch_provider(provider)
+        except ValueError as e:
+            return jsonify({'success': False, 'error': str(e)}), 400
     llm.reset_availability()
     if not llm.is_available():
         return jsonify({
@@ -2043,12 +2282,15 @@ def api_benchmark_batch_convert():
             'failed': 0,
             'progress': 0.0,
             'elapsed_ms': 0,
+            'source_path': source_path,
+            'output_dir': _benchmark_output_dir(source_path),
+            'provider': llm.provider_info(),
             'start_time': time.strftime('%Y-%m-%dT%H:%M:%S')
         }
 
     t = threading.Thread(
         target=_run_benchmark_batch,
-        args=(task_id, cases, llm, force),
+        args=(task_id, cases, llm, force, source_path),
         daemon=True
     )
     t.start()
@@ -2056,8 +2298,10 @@ def api_benchmark_batch_convert():
     return jsonify({
         'success': True,
         'task_id': task_id,
-        'message': f'已启动后台批量转换任务，共 {len(cases)} 个案例。使用 GET /api/benchmark-batch-status?task_id={task_id} 查询进度。',
-        'total': len(cases)
+        'message': f'已启动后台批量转换任务，共 {len(cases)} 个案例。',
+        'total': len(cases),
+        'source_path': source_path,
+        'output_dir': _benchmark_output_dir(source_path),
     })
 
 
@@ -2097,7 +2341,10 @@ def api_benchmark_batch_result():
     Returns:
         JSON: {success: bool, data: {...}}
     """
-    saved = _load_benchmark_results()
+    _, source_path, err = _load_benchmark_cases(request.args.get('source', ''))
+    if err:
+        return jsonify({'success': False, 'error': err}), 404
+    saved = _load_benchmark_results(source_path)
     if saved is None:
         return jsonify({
             'success': True,
@@ -2108,6 +2355,8 @@ def api_benchmark_batch_result():
                 'failed': 0,
                 'elapsed_ms': 0,
                 'results': [],
+                'source_path': source_path,
+                'output_dir': _benchmark_output_dir(source_path),
                 'message': '暂无批量转换结果，请先调用 POST /api/benchmark-batch-convert'
             }
         })
@@ -2122,8 +2371,12 @@ def api_benchmark_batch_result_clear():
         JSON: {success: bool}
     """
     try:
-        if os.path.exists(BENCHMARK_RESULT_FILE):
-            os.remove(BENCHMARK_RESULT_FILE)
+        _, source_path, err = _load_benchmark_cases(request.args.get('source', ''))
+        if err:
+            return jsonify({'success': False, 'error': err}), 404
+        result_file = _benchmark_result_file(source_path)
+        if os.path.exists(result_file):
+            os.remove(result_file)
         return jsonify({'success': True})
     except Exception as e:
         traceback.print_exc()
@@ -2208,7 +2461,7 @@ def _load_gee_batch_results():
     return None
 
 
-def _run_gee_batch(task_id, cases, llm, dao, force):
+def _run_gee_batch(task_id, cases, llm, dao, force, retry_failed=False):
     """后台线程：逐个将 GEE 代码转换为 OGE 代码
 
     Args:
@@ -2217,6 +2470,7 @@ def _run_gee_batch(task_id, cases, llm, dao, force):
         llm: LLM 服务实例
         dao: 数据访问对象
         force: 是否强制重新转换
+        retry_failed: 是否仅重试失败案例
     """
     existing = {}
     if not force:
@@ -2224,6 +2478,15 @@ def _run_gee_batch(task_id, cases, llm, dao, force):
         if saved:
             for r in saved.get('results', []):
                 existing[r.get('case_id')] = r
+
+    if retry_failed:
+        failed_ids = {cid for cid, r in existing.items() if r.get('status') == 'failed'}
+        cases = [c for c in cases if c.get('case_id', '') in failed_ids]
+        if not cases:
+            with _gee_batch_tasks_lock:
+                _gee_batch_tasks[task_id]['status'] = 'completed'
+                _gee_batch_tasks[task_id]['progress'] = 100.0
+            return
 
     batch_start = time.time()
     results = list(existing.values())
@@ -2241,11 +2504,24 @@ def _run_gee_batch(task_id, cases, llm, dao, force):
         gee_code = case.get('gee', '').strip()
 
         if not force and case_id in existing:
-            skipped += 1
-            with _gee_batch_tasks_lock:
-                _gee_batch_tasks[task_id]['skipped'] = skipped
-                _gee_batch_tasks[task_id]['progress'] = round((i + 1) / total * 100, 1)
-            continue
+            old_status = existing[case_id].get('status', '')
+            if retry_failed and old_status == 'failed':
+                pass
+            elif not retry_failed:
+                skipped += 1
+                with _gee_batch_tasks_lock:
+                    _gee_batch_tasks[task_id]['skipped'] = skipped
+                    _gee_batch_tasks[task_id]['progress'] = round((i + 1) / total * 100, 1)
+                continue
+            else:
+                skipped += 1
+                with _gee_batch_tasks_lock:
+                    _gee_batch_tasks[task_id]['skipped'] = skipped
+                    _gee_batch_tasks[task_id]['progress'] = round((i + 1) / total * 100, 1)
+                continue
+
+        # 移除旧结果（如果存在），避免重复
+        results = [r for r in results if r.get('case_id') != case_id]
 
         if not gee_code:
             failed += 1
@@ -2376,6 +2652,7 @@ def api_gee_benchmark_convert():
     Request Body:
         resume: 是否断点续跑，默认 true
         force: 是否强制重新转换所有案例，默认 false
+        retry_failed: 是否仅重试失败的案例，默认 false
 
     Returns:
         JSON: {success: bool, task_id: str, message: str, total: int}
@@ -2383,6 +2660,7 @@ def api_gee_benchmark_convert():
     data = request.get_json() or {}
     resume = data.get('resume', True)
     force = data.get('force', False)
+    retry_failed = data.get('retry_failed', False)
 
     cases, err = _load_gee_benchmark_cases()
     if err:
@@ -2401,11 +2679,14 @@ def api_gee_benchmark_convert():
 
     dao = GeeOgeDao()
 
+    total_cases = len(cases)
+    msg_prefix = '重试失败案例' if retry_failed else '批量转换'
+
     task_id = str(uuid.uuid4())[:8]
     with _gee_batch_tasks_lock:
         _gee_batch_tasks[task_id] = {
             'status': 'pending',
-            'total': len(cases),
+            'total': total_cases,
             'converted': 0,
             'skipped': 0,
             'failed': 0,
@@ -2416,7 +2697,7 @@ def api_gee_benchmark_convert():
 
     t = threading.Thread(
         target=_run_gee_batch,
-        args=(task_id, cases, llm, dao, force),
+        args=(task_id, cases, llm, dao, force, retry_failed),
         daemon=True
     )
     t.start()
@@ -2424,8 +2705,8 @@ def api_gee_benchmark_convert():
     return jsonify({
         'success': True,
         'task_id': task_id,
-        'message': f'已启动后台 GEE→OGE 批量转换任务，共 {len(cases)} 个案例。使用 GET /api/gee-benchmark-status?task_id={task_id} 查询进度。',
-        'total': len(cases)
+        'message': f'已启动后台 GEE→OGE {msg_prefix}任务。使用 GET /api/gee-benchmark-status?task_id={task_id} 查询进度。',
+        'total': total_cases
     })
 
 
@@ -2531,7 +2812,9 @@ if __name__ == '__main__':
             
             # 使用自定义服务器支持端口复用
             from werkzeug.serving import make_server
-            server = make_server('127.0.0.1', port, app)
+            # 解析器批量翻译需要同时处理多个 LLM 请求；默认 make_server 是单线程的，
+            # 会把前端并发请求排队成串行。启用 threaded WSGI server 后每个请求独立处理。
+            server = make_server('127.0.0.1', port, app, threaded=True)
             print(f"  服务正在运行，按 Ctrl+C 停止...\n")
             server.serve_forever()
             started = True

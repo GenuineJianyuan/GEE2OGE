@@ -277,6 +277,7 @@ body {
     <div class="card-body">
       <div class="control-panel">
         <button class="btn btn-primary" id="startBtn">🚀 开始批量转换</button>
+        <button class="btn btn-secondary" id="retryBtn" style="background:#fef3c7;color:#d97706;border:1px solid #fde68a">🔄 重试失败</button>
         <button class="btn btn-secondary" id="resumeBtn">📋 加载/续跑</button>
         <button class="btn btn-danger" id="clearBtn">🗑️ 清空结果</button>
         <label style="margin-left:auto">
@@ -556,6 +557,7 @@ async function pollTaskStatus() {
       clearInterval(pollTimer);
       pollTimer = null;
       document.getElementById('startBtn').disabled = false;
+      document.getElementById('retryBtn').disabled = false;
       showToast('🎉 批量转换完成！');
       loadResults();
     } else if (t.status === 'running') {
@@ -595,8 +597,44 @@ async function clearResults() {
   } catch(e) { showToast('清空失败: ' + e.message); }
 }
 
+async function retryFailed() {
+  const failedCount = batchResults
+    ? (batchResults.results || []).filter(r => r.status === 'failed').length
+    : 0;
+  if (failedCount === 0) {
+    showToast('没有失败的案例需要重试');
+    return;
+  }
+  if (!confirm(`检测到 ${failedCount} 个失败案例，确定全部重试？`)) return;
+
+  const btn = document.getElementById('retryBtn');
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/gee-benchmark-convert', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({resume: true, force: false, retry_failed: true})
+    });
+    const data = await res.json();
+    if (data.success) {
+      currentTaskId = data.task_id;
+      showToast('重试任务已启动: ' + data.message);
+      updateStatusBadge('running');
+      startPolling();
+    } else {
+      showToast('启动失败: ' + data.error);
+      btn.disabled = false;
+    }
+  } catch(e) {
+    showToast('请求失败: ' + e.message);
+    btn.disabled = false;
+  }
+}
+
 // 初始化
 document.getElementById('startBtn').addEventListener('click', startBatchConvert);
+document.getElementById('retryBtn').addEventListener('click', retryFailed);
 document.getElementById('resumeBtn').addEventListener('click', () => {
   loadCases();
   loadResults();
