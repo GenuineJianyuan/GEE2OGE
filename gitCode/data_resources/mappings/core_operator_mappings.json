@@ -1,0 +1,15 @@
+[
+  {"gee_api":"ee.Image","oge_apis":["Coverage.load"],"mapping_type":"one_to_one","note":"Use coverageID and productID from the target data catalogue."},
+  {"gee_api":"ee.Image.select","oge_apis":["Coverage.selectBands"],"mapping_type":"one_to_one","note":"Select one or more band names."},
+  {"gee_api":"ee.Image.subtract","oge_apis":["Coverage.subtract"],"mapping_type":"one_to_one"},
+  {"gee_api":"ee.Image.add","oge_apis":["Coverage.add"],"mapping_type":"one_to_one"},
+  {"gee_api":"ee.Image.multiply","oge_apis":["Coverage.multiply"],"mapping_type":"one_to_one"},
+  {"gee_api":"ee.Image.divide","oge_apis":["Coverage.divide"],"mapping_type":"one_to_one"},
+  {"gee_api":"ee.Image.abs","oge_apis":["Coverage.abs"],"mapping_type":"one_to_one"},
+  {"gee_api":"ee.Image.normalizedDifference","oge_apis":["Coverage.subtract","Coverage.add","Coverage.divide"],"mapping_type":"one_to_many","note":"(band1-band2)/(band1+band2)."},
+  {"gee_api":"ee.Image.rename","oge_apis":[],"mapping_type":"native_python","note":"Preserve the output-band metadata in the target workflow."},
+  {"gee_api":"ee.Geometry.Point","oge_apis":["Geometry.Point"],"mapping_type":"one_to_one"},
+  {"gee_api":"ee.Geometry.buffer","oge_apis":["Geometry.buffer"],"mapping_type":"one_to_one"},
+  {"gee_api":"Map.setCenter","oge_apis":["mapclient.centerMap"],"mapping_type":"one_to_one"},
+  {"gee_api":"Map.addLayer","oge_apis":["mapclient.addLayer"],"mapping_type":"one_to_one"}
+]
