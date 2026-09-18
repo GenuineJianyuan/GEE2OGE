@@ -1,0 +1,2081 @@
+[
+  {
+    "gee_api": "ee.Dictionary.get",
+    "gee_api_names": [
+      "ee.Dictionary.get"
+    ],
+    "oge_apis": [
+      "Python dict.get"
+    ],
+    "mapping_type": "gee_python",
+    "mapping_name": "普通字典取值",
+    "note": "仅当ee.Dictionary承载普通本地配置数据时成立；如果Dictionary来自reduceRegion等服务端计算，则不能直接转换",
+    "gee_example": "var threshold = config.get('threshold');",
+    "oge_example": "threshold = config.get(\"threshold\")",
+    "python_implementation": "# GEE: dict.get(key, default)\n# OGE/Python: 直接用 dict.get() 方法\nvalue = my_dict.get(key, default_value)\n",
+    "confidence": 0.88
+  },
+  {
+    "gee_api": "ee.List.sequence",
+    "gee_api_names": [
+      "ee.List.sequence"
+    ],
+    "oge_apis": [
+      "Python list(range())"
+    ],
+    "mapping_type": "gee_python",
+    "mapping_name": "数字序列生成",
+    "note": "仅当生成的序列作为普通Python本地列表使用时成立",
+    "gee_example": "var strata = ee.List.sequence(1, 5);",
+    "oge_example": "strata = list(range(1, 6))",
+    "python_implementation": "# GEE: ee.List.sequence(start, end, step)\n# OGE/Python: 直接用 list(range(start, end+1, step))\n# 注意：range 是左闭右开，所以 end 需要 +1\n\n# 示例：生成 1 到 5 的序列\nresult = list(range(1, 6))  # [1, 2, 3, 4, 5]\n\n# 带步长的序列\nresult = list(range(0, 101, 10))  # [0, 10, 20, ..., 100]\n",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Number.divide",
+    "gee_api_names": [
+      "ee.Number.divide"
+    ],
+    "oge_apis": [
+      "Python /"
+    ],
+    "mapping_type": "gee_python",
+    "mapping_name": "数值除法",
+    "note": "仅适用于value已经能够作为Python本地数值表达的情况",
+    "gee_example": "var result = ee.Number(value).divide(2);",
+    "oge_example": "result = value / 2",
+    "python_implementation": "# GEE: ee.Number.divide(other)\n# OGE/Python: 直接用 / 运算符\nresult = a / b\n",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Number.gt",
+    "gee_api_names": [
+      "ee.Number.gt"
+    ],
+    "oge_apis": [
+      "Python >"
+    ],
+    "mapping_type": "gee_python",
+    "mapping_name": "数值大于比较",
+    "note": "仅适用于value已经转换为Python本地数值的情况；GEE服务端惰性Number不能机械转换",
+    "gee_example": "var valid = ee.Number(value).gt(0);",
+    "oge_example": "valid = value > 0",
+    "python_implementation": "# GEE: ee.Number.gt(other)\n# OGE/Python: 直接用 > 运算符\nresult = a > b\n",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Number.multiply",
+    "gee_api_names": [
+      "ee.Number.multiply"
+    ],
+    "oge_apis": [
+      "Python *"
+    ],
+    "mapping_type": "gee_python",
+    "mapping_name": "数值乘法",
+    "note": "仅适用于value已经能够作为Python本地数值表达的情况",
+    "gee_example": "var result = ee.Number(value).multiply(2);",
+    "oge_example": "result = value * 2",
+    "python_implementation": "# GEE: ee.Number.multiply(other)\n# OGE/Python: 直接用 * 运算符\nresult = a * b\n",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "print",
+    "gee_api_names": [
+      "print"
+    ],
+    "oge_apis": [
+      "Python print"
+    ],
+    "mapping_type": "gee_python",
+    "mapping_name": "普通信息打印",
+    "note": "仅用于普通本地值的输出，不代表所有GEE print调用均可直接替换",
+    "gee_example": "print('threshold', threshold);",
+    "oge_example": "print(\"threshold\", threshold)",
+    "python_implementation": "# GEE: print(value)\n# OGE/Python: 直接用 print() 函数\nprint(\"输出内容:\", value)\n",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "Map.centerObject",
+    "gee_api_names": [
+      "Map.centerObject"
+    ],
+    "oge_apis": [
+      "oge.mapclient.centerMap"
+    ],
+    "mapping_type": "gee_python",
+    "mapping_name": "地图中心设置",
+    "note": "GEE使用centerObject设置地图中心，OGE使用centerMap，核心语义均为设置地图显示范围",
+    "gee_example": "Map.centerObject(studyArea, 8);",
+    "oge_example": "oge.mapclient.centerMap(115.0, 30.5, 8)",
+    "python_implementation": "# GEE: Map.centerObject(object, zoom)\n# OGE: 使用 oge.mapclient.centerMap(lon, lat, zoom)\n# 注意：参数是经纬度数值，不是对象\n\noge.mapclient.centerMap(108.5, 33.5, 10)\n",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Number.and",
+    "gee_api_names": [
+      "ee.Number.and"
+    ],
+    "oge_apis": [],
+    "mapping_type": "gee_python",
+    "mapping_name": "数字逻辑与",
+    "note": "GEE 中 ee.Number 的逻辑与运算，OGE 中直接用 Python 的 and 运算符",
+    "gee_example": "",
+    "oge_example": "# ee.Number.and 在 Python 中直接用 and 运算符\nresult = num_a and num_b",
+    "python_implementation": "# GEE: ee.Number.and(other)\n# OGE: 直接用 Python 的 and 运算符\na and b",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Number.subtract",
+    "gee_api_names": [
+      "ee.Number.subtract"
+    ],
+    "oge_apis": [],
+    "mapping_type": "gee_python",
+    "mapping_name": "数字减法",
+    "note": "GEE 中 ee.Number 的减法运算，OGE 中直接用 Python 的 - 运算符",
+    "gee_example": "",
+    "oge_example": "# ee.Number.subtract 在 Python 中直接用 - 运算符\nresult = num_a - num_b",
+    "python_implementation": "# GEE: ee.Number.subtract(other)\n# OGE: 直接用 Python 的 - 运算符\na - b",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.List.iterate",
+    "gee_api_names": [
+      "ee.List.iterate"
+    ],
+    "oge_apis": [
+      "Python for loop"
+    ],
+    "mapping_type": "gee_python",
+    "mapping_name": "列表迭代",
+    "note": "GEE 中 ee.List.iterate 用于迭代列表元素，OGE 中直接使用 Python 的 for 循环实现。",
+    "gee_example": "",
+    "oge_example": "# ee.List.iterate 在 Python 中直接用 for 循环\nresult = 0\nfor item in my_list:\n    result = result + item",
+    "python_implementation": "# GEE: list.iterate(function(item, acc) { ... }, init)\n# OGE: 直接用 Python for 循环\nacc = init_value\nfor item in list_data:\n    acc = process(item, acc)",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Image.bitwiseAnd",
+    "gee_api_names": [
+      "ee.Image.bitwiseAnd",
+      "ee.Image.eq",
+      "ee.Image.and"
+    ],
+    "oge_apis": [
+      "Coverage.bitwiseAnd",
+      "Coverage.eq",
+      "Coverage.and"
+    ],
+    "mapping_type": "many_to_many",
+    "mapping_name": "位运算与掩膜",
+    "note": "核心语义均为位运算和逻辑与操作",
+    "gee_example": "var clearMask = qaPixel.bitwiseAnd(1).eq(0).and(qaPixel.bitwiseAnd(1 << 1).eq(0));",
+    "oge_example": "clearMask = service.getProcess(\"Coverage.bitwiseAnd\").execute(qaPixel, 1); clearMask = service.getProcess(\"Coverage.eq\").execute(clearMask, 0);",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Geometry.Point",
+    "gee_api_names": [
+      "ee.Geometry.Point",
+      "ee.Geometry.buffer",
+      "ee.Image.clip"
+    ],
+    "oge_apis": [
+      "Geometry.Polygon",
+      "FeatureCollection.loadFromGeometry",
+      "Coverage.clipRasterByMaskLayerByGDAL"
+    ],
+    "mapping_type": "many_to_many",
+    "mapping_name": "点缓冲栅格裁剪",
+    "note": "点 + 缓冲 + 裁剪组合，GEE 中先用 Point 构造点、buffer 扩成面，再 clip；OGE 中构造点几何后转 FeatureCollection，再用 clipRasterByMaskLayerByGDAL 裁剪",
+    "gee_example": "var geometry = ee.Geometry.Point([lon, lat]).buffer(radius);\nvar clipped = image.clip(geometry);",
+    "oge_example": "# GEE 中点缓冲构造的圆形区域，在 OGE 中直接构造圆形多边形\nimport math\ncenter_lon, center_lat = lon, lat\nradius_deg = radius / 111000  # 米转度（近似，高纬度需修正）\ncircle_coords = []\nfor i in range(36):\n    angle = 2 * math.pi * i / 36\n    circle_coords.append([\n        center_lon + radius_deg * math.cos(angle),\n        center_lat + radius_deg * math.sin(angle)\n    ])\ncircle_coords.append(circle_coords[0])  # 闭合多边形\n# 构造圆形多边形\ncircle_polygon = service.getProcess(\"Geometry.Polygon\").execute(circle_coords, \"EPSG:4326\")\n# 多边形转要素集合\nfc = service.getProcess(\"FeatureCollection.loadFromGeometry\").execute(circle_polygon, \"{attr: 0}\")\n# 按掩膜裁剪栅格\nclipped = service.getProcess(\"Coverage.clipRasterByMaskLayerByGDAL\").execute(image, fc, \"True\", \"\", \"False\", \"\", \"\", \"False\", \"False\", \"\", \"False\", \"0\", \"\")",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Geometry.Polygon",
+    "gee_api_names": [
+      "ee.Geometry.Polygon",
+      "ee.Image.clip"
+    ],
+    "oge_apis": [
+      "Geometry.Polygon",
+      "FeatureCollection.loadFromGeometry",
+      "Coverage.clipRasterByMaskLayerByGDAL"
+    ],
+    "mapping_type": "many_to_many",
+    "mapping_name": "多边形栅格裁剪",
+    "note": "多边形 + 裁剪组合，GEE 中用 Polygon 构造几何后 clip；OGE 中构造多边形后转 FeatureCollection，再用 clipRasterByMaskLayerByGDAL 裁剪",
+    "gee_example": "var geometry = ee.Geometry.Polygon(coords);\nvar clipped = image.clip(geometry);",
+    "oge_example": "# GEE 中点缓冲构造的圆形区域，在 OGE 中直接构造圆形多边形\nimport math\ncenter_lon, center_lat = lon, lat\nradius_deg = radius / 111000  # 米转度（近似，高纬度需修正）\ncircle_coords = []\nfor i in range(36):\n    angle = 2 * math.pi * i / 36\n    circle_coords.append([\n        center_lon + radius_deg * math.cos(angle),\n        center_lat + radius_deg * math.sin(angle)\n    ])\ncircle_coords.append(circle_coords[0])  # 闭合多边形\n# 构造圆形多边形\ncircle_polygon = service.getProcess(\"Geometry.Polygon\").execute(circle_coords, \"EPSG:4326\")\n# 多边形转要素集合\nfc = service.getProcess(\"FeatureCollection.loadFromGeometry\").execute(circle_polygon, \"{attr: 0}\")\n# 按掩膜裁剪栅格\nclipped = service.getProcess(\"Coverage.clipRasterByMaskLayerByGDAL\").execute(image, fc, \"True\", \"\", \"False\", \"\", \"\", \"False\", \"False\", \"\", \"False\", \"0\", \"\")",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Image.where",
+    "gee_api_names": [
+      "ee.Image.where",
+      "ee.Image.eq",
+      "ee.Image.or"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "等值重分类（离散值映射）",
+    "note": "GEE中通过where+eq+or实现离散值重分类，OGE用reclass算子，等值区间用(min,max,new)表示",
+    "gee_example": "var result = ee.Image(0)\n  .where(code.eq(11), 1)\n  .where(code.eq(12).or(code.eq(13)), 2);",
+    "oge_example": "rules = [(11.0, 11.0, 1.0), (12.0, 13.0, 2.0)]\nresult = service.getProcess(\"Coverage.reclass\").execute(code, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.ImageCollection",
+    "gee_api_names": [
+      "ee.ImageCollection",
+      "ee.ImageCollection.filter",
+      "ee.Filter.eq",
+      "ee.ImageCollection.first",
+      "ee.Image"
+    ],
+    "oge_apis": [
+      "Service.getCoverage"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "按场景ID筛选读取单景影像",
+    "note": "GEE中通过集合筛选取第一张获取指定影像，OGE直接用getCoverage读取",
+    "gee_example": "var col = ee.ImageCollection('LANDSAT/LC08/C02/T1_TOA')\n  .filter(ee.Filter.eq('LANDSAT_SCENE_ID', 'LC81220382015275LGN00'));\nvar ls8 = ee.Image(col.first());",
+    "oge_example": "# ===== 组合映射：按属性筛选+取首景 → 直接 getCoverage =====\n# GEE: ee.ImageCollection + filter + Filter.eq + first + ee.Image （5步操作）\n# OGE: 直接 service.getCoverage() （1步，一步到位）\n#\n# 原理：GEE 中需要从集合中筛选再取首景来获取指定影像，\n#       但 OGE 中只要知道 coverageID，直接读取单景即可。\n\ncov = service.getCoverage(\n    coverageID=\"LC08_126037_20230513\",\n    productID=\"LC08_L2\"\n)\n\n# 千万不要逐算子翻译成 CoverageCollection.load + filter + Filter.eq + first\n# 那是 GEE 的写法，OGE 不需要这么繁琐！\n",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.ImageCollection",
+    "gee_api_names": [
+      "ee.ImageCollection",
+      "ee.ImageCollection.filterBounds",
+      "ee.ImageCollection.filterDate",
+      "ee.ImageCollection.sort",
+      "ee.ImageCollection.first",
+      "ee.Image"
+    ],
+    "oge_apis": [
+      "Service.getCoverage"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "按条件排序取首景影像",
+    "note": "GEE中通过空间+时间筛选、排序取首景，OGE直接指定coverageID读取",
+    "gee_example": "var image = ee.Image(\n  ee.ImageCollection('LANDSAT/LC08/C02/T1_TOA')\n    .filterBounds(point)\n    .filterDate('2015-09-01', '2015-10-31')\n    .sort('CLOUD_COVER')\n    .first()\n);",
+    "oge_example": "# ===== 组合映射：空间+时间筛选+排序+取首景 → 直接 getCoverage =====\n# GEE: ImageCollection + filterBounds + filterDate + sort + first + ee.Image （6步操作）\n# OGE: 直接 service.getCoverage() （1步，一步到位）\n#\n# 原理：GEE 中需要从大集合中筛选、排序、取首景，\n#       但 OGE 中只要知道目标影像的 coverageID，直接读取即可。\n\ncov = service.getCoverage(\n    coverageID=\"LC08_126037_20230513\",\n    productID=\"LC08_L2\"\n)\n\n# 千万不要逐算子翻译成 load + filterBounds + filterDate + sort + first\n# 那是 GEE 的写法，OGE 不需要这么繁琐！\n",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Geometry.Rectangle",
+    "gee_api_names": [
+      "ee.Geometry.Rectangle",
+      "ee.ImageCollection",
+      "ee.ImageCollection.filterBounds"
+    ],
+    "oge_apis": [
+      "Service.getCoverageCollection"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "矩形范围影像集合读取",
+    "note": "GEE中矩形几何+集合+空间过滤，OGE合并为getCoverageCollection的bbox参数",
+    "gee_example": "var region = ee.Geometry.Rectangle([108.5, 18.1, 111.0, 20.1]);\nvar collection = ee.ImageCollection('COPERNICUS/DEM/GLO30').filterBounds(region);",
+    "oge_example": "collection = service.getCoverageCollection(\n    productID=\"ASTER_GDEM_DEM30\",\n    bbox=[108.5, 18.1, 111.0, 20.1],\n    datetime=[\"2000-01-01 00:00:00\", \"2000-01-01 00:00:00\"]\n)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Geometry.Rectangle",
+    "gee_api_names": [
+      "ee.Geometry.Rectangle",
+      "ee.Image.clip",
+      "ee.ImageCollection.filterBounds"
+    ],
+    "oge_apis": [
+      "Service.getCoverageCollection"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "裁剪+空间过滤+均值合成（隐含bbox）",
+    "note": "GEE中filterBounds+clip均用于限定范围，OGE中由getCoverageCollection的bbox参数一次性完成",
+    "gee_example": "var region = ee.Geometry.Rectangle([108.5, 18.1, 111.0, 20.1]);\nvar dem = collection.filterBounds(region).mean().clip(region);",
+    "oge_example": "dem_collection = service.getCoverageCollection(\n    productID=\"ASTER_GDEM_DEM30\",\n    bbox=[108.5, 18.1, 111.0, 20.1],\n    datetime=datetime_range\n)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.reduceRegion",
+    "gee_api_names": [
+      "ee.Image.reduceRegion",
+      "ee.Reducer.count",
+      "ee.Reducer.variance",
+      "ee.Dictionary.get",
+      "ee.List.sequence",
+      "ee.List.iterate",
+      "ee.Number.multiply",
+      "ee.Number.divide",
+      "ee.Number.gt"
+    ],
+    "oge_apis": [
+      "Coverage.geoDetector"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "GeoDetector统计计算",
+    "note": "GEE中手写GeoDetector函数（reduceRegion + count + variance + iterate等）对应OGE的Coverage.geoDetector算子。注意：这是整体映射，不要手动实现geodetector算法，直接调用Coverage.geoDetector即可！",
+    "gee_example": "var stats = ee.Dictionary(yValid.reduceRegion({reducer: ee.Reducer.count().combine({reducer2: ee.Reducer.variance(), sharedInputs: true}), geometry: geom, scale: scale})); var count = ee.Number(stats.get('count')); var strata = ee.List.sequence(1, 5);",
+    "oge_example": "\n═══════════════════════════════════════════════════════\n  重要：这是一个整体映射，直接调用，不要拆开！\n═══════════════════════════════════════════════════════\n\nGEE 中的写法（十几行甚至几十行）：\n  - yValid.reduceRegion({ reducer: ee.Reducer.count().combine(ee.Reducer.variance()), ... })\n  - ee.List.sequence(1, 5)\n  - ee.List.iterate(function(c, acc) { ... yValid.updateMask(xValid.eq(c)).reduceRegion(...) ... }, 0)\n  - 手写 q = 1 - withinSS / totalSS 计算\n  → 这些全部加起来，对应 OGE 的一个算子：Coverage.geoDetector\n\nOGE 中的写法（只需要一行调用）：\n\ngeo_result = service.getProcess(\"Coverage.geoDetector\").execute(\n    y_cov,          # 第1参数：因变量栅格 (Coverage)，如 NDVI、LST\n    \"y_name\",       # 第2参数：因变量标识名 (字符串)\n    x_class_cov,    # 第3参数：自变量分类栅格 (Coverage)，如高程分级、坡度分级\n    y_min_value,    # 第4参数：因变量最小值 (数值)，如 -100\n    y_max_value,    # 第5参数：因变量最大值 (数值)，如 100\n    nodata_value    # 第6参数：无效值 (数值)，如 0\n)\n\n# 结果输出用 .log()\ngeo_result.log(\"地理探测器结果\")\n\n═══════════════════════════════════════════════════════\n  绝对禁止：手写 geoDetector 函数、返回假值、用 focal 近似\n═══════════════════════════════════════════════════════\n",
+    "python_implementation": "",
+    "confidence": 0.93
+  },
+  {
+    "gee_api": "ee.Image.where",
+    "gee_api_names": [
+      "ee.Image.where",
+      "ee.Image.gte",
+      "ee.Image.gt",
+      "ee.Image.lt",
+      "ee.Image.lte",
+      "ee.Image.and"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "条件分级重分类",
+    "note": "多个GEE比较、逻辑和where调用共同组成分级规则，对应OGE的单个reclass算子",
+    "gee_example": "var slopeClass = ee.Image(0).where(slope.gte(0).and(slope.lt(5)), 1).where(slope.gte(5).and(slope.lt(20)), 2).where(slope.gte(20).and(slope.lte(90)), 3);",
+    "oge_example": "rules = [(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]; slopeClass = service.getProcess(\"Coverage.reclass\").execute(slope, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.ImageCollection",
+    "gee_api_names": [
+      "ee.ImageCollection",
+      "ee.ImageCollection.filter",
+      "ee.Filter.eq",
+      "ee.ImageCollection.first",
+      "ee.Image"
+    ],
+    "oge_apis": [
+      "Service.getCoverage"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "按属性筛选并读取单景栅格",
+    "note": "GEE通过集合筛选和first取得目标影像，OGE在coverageID已知时直接读取单景Coverage",
+    "gee_example": "var col = ee.ImageCollection('LANDSAT/LC08/C02/T1_TOA').filter(ee.Filter.eq('LANDSAT_SCENE_ID', 'LC81220382015275LGN00')); var image = ee.Image(col.first());",
+    "oge_example": "image = service.getCoverage(coverageID=\"LC81220382015275LGN00\", productID=\"LC08_L1T\")",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.ImageCollection.size",
+    "gee_api_names": [
+      "ee.ImageCollection.size",
+      "ee.Number.gt",
+      "ee.Algorithms.If",
+      "ee.ImageCollection.first",
+      "ee.Image"
+    ],
+    "oge_apis": [
+      "Service.getCoverage"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "集合判空与回退影像读取",
+    "note": "当前样例中GEE的集合判空、条件选择和fallback流程被OGE的确定性单景读取整体替代，ee.Algorithms.If不存在独立OGE映射",
+    "gee_example": "var image = ee.Image(ee.Algorithms.If(collection.size().gt(0), collection.first(), fallback));",
+    "oge_example": "# ===== 组合映射：集合判空+条件选择+fallback → 直接 getCoverage =====\n# GEE: ImageCollection.size + Number.gt + Algorithms.If + first + ee.Image （复杂条件判断）\n# OGE: 直接 service.getCoverage() （1步，一步到位）\n#\n# 原理：GEE 中需要判断集合是否为空、如果为空走 fallback 分支，\n#       但 OGE 中数据读取是确定性的，直接指定 coverageID 读取即可，\n#       不需要判空和 fallback 逻辑。\n\ncov = service.getCoverage(\n    coverageID=\"LC08_126037_20230513\",\n    productID=\"LC08_L2\"\n)\n\n# 千万不要翻译成：先 size 再 gt 再 if 再 first 的复杂流程\n# 那是 GEE 的写法，OGE 不需要这么繁琐！直接 getCoverage 就行。\n",
+    "python_implementation": "",
+    "confidence": 0.8
+  },
+  {
+    "gee_api": "ee.Image.eq",
+    "gee_api_names": [
+      "ee.Image.eq",
+      "ee.Image.or",
+      "ee.Image.where",
+      "ee.Image.updateMask",
+      "ee.Image.rename",
+      "ee.Image.toInt"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "坡位层级带归并",
+    "note": "GEE使用多个where和or条件实现归并，OGE使用reclass规则表一步完成，GEE多个API对应OGE一个API",
+    "gee_example": "var slope_position = ee.Image(0).where(combined_class.eq(11), 1).where(combined_class.eq(12).or(combined_class.eq(13)), 2)...",
+    "oge_example": "slope_position_rules = [\n    (10.5, 11.5, 1.0),  # 11 -> 谷底带\n    (11.5, 13.5, 2.0),  # 12、13 -> 下坡带\n\n    (20.5, 23.5, 2.0),  # 21、22、23 -> 下坡带\n    (30.5, 33.5, 3.0),  # 31、32、33 -> 中坡带\n    (40.5, 43.5, 4.0),  # 41、42、43 -> 上坡带\n\n    (50.5, 52.5, 5.0),  # 51、52 -> 脊顶带\n    (52.5, 53.5, 4.0)   # 53 -> 上坡带\n]\n\nslope_position = service.getProcess(\n    \"\"Coverage.reclass\"\"\n).execute(combined_class, slope_position_rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Image.neighborhoodToBands",
+    "gee_api_names": [
+      "ee.Image.neighborhoodToBands",
+      "ee.Image.reduce",
+      "ee.Image.sqrt"
+    ],
+    "oge_apis": [
+      "Coverage.triTerrainRuggednessIndexByGDAL"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "地形粗糙度指数计算",
+    "note": "核心语义均为计算地形粗糙度指数TRI",
+    "gee_example": "var tri = triNeighbors.subtract(demMosaic).pow(2).reduce(ee.Reducer.sum()).sqrt().rename('TRI');",
+    "oge_example": "tri = service.getProcess(\"Coverage.triTerrainRuggednessIndexByGDAL\").execute(dem_mosaic, 1, \"False\", \"\")",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.mean",
+      "ee.Kernel.circle"
+    ],
+    "oge_apis": [
+      "Coverage.focalMean"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "邻域均值滤波（圆形核）",
+    "note": "reduceNeighborhood + mean + circle 组合映射为 focalMean",
+    "gee_example": "// GEE 邻域均值滤波\nvar result = image.reduceNeighborhood({\n  reducer: ee.Reducer.mean(),\n  kernel: ee.Kernel.circle({radius: 3, units: 'pixels'}),\n  skipMasked: true\n});",
+    "oge_example": "smooth_dem = service.getProcess(\"Coverage.focalMean\").execute(original_dem, \"circle\", 1)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.max",
+      "ee.Kernel.circle"
+    ],
+    "oge_apis": [
+      "Coverage.focalMax"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "邻域最大值滤波（圆形核）",
+    "note": "reduceNeighborhood + max + circle 组合映射为 focalMax",
+    "gee_example": "// GEE 邻域最大值滤波\nvar result = image.reduceNeighborhood({\n  reducer: ee.Reducer.max(),\n  kernel: ee.Kernel.circle({radius: 3, units: 'pixels'}),\n  skipMasked: true\n});",
+    "oge_example": "# OGE 邻域最大值滤波\nresult = Coverage.focalMax(image, kernelType='circle', radius=3)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.min",
+      "ee.Kernel.circle"
+    ],
+    "oge_apis": [
+      "Coverage.focalMin"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "邻域最小值滤波（圆形核）",
+    "note": "reduceNeighborhood + min + circle 组合映射为 focalMin",
+    "gee_example": "// GEE 邻域最小值滤波\nvar result = image.reduceNeighborhood({\n  reducer: ee.Reducer.min(),\n  kernel: ee.Kernel.circle({radius: 3, units: 'pixels'}),\n  skipMasked: true\n});",
+    "oge_example": "# OGE 邻域最小值滤波\nresult = Coverage.focalMin(image, kernelType='circle', radius=3)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.median",
+      "ee.Kernel.circle"
+    ],
+    "oge_apis": [
+      "Coverage.focalMedian"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "邻域中值滤波（圆形核）",
+    "note": "reduceNeighborhood + median + circle 组合映射为 focalMedian",
+    "gee_example": "// GEE 邻域中值滤波\nvar result = image.reduceNeighborhood({\n  reducer: ee.Reducer.median(),\n  kernel: ee.Kernel.circle({radius: 3, units: 'pixels'}),\n  skipMasked: true\n});",
+    "oge_example": "# OGE 邻域中值滤波\nresult = Coverage.focalMedian(image, kernelType='circle', radius=3)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.mode",
+      "ee.Kernel.circle"
+    ],
+    "oge_apis": [
+      "Coverage.focalMode"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "邻域众数滤波（圆形核）",
+    "note": "reduceNeighborhood + mode + circle 组合映射为 focalMode",
+    "gee_example": "// GEE 邻域众数滤波\nvar result = image.reduceNeighborhood({\n  reducer: ee.Reducer.mode(),\n  kernel: ee.Kernel.circle({radius: 3, units: 'pixels'}),\n  skipMasked: true\n});",
+    "oge_example": "# OGE 邻域众数滤波\nresult = Coverage.focalMode(image, kernelType='circle', radius=3)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.mean",
+      "ee.Kernel.square"
+    ],
+    "oge_apis": [
+      "Coverage.focalMean"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "邻域均值滤波（方形核）",
+    "note": "reduceNeighborhood + mean + square 组合映射为 focalMean",
+    "gee_example": "// GEE 邻域均值滤波（方形核）\nvar result = image.reduceNeighborhood({\n  reducer: ee.Reducer.mean(),\n  kernel: ee.Kernel.square({radius: 3, units: 'pixels'}),\n  skipMasked: true\n});",
+    "oge_example": "chain_a_smooth = service.getProcess(\"Coverage.focalMean\").execute(original_display, \"square\", 1)\n",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.max",
+      "ee.Kernel.square"
+    ],
+    "oge_apis": [
+      "Coverage.focalMax"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "邻域最大值滤波（方形核）",
+    "note": "reduceNeighborhood + max + square 组合映射为 focalMax",
+    "gee_example": "// GEE 邻域最大值滤波（方形核）\nvar result = image.reduceNeighborhood({\n  reducer: ee.Reducer.max(),\n  kernel: ee.Kernel.square({radius: 3, units: 'pixels'}),\n  skipMasked: true\n});",
+    "oge_example": "# OGE 邻域最大值滤波\nresult = Coverage.focalMax(image, kernelType='square', radius=3)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.min",
+      "ee.Kernel.square"
+    ],
+    "oge_apis": [
+      "Coverage.focalMin"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "邻域最小值滤波（方形核）",
+    "note": "reduceNeighborhood + min + square 组合映射为 focalMin",
+    "gee_example": "// GEE 邻域最小值滤波（方形核）\nvar result = image.reduceNeighborhood({\n  reducer: ee.Reducer.min(),\n  kernel: ee.Kernel.square({radius: 3, units: 'pixels'}),\n  skipMasked: true\n});",
+    "oge_example": "# OGE 邻域最小值滤波\nresult = Coverage.focalMin(image, kernelType='square', radius=3)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.median",
+      "ee.Kernel.square"
+    ],
+    "oge_apis": [
+      "Coverage.focalMedian"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "邻域中值滤波（方形核）",
+    "note": "reduceNeighborhood + median + square 组合映射为 focalMedian",
+    "gee_example": "// GEE 邻域中值滤波（方形核）\nvar result = image.reduceNeighborhood({\n  reducer: ee.Reducer.median(),\n  kernel: ee.Kernel.square({radius: 3, units: 'pixels'}),\n  skipMasked: true\n});",
+    "oge_example": "# OGE 邻域中值滤波\nresult = Coverage.focalMedian(image, kernelType='square', radius=3)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.mode",
+      "ee.Kernel.square"
+    ],
+    "oge_apis": [
+      "Coverage.focalMode"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "邻域众数滤波（方形核）",
+    "note": "reduceNeighborhood + mode + square 组合映射为 focalMode",
+    "gee_example": "// GEE 邻域众数滤波（方形核）\nvar result = image.reduceNeighborhood({\n  reducer: ee.Reducer.mode(),\n  kernel: ee.Kernel.square({radius: 3, units: 'pixels'}),\n  skipMasked: true\n});",
+    "oge_example": "# OGE 邻域众数滤波\nresult = Coverage.focalMode(image, kernelType='square', radius=3)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.where",
+    "gee_api_names": [
+      "ee.Image.where",
+      "ee.Image.and"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "基础条件重分类（where+and 兜底）",
+    "note": "多个where链式条件分级（where + and组合）对应OGE的reclass算子，一次性完成多区间重分类。注意：此为兜底组合，优先匹配包含具体比较运算符的组合。GEE中多个where串联对应OGE中一次reclass调用，规则表由所有where的条件合并而成。",
+    "gee_example": "// GEE: 多个where链式条件分级\nvar result = ee.Image(0)\n  .where(value.gt(0).and(value.lte(10)), 1)\n  .where(value.gt(10).and(value.lte(20)), 2)\n  .where(value.gt(20).and(value.lte(30)), 3)\n  .updateMask(value.mask())\n  .rename('class');",
+    "oge_example": "# OGE: 一次reclass完成多区间重分类\nrules = [\n    (0.0, 10.0, 1.0),\n    (10.0, 20.0, 2.0),\n    (20.0, 30.0, 3.0)\n]\nresult = service.getProcess(\"Coverage.reclass\").execute(value, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Geometry.Rectangle",
+    "gee_api_names": [
+      "ee.Geometry.Rectangle",
+      "ee.Image.clip"
+    ],
+    "oge_apis": [
+      "Coverage.clipRasterByMaskLayerByGDAL"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "矩形范围栅格裁剪",
+    "note": "矩形 + 裁剪组合，GEE 中用 Rectangle 构造矩形后 clip；OGE 中直接用 clipRasterByMaskLayerByGDAL 按范围裁剪",
+    "gee_example": "var geometry = ee.Geometry.Rectangle([xmin, ymin, xmax, ymax]);\nvar clipped = image.clip(geometry);",
+    "oge_example": "# GEE 中点缓冲构造的圆形区域，在 OGE 中直接构造圆形多边形\nimport math\ncenter_lon, center_lat = lon, lat\nradius_deg = radius / 111000  # 米转度（近似，高纬度需修正）\ncircle_coords = []\nfor i in range(36):\n    angle = 2 * math.pi * i / 36\n    circle_coords.append([\n        center_lon + radius_deg * math.cos(angle),\n        center_lat + radius_deg * math.sin(angle)\n    ])\ncircle_coords.append(circle_coords[0])  # 闭合多边形\n# 构造圆形多边形\ncircle_polygon = service.getProcess(\"Geometry.Polygon\").execute(circle_coords, \"EPSG:4326\")\n# 多边形转要素集合\nfc = service.getProcess(\"FeatureCollection.loadFromGeometry\").execute(circle_polygon, \"{attr: 0}\")\n# 按掩膜裁剪栅格\nclipped = service.getProcess(\"Coverage.clipRasterByMaskLayerByGDAL\").execute(image, fc, \"True\", \"\", \"False\", \"\", \"\", \"False\", \"False\", \"\", \"False\", \"0\", \"\")",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Image.sample",
+    "gee_api_names": [
+      "ee.Image.sample",
+      "ee.FeatureCollection.reduceColumns",
+      "ee.Reducer.pearsonsCorrelation"
+    ],
+    "oge_apis": [
+      "Coverage.geoDetector"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "地理探测器因子解释力评估",
+    "note": "GEE中通过sample+reduceColumns+pearsonsCorrelation计算因子解释力，OGE中直接使用Coverage.geoDetector算子。注意：这是整体映射，直接调用Coverage.geoDetector，不要手动实现采样+相关系数计算！",
+    "gee_example": "// GEE: 采样后计算皮尔逊相关系数\nvar sample = img.sample({region: region, scale: 30, numPixels: 50000});\nvar corr = sample.reduceColumns({\n  reducer: ee.Reducer.pearsonsCorrelation(),\n  selectors: ['dependent', 'independent']\n}).get('correlation');",
+    "oge_example": "\n═══════════════════════════════════════════════════════\n  重要：这是一个整体映射，直接调用，不要拆开！\n═══════════════════════════════════════════════════════\n\nGEE 中的写法（十几行甚至几十行）：\n  - yValid.reduceRegion({ reducer: ee.Reducer.count().combine(ee.Reducer.variance()), ... })\n  - ee.List.sequence(1, 5)\n  - ee.List.iterate(function(c, acc) { ... yValid.updateMask(xValid.eq(c)).reduceRegion(...) ... }, 0)\n  - 手写 q = 1 - withinSS / totalSS 计算\n  → 这些全部加起来，对应 OGE 的一个算子：Coverage.geoDetector\n\nOGE 中的写法（只需要一行调用）：\n\ngeo_result = service.getProcess(\"Coverage.geoDetector\").execute(\n    y_cov,          # 第1参数：因变量栅格 (Coverage)，如 NDVI、LST\n    \"y_name\",       # 第2参数：因变量标识名 (字符串)\n    x_class_cov,    # 第3参数：自变量分类栅格 (Coverage)，如高程分级、坡度分级\n    y_min_value,    # 第4参数：因变量最小值 (数值)，如 -100\n    y_max_value,    # 第5参数：因变量最大值 (数值)，如 100\n    nodata_value    # 第6参数：无效值 (数值)，如 0\n)\n\n# 结果输出用 .log()\ngeo_result.log(\"地理探测器结果\")\n\n═══════════════════════════════════════════════════════\n  绝对禁止：手写 geoDetector 函数、返回假值、用 focal 近似\n═══════════════════════════════════════════════════════\n",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Image.gt",
+    "gee_api_names": [
+      "ee.Image.gt",
+      "ee.Image.lte",
+      "ee.Image.and",
+      "ee.Image.multiply",
+      "ee.Image.add"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "阈值区间重分类",
+    "note": "GEE中通过比较+逻辑与+乘法+加法拼接实现重分类，OGE中直接使用reclass算子",
+    "gee_example": "// GEE: 用比较运算拼出重分类\nvar result = img.gt(0).and(img.lte(100)).multiply(1)\n  .add(img.gt(100).and(img.lte(200)).multiply(2))\n  .add(img.gt(200).and(img.lte(500)).multiply(3));",
+    "oge_example": "# OGE: 直接使用重分类算子\nrules = [\n    (0.0, 100.0, 1.0),\n    (100.0, 200.0, 2.0),\n    (200.0, 500.0, 3.0),\n]\nresult = service.getProcess(\"Coverage.reclass\").execute(img, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Image.constant",
+    "gee_api_names": [
+      "ee.Image.constant",
+      "ee.Image.where"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "常量条件重分类",
+    "note": "使用 constant 创建默认值底图，再通过多个 where 条件赋值实现重分类，对应 OGE 的 Coverage.reclass 算子。GEE 中 constant + 多个 where 串联对应 OGE 中一次 reclass 调用，规则表由所有 where 的条件合并而成。",
+    "gee_example": "// 使用 constant 创建默认值底图，多个 where 链式赋值实现重分类\nvar classified = ee.Image.constant(0).toInt16();\nclassified = classified.where(mask1, 1);\nclassified = classified.where(mask2, 2);",
+    "oge_example": "# OGE 中直接使用 reclass 一步完成\nrules = [\n    [0, 10, 1],\n    [10, 20, 2],\n]\nclassified = service.getProcess(\"Coverage.reclass\").execute(image, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.max",
+      "ee.Kernel.square",
+      "ee.Image.reduceNeighborhood",
+      "ee.Reducer.min",
+      "ee.Kernel.square",
+      "ee.Image.subtract"
+    ],
+    "oge_apis": [
+      "Coverage.triTerrainRuggednessIndexByGDAL"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "TRI地形崎岖度计算",
+    "note": "TRI (Terrain Ruggedness Index) 地形崎岖度计算：GEE 中用方形核的邻域最大值减邻域最小值实现，对应 OGE 的 Coverage.triTerrainRuggednessIndexByGDAL 算子一步完成。组合包含 2 次 reduceNeighborhood（max 和 min）、2 个 square kernel 和 1 次 subtract。",
+    "gee_example": "// GEE 中用方形邻域的 max - min 计算局部地形崎岖度\nvar focal_max = image.reduceNeighborhood({\n  reducer: ee.Reducer.max(),\n  kernel: ee.Kernel.square(1, 'pixels')\n});\nvar focal_min = image.reduceNeighborhood({\n  reducer: ee.Reducer.min(),\n  kernel: ee.Kernel.square(1, 'pixels')\n});\nvar tri = focal_max.subtract(focal_min);",
+    "oge_example": "# OGE 中直接用 triTerrainRuggednessIndexByGDAL 一步计算\ntri = service.getProcess(\"Coverage.triTerrainRuggednessIndexByGDAL\").execute(\n    image, 1, \"False\", \"\"\n)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.where",
+    "gee_api_names": [
+      "ee.Image.where",
+      "ee.Image.gte",
+      "ee.Image.and"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "条件重分类（gte 下界）",
+    "note": "where + gte + and 组合实现区间重分类，对应 OGE 的 reclass 算子。gte 定义区间下界，and 连接上下界条件，where 赋值分类结果。",
+    "gee_example": "var result = base.where(img.gte(10).and(img.lt(20)), 1);",
+    "oge_example": "rules = [(10.0, 20.0, 1.0)]\nresult = service.getProcess(\"Coverage.reclass\").execute(img, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.where",
+    "gee_api_names": [
+      "ee.Image.where",
+      "ee.Image.gt",
+      "ee.Image.and"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "条件重分类（gt 下界）",
+    "note": "where + gt + and 组合实现区间重分类，对应 OGE 的 reclass 算子。gt 定义区间下界（不含边界），and 连接上下界条件，where 赋值分类结果。",
+    "gee_example": "var result = base.where(img.gt(10).and(img.lte(20)), 1);",
+    "oge_example": "rules = [(10.0, 20.0, 1.0)]\nresult = service.getProcess(\"Coverage.reclass\").execute(img, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.where",
+    "gee_api_names": [
+      "ee.Image.where",
+      "ee.Image.lt",
+      "ee.Image.and"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "条件重分类（lt 上界）",
+    "note": "where + lt + and 组合实现区间重分类，对应 OGE 的 reclass 算子。lt 定义区间上界（不含边界），and 连接上下界条件，where 赋值分类结果。",
+    "gee_example": "var result = base.where(img.gte(0).and(img.lt(5)), 1);",
+    "oge_example": "rules = [(0.0, 5.0, 1.0)]\nresult = service.getProcess(\"Coverage.reclass\").execute(img, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.where",
+    "gee_api_names": [
+      "ee.Image.where",
+      "ee.Image.lte",
+      "ee.Image.and"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "条件重分类（lte 上界）",
+    "note": "where + lte + and 组合实现区间重分类，对应 OGE 的 reclass 算子。lte 定义区间上界（含边界），and 连接上下界条件，where 赋值分类结果。",
+    "gee_example": "var result = base.where(img.gt(5).and(img.lte(10)), 2);",
+    "oge_example": "rules = [(5.0, 10.0, 2.0)]\nresult = service.getProcess(\"Coverage.reclass\").execute(img, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.where",
+    "gee_api_names": [
+      "ee.Image.where",
+      "ee.Image.eq",
+      "ee.Image.and"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "many_to_one",
+    "mapping_name": "条件重分类（eq 等值）",
+    "note": "where + eq + and 组合实现多条件等值重分类，对应 OGE 的 reclass 算子。eq 匹配特定值，and 连接多个等值条件，where 赋值分类结果。",
+    "gee_example": "var result = base.where(code.eq(1).and(mask.eq(1)), 10);",
+    "oge_example": "rules = [(1.0, 1.0, 10.0)]\nresult = service.getProcess(\"Coverage.reclass\").execute(code, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Number",
+    "gee_api_names": [
+      "ee.Number"
+    ],
+    "oge_apis": [],
+    "mapping_type": "native_python",
+    "mapping_name": "数值类型",
+    "note": "普通数值直接使用Python原生数值类型",
+    "gee_example": "var n = ee.Number(5);",
+    "oge_example": "# ee.Number 在 OGE/Python 中直接使用普通数值\n# 不需要任何特殊的构造或转换，直接用 Python 的 int/float 即可\n\n# 示例：阈值、常量、倍率等直接用数值字面量\nthreshold = 0.5\nscale_factor = 100.0\nmax_pixels = 1e9\n\n# 数值运算直接用 Python 运算符\nresult = a + b\nresult = a * b\nresult = a / b\nresult = a - b\n",
+    "python_implementation": "Python int / float",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.List",
+    "gee_api_names": [
+      "ee.List"
+    ],
+    "oge_apis": [],
+    "mapping_type": "native_python",
+    "mapping_name": "列表类型",
+    "note": "列表/数组直接使用Python原生列表",
+    "gee_example": "var strata = ee.List.sequence(1, 5);",
+    "oge_example": "# ee.List 在 OGE/Python 中直接使用 Python list\n# 不需要任何特殊的构造或转换\n\n# 示例：波段列表、palette 列表、bbox 等\nband_names = [\"B4\", \"B3\", \"B2\"]\npalette = [\"#FF0000\", \"#00FF00\", \"#0000FF\"]\nbbox = [120.0, 30.0, 121.0, 31.0]\ndate_range = [\"2020-01-01 00:00:00\", \"2020-12-31 23:59:59\"]\n\n# 列表操作直接用 Python 方法\nresult = list1 + list2\nlength = len(my_list)\nfirst_item = my_list[0]\n",
+    "python_implementation": "Python list",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Dictionary",
+    "gee_api_names": [
+      "ee.Dictionary"
+    ],
+    "oge_apis": [],
+    "mapping_type": "native_python",
+    "mapping_name": "字典类型",
+    "note": "键值对直接使用Python原生字典",
+    "gee_example": "var config = ee.Dictionary({min: 0, max: 100});",
+    "oge_example": "# ee.Dictionary 在 OGE/Python 中直接使用 Python dict\n# 不需要任何特殊的构造或转换\n\n# 示例：可视化参数、配置对象等\nvis_params = {\n    \"min\": 0,\n    \"max\": 3000,\n    \"palette\": [\"#0000FF\", \"#00FF00\", \"#FF0000\"]\n}\n\nconfig = {\n    \"scale\": 30,\n    \"maxPixels\": 1e9\n}\n\n# 字典操作直接用 Python 方法\nvalue = my_dict.get(\"key\", default_value)\nmy_dict[\"new_key\"] = new_value\n",
+    "python_implementation": "Python dict",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Geometry.Rectangle",
+    "gee_api_names": [
+      "ee.Geometry.Rectangle"
+    ],
+    "oge_apis": [],
+    "mapping_type": "native_python",
+    "mapping_name": "矩形几何体（作为bbox范围时）",
+    "note": "仅适用于作为空间范围的轴对齐矩形，直接用Python列表传递给bbox参数",
+    "gee_example": "var region = ee.Geometry.Rectangle([108.5, 18.1, 111.0, 20.1]);",
+    "oge_example": "# ee.Geometry.Rectangle 在 OGE 中通常直接用坐标列表表示\n# 格式: [minLon, minLat, maxLon, maxLat]\n\n# 示例：作为 bbox 参数传入 getCoverageCollection\nbbox = [120.0, 30.0, 121.0, 31.0]\n\ncov_col = service.getCoverageCollection(\n    productID=\"LC08_L2\",\n    bbox=bbox,\n    datetime=[\"2020-01-01 00:00:00\", \"2020-12-31 23:59:59\"]\n)\n\n# 也可以用于按范围裁剪栅格\n# clipped = service.getProcess(\"Coverage.clipRasterByExtentByGDAL\").execute(\n#     cov, 120.0, 30.0, 121.0, 31.0\n# )\n",
+    "python_implementation": "Python list (bbox参数)",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.mask",
+    "gee_api_names": [
+      "ee.Image.mask"
+    ],
+    "oge_apis": [
+      "Coverage.getNodataMask"
+    ],
+    "mapping_type": "native_python",
+    "mapping_name": "获取影像掩膜",
+    "note": "GEE 的 .mask() 获取掩膜波段。OGE 中掩膜是 Coverage 内部属性，随算子自动传递。常见的 updateMask(source.mask()) 模式在 OGE 中通常不需要，因为 reclass 等算子会自动保留有效区域。",
+    "gee_example": "// GEE 获取掩膜\nvar maskImage = image.mask();",
+    "oge_example": "# OGE 获取掩膜（通过 NoData 掩码）\n# 注意：OGE 中掩膜是 Coverage 的内部属性，通常不需要显式获取\n# 如果需要获取掩膜波段，可以使用栅格计算等方式实现\nmask = coverage  # 掩膜信息随 Coverage 自动传递",
+    "python_implementation": "# ee.Image.mask() 获取影像掩膜波段\n# 在 OGE 中，掩膜(NoData)是 Coverage 的固有属性，随算子自动传递\n# 常见模式 updateMask(source.mask()) 在 OGE 中通常不需要，\n# 因为 reclass 等算子会自动保留输入影像的有效区域\ndef gee_image_mask(image):\n    \"\"\"获取影像掩膜，OGE 中掩膜随 Coverage 自动传递\"\"\"\n    return image  # 掩膜信息已包含在 Coverage 中",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Image.geometry",
+    "gee_api_names": [
+      "ee.Image.geometry"
+    ],
+    "oge_apis": [],
+    "mapping_type": "native_python",
+    "mapping_name": "获取影像几何",
+    "note": "OGE 中 Coverage 自带空间范围信息，通常不需要显式调用 geometry()。若用于裁剪，使用 FeatureCollection.loadFromGeometry + clipRasterByMaskLayerByGDAL；若用于地图居中，直接使用 oge.mapclient.centerMap 指定经纬度。",
+    "gee_example": "var region = img.geometry();",
+    "oge_example": "# OGE 中获取影像空间范围的替代方案：\n# 方案1 - 用于栅格裁剪：\n# fc = service.getProcess(\"FeatureCollection.loadFromGeometry\").execute(cov, \"{}\")\n# clipped = service.getProcess(\"Coverage.clipRasterByMaskLayerByGDAL\").execute(cov, fc, \"True\", \"\", \"False\", \"\", \"\", \"False\", \"False\", \"\", \"False\", \"0\", \"\")\n# 方案2 - 用于地图居中：直接指定中心点坐标\n# oge.mapclient.centerMap(lon, lat, zoom)",
+    "python_implementation": "# GEE: var region = img.geometry();\n# OGE 中 Coverage 自带空间范围，通常不需要显式获取几何\n# 若用于裁剪栅格：用 FeatureCollection.loadFromGeometry 创建掩膜要素集合，再调用 clipRasterByMaskLayerByGDAL\n# 若用于地图居中：直接用 oge.mapclient.centerMap(lon, lat, zoom)，经纬度可从数据范围获取\nregion = cov  # 直接使用 Coverage 对象，空间范围会自动传递给需要的算子",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Feature",
+    "gee_api_names": [
+      "ee.Feature"
+    ],
+    "oge_apis": [],
+    "mapping_type": "native_python",
+    "mapping_name": "要素对象构造",
+    "note": "OGE 中没有单独的 Feature 对象，使用 FeatureCollection 替代。通过 FeatureCollection.loadFromGeometry 从几何对象创建要素集合。",
+    "gee_example": "",
+    "oge_example": "# ee.Feature 在 OGE 中用 FeatureCollection.loadFromGeometry 替代\n# 示例：从点几何创建要素集合\npoint = service.getProcess(\"Geometry.point\").execute(lon, lat)\nfc = service.getProcess(\"FeatureCollection.loadFromGeometry\").execute(point, \"{attr: 0}\")",
+    "python_implementation": "# GEE: var feat = ee.Feature(geometry, properties);\n# OGE 中不使用单个 Feature 对象，使用 FeatureCollection\n# 从几何对象创建要素集合：\nfc = service.getProcess(\"FeatureCollection.loadFromGeometry\").execute(geom, properties)",
+    "confidence": 0.7
+  },
+  {
+    "gee_api": "ee.FeatureCollection",
+    "gee_api_names": [
+      "ee.FeatureCollection"
+    ],
+    "oge_apis": [],
+    "mapping_type": "native_python",
+    "mapping_name": "要素集合构造",
+    "note": "OGE 中要素集合通过 FeatureCollection.loadFromGeometry 从几何创建，或由 sample 等算子直接返回。根据具体用途选择创建方式。",
+    "gee_example": "",
+    "oge_example": "# ee.FeatureCollection 在 OGE 中的替代方案：\n# 方案1 - 从几何创建要素集合：\n# fc = service.getProcess(\"FeatureCollection.loadFromGeometry\").execute(geom, \"{attr: 0}\")\n# 方案2 - 由其他算子返回（如 sample）：直接使用即可",
+    "python_implementation": "# GEE: var fc = ee.FeatureCollection(features);\n# OGE 中根据用途选择创建方式：\n# 1. 从几何创建（用于裁剪等）：\nfc = service.getProcess(\"FeatureCollection.loadFromGeometry\").execute(geom, properties)\n# 2. 从采样等算子返回：直接使用算子返回的 FeatureCollection 对象",
+    "confidence": 0.7
+  },
+  {
+    "gee_api": "ee.Geometry",
+    "gee_api_names": [
+      "ee.Geometry"
+    ],
+    "oge_apis": [],
+    "mapping_type": "native_python",
+    "mapping_name": "几何对象构造",
+    "note": "OGE 中几何对象通过 Geometry.point / Geometry.Polygon 等具体方法创建。若已有几何对象，可直接使用，无需显式调用 ee.Geometry() 转换。",
+    "gee_example": "",
+    "oge_example": "# ee.Geometry() 构造函数在 OGE 中的替代方案：\n# 创建点几何：\n# point = service.getProcess(\"Geometry.point\").execute(lon, lat)\n# 创建多边形：\n# polygon = service.getProcess(\"Geometry.Polygon\").execute(coords)\n# 若已有几何对象，直接使用即可，无需转换",
+    "python_implementation": "# GEE: var geom = ee.Geometry(geometry);\n# OGE 中几何对象通过 Geometry.point / Geometry.Polygon 等方法创建\n# 若已有几何对象，可直接使用，无需显式转换\ngeom = existing_geom  # 直接使用已有几何对象",
+    "confidence": 0.7
+  },
+  {
+    "gee_api": "ee.Geometry.bounds",
+    "gee_api_names": [
+      "ee.Geometry.bounds"
+    ],
+    "oge_apis": [],
+    "mapping_type": "native_python",
+    "mapping_name": "几何边界获取",
+    "note": "OGE 中通常不需要显式获取几何边界。空间过滤通过 getCoverageCollection 的 bbox 参数直接传坐标；栅格裁剪通过 clipRasterByExtentByGDAL 直接按范围裁剪。",
+    "gee_example": "",
+    "oge_example": "# OGE 中获取边界的替代方案：\n# 方案1 - 用于 getCoverageCollection 的 bbox 参数：直接传坐标列表\n# cov_col = service.getCoverageCollection(productID=\"xxx\", bbox=[minx, miny, maxx, maxy])\n# 方案2 - 用于栅格裁剪：直接使用 Coverage.clipRasterByExtentByGDAL 按范围裁剪\n# clipped = service.getProcess(\"Coverage.clipRasterByExtentByGDAL\").execute(cov, minx, miny, maxx, maxy)",
+    "python_implementation": "# GEE: var bbox = geom.bounds();\n# OGE 中通常不需要显式获取边界，直接使用几何对象即可\n# 若需获取 bbox 坐标用于 getCoverageCollection 等参数，可从几何对象的坐标中提取\n# 对于矩形几何，直接使用其坐标列表 [minx, miny, maxx, maxy]\nbbox = [minx, miny, maxx, maxy]  # 从已知的几何范围获取坐标列表",
+    "confidence": 0.7
+  },
+  {
+    "gee_api": "ee.Image.bandNames",
+    "gee_api_names": [
+      "ee.Image.bandNames"
+    ],
+    "oge_apis": [],
+    "mapping_type": "native_python",
+    "mapping_name": "影像波段名获取",
+    "note": "OGE 中 Coverage 的波段信息从数据产品元数据获取，无需运行时查询。代码中直接使用已知的波段名称即可。",
+    "gee_example": "",
+    "oge_example": "# OGE 中获取波段信息的替代方案：\n# 波段名称从数据产品说明中获取，直接在代码中使用\n# 示例：选择 elevation 波段\n# dem = service.getProcess(\"Coverage.selectBands\").execute(cov, [\"elevation\"])",
+    "python_implementation": "# GEE: var names = img.bandNames();\n# OGE 中波段名称从数据产品元数据获取，直接在代码中使用已知波段名\n# 示例：获取 ASTER DEM 的 elevation 波段\nband_names = [\"elevation\"]  # 根据数据产品确定波段名称",
+    "confidence": 0.7
+  },
+  {
+    "gee_api": "Map.addLayer",
+    "gee_api_names": [
+      "Map.addLayer"
+    ],
+    "oge_apis": [
+      "Coverage.styles",
+      "Coverage.getMap"
+    ],
+    "mapping_type": "one_to_many",
+    "mapping_name": "影像样式设置",
+    "note": "GEE直接添加图层，OGE需先设置样式再获取地图",
+    "gee_example": "Map.addLayer(mndwi, mndwi_vis, 'mndwi');",
+    "oge_example": "mndwi.styles(mndwi_vis).getMap(\"mndwi\")",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Algorithms.Terrain",
+    "gee_api_names": [
+      "ee.Algorithms.Terrain"
+    ],
+    "oge_apis": [
+      "Coverage.terrSlope",
+      "Coverage.terrAspect"
+    ],
+    "mapping_type": "one_to_many",
+    "mapping_name": "地形因子计算",
+    "note": "GEE通过Terrain一次计算坡度和坡向，OGE分别调用terrSlope和terrAspect，语义均为计算地形因子",
+    "gee_example": "var terrain = ee.Algorithms.Terrain(dem_mosaic);\nvar slope = terrain.select('slope');\nvar aspect = terrain.select('aspect');",
+    "oge_example": "slope = service.getProcess(\"Coverage.terrSlope\").execute(dem_mosaic, 1, 9.5e-06)\naspect = service.getProcess(\"Coverage.terrAspect\").execute(dem_mosaic, 1)",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Image.lt",
+    "gee_api_names": [
+      "ee.Image.lt"
+    ],
+    "oge_apis": [
+      "Coverage.multiplyNum",
+      "Coverage.addNum",
+      "Coverage.binarization"
+    ],
+    "mapping_type": "one_to_many",
+    "mapping_name": "NDVI阈值反演",
+    "note": "GEE直接使用lt算子，OGE需要通过数学变换实现",
+    "gee_example": "var low_vegetation_mask = ndvi.lt(0.15);",
+    "oge_example": "ndvi_inverse = service.getProcess(\"Coverage.multiplyNum\").execute(ndvi, -100.0); ndvi_inverse = service.getProcess(\"Coverage.addNum\").execute(ndvi_inverse, 15.0); low_vegetation_mask = service.getProcess(\"Coverage.binarization\").execute(ndvi_inverse, 0)",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.ImageCollection",
+    "gee_api_names": [
+      "ee.ImageCollection"
+    ],
+    "oge_apis": [
+      "Service.getCoverageCollection"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "栅格集合读取",
+    "note": "核心语义均为读取栅格集合，具体数据产品标识不要求一致",
+    "gee_example": "var collection = ee.ImageCollection('COPERNICUS/DEM/GLO30');",
+    "oge_example": "collection = service.getCoverageCollection(productID=\"ASTER_GDEM_DEM30\", bbox=bbox, datetime=datetime_range)",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "Map.setCenter",
+    "gee_api_names": [
+      "Map.setCenter"
+    ],
+    "oge_apis": [
+      "oge.mapclient.centerMap"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "地图中心设置",
+    "note": "核心语义均为设置地图中心点和缩放级别",
+    "gee_example": "Map.setCenter(115.74080156644999, 31.7318082104, 11);",
+    "oge_example": "oge.mapclient.centerMap(115.74080156644999,31.7318082104,11)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Algorithms.If",
+    "gee_api_names": [
+      "ee.Algorithms.If"
+    ],
+    "oge_apis": [
+      "Coverage.if"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "条件逻辑判断",
+    "note": "核心语义为条件逻辑判断。注意：如果用于数据读取的fallback场景（如先试某日期影像，没有就用全年最晴的），在OGE中通常简化为直接确定数据源读取，不需要Coverage.if。只有两个栅格之间的像素级条件选择才用此算子。",
+    "gee_example": "var result = ee.Image(ee.Algorithms.If(condition, trueImage, falseImage));",
+    "oge_example": "# 条件选择（三目运算）\n#\n# 注意：如果是用于\"数据读取的 fallback 逻辑\"（先试A数据源，不行再用B），\n# 在 OGE 中通常简化为直接确定一个数据源，不需要条件判断。\n#\n# 参数：\n#   1. 条件栅格 (Coverage) - 二值栅格，0为假，非0为真\n#   2. 真值栅格 (Coverage) - 条件为真时取此栅格的值\n#   3. 假值栅格 (Coverage) - 条件为假时取此栅格的值\n\n# 栅格条件选择示例：\nresult = service.getProcess(\"Coverage.if\").execute(condition_cov, true_cov, false_cov)\n\n# 注意：条件必须是 Coverage 类型的二值栅格，不能是 Python 布尔值\n",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Filter.eq",
+    "gee_api_names": [
+      "ee.Filter.eq"
+    ],
+    "oge_apis": [
+      "Filter.eq"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像集合过滤条件",
+    "note": "GEE的Filter.eq用于创建等值过滤条件。注意：OGE中通常不需要单独使用此算子——数据读取阶段整体简化，知道coverageID就直接getCoverage。只有在对已有集合做二次筛选的极少数场景才单独调用。",
+    "gee_example": "var filter = ee.Filter.eq('LANDSAT_SCENE_ID', 'LC81220382015275LGN00');",
+    "oge_example": "# 属性等值过滤（注意：通常不需要单独使用！）\n#\n# 重要：在 OGE 中，按属性筛选影像通常直接用 getCoverage 指定 coverageID 读取单景，\n# 不需要先建集合再 Filter.eq 筛选再 first 取首景。\n#\n# 推荐写法（直接读单景，不需要 Filter.eq）：\ncov = service.getCoverage(\n    coverageID=\"LC08_126037_20230513\",\n    productID=\"LC08_L2\"\n)\n\n# 如果确实需要创建过滤条件（极少用到）：\n# filter_obj = service.getProcess(\"Filter.eq\").execute(\"property_name\", value)\n",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Geometry.Point",
+    "gee_api_names": [
+      "ee.Geometry.Point"
+    ],
+    "oge_apis": [
+      "Geometry.point"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "点几何创建",
+    "note": "核心语义均为创建点几何对象",
+    "gee_example": "var point = ee.Geometry.Point([115.74080156644999, 31.7318082104]);",
+    "oge_example": "point = service.getProcess(\"Geometry.point\").execute(115.74080156644999, 31.7318082104)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image",
+    "gee_api_names": [
+      "ee.Image"
+    ],
+    "oge_apis": [
+      "Service.getCoverage"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像读取",
+    "note": "核心语义均为读取单景影像数据",
+    "gee_example": "var dem = ee.Image('NASA/ASTER_GED/AG100_003').select('elevation');",
+    "oge_example": "ls8 = service.getCoverage(coverageID=\"LC81220382015275LGN00\", productID=\"LC08_L1T\")",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image('NASA/NASADEM_HGT/001')",
+    "gee_api_names": [
+      "ee.Image('NASA/NASADEM_HGT/001')"
+    ],
+    "oge_apis": [
+      "Service.getCoverageCollection(productID=\"ASTER_GDEM_DEM30\")"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "DEM数据源替代",
+    "note": "GEE使用NASADEM替代OGE的ASTER_GDEM_DEM30，数据源不同但用途相同",
+    "gee_example": "var dem_source = ee.Image('NASA/NASADEM_HGT/001').select('elevation').clip(region);",
+    "oge_example": "dem_collection = service.getCoverageCollection(productID=\"ASTER_GDEM_DEM30\", datetime=[\"2000-01-01 00:00:00,2000-01-01 00:00:00\"], bbox=[108.5, 18.1, 111.0, 20.1])",
+    "python_implementation": "",
+    "confidence": 0.8
+  },
+  {
+    "gee_api": "ee.Image.add",
+    "gee_api_names": [
+      "ee.Image.add"
+    ],
+    "oge_apis": [
+      "Coverage.add"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像加法运算",
+    "note": "核心语义均为两影像相加",
+    "gee_example": "var ndvi_den = nir_band.add(red_band);",
+    "oge_example": "ndvi_den = service.getProcess(\"Coverage.add\").execute(nir_band, red_band)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.addBands",
+    "gee_api_names": [
+      "ee.Image.addBands"
+    ],
+    "oge_apis": [
+      "Coverage.addBands"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "添加波段",
+    "note": "核心语义均为向影像添加新波段",
+    "gee_example": "lc09 = lc09.addBands(scaledOptical, null, true);",
+    "oge_example": "lc09 = service.getProcess(\"Coverage.addBands\").execute(lc09, scaled_optical)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.and",
+    "gee_api_names": [
+      "ee.Image.and"
+    ],
+    "oge_apis": [
+      "Coverage.and"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "逻辑与运算",
+    "note": "核心语义均为两影像逐像素逻辑与运算，OGE有原生Coverage.and算子",
+    "gee_example": "candidate_nbr.and(vegetation_mask)",
+    "oge_example": "service.getProcess(\"Coverage.multiply\").execute(candidate_nbr, vegetation_mask)",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Image.convolve",
+    "gee_api_names": [
+      "ee.Image.convolve"
+    ],
+    "oge_apis": [
+      "Coverage.convolve"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "卷积增强",
+    "note": "核心语义均为卷积滤波",
+    "gee_example": "var branch_a_enhanced = branch_a_smooth.convolve(kernel_a);",
+    "oge_example": "branch_a_enhanced = service.getProcess(\"Coverage.convolve\").execute(branch_a_smooth, kernel_a)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.divide",
+    "gee_api_names": [
+      "ee.Image.divide"
+    ],
+    "oge_apis": [
+      "Coverage.divide"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像除法运算",
+    "note": "核心语义均为两影像相除",
+    "gee_example": "var ndvi = ndvi_num.divide(ndvi_den);",
+    "oge_example": "ndvi = service.getProcess(\"Coverage.divide\").execute(ndvi_num, ndvi_den)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.expression",
+    "gee_api_names": [
+      "ee.Image.expression"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "栅格重分类",
+    "note": "GEE使用expression进行条件分类，OGE使用reclass进行重分类，核心语义均为栅格重分类",
+    "gee_example": "var position_class = relative_position_smooth.expression('rp < -10 ? 1 : (rp <= 10 ? 2 : 3)', {rp: relative_position_smooth});",
+    "oge_example": "# reclass只接收栅格和规则两个参数\n# =========================\nposition_rules = [\n    (-5000.0, -10.0, 1.0),\n    (-10.0, 10.0, 2.0),\n    (10.0, 5000.0, 3.0)\n]\n\nposition_class = service.getProcess(\n    \"\"Coverage.reclass\"\"\n).execute(relative_position_smooth, position_rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 0.88
+  },
+  {
+    "gee_api": "ee.Image.focalMax",
+    "gee_api_names": [
+      "ee.Image.focalMax"
+    ],
+    "oge_apis": [
+      "Coverage.focalMax"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "邻域最大值计算",
+    "note": "核心语义均为计算邻域最大值",
+    "gee_example": "var small_max = dem_base.focalMax({radius: 2, units: 'pixels', kernelType: 'circle'});",
+    "oge_example": "small_max = service.getProcess(\"Coverage.focalMax\").execute(dem_base, \"circle\", 2)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.focalMean",
+    "gee_api_names": [
+      "ee.Image.focalMean"
+    ],
+    "oge_apis": [
+      "Coverage.focalMean"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "焦点均值滤波",
+    "note": "核心语义均为焦点均值滤波",
+    "gee_example": "var dem_base = dem_scene.focalMean({kernel: ee.Kernel.circle({radius: 3, units: 'pixels'}), iterations: 1}).rename('DSM');",
+    "oge_example": "dem_base = service.getProcess(\"Coverage.focalMean\").execute(dem, \"circle\", 3)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.focalMin",
+    "gee_api_names": [
+      "ee.Image.focalMin"
+    ],
+    "oge_apis": [
+      "Coverage.focalMin"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "焦点最小值滤波",
+    "note": "核心语义均为焦点最小值滤波",
+    "gee_example": "var focal_min = dem_base.focalMin({kernel: ee.Kernel.circle({radius: 9, units: 'pixels'}), iterations: 1}).rename('DSM');",
+    "oge_example": "focal_min = service.getProcess(\"Coverage.focalMin\").execute(dem_base, \"circle\", 9)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.focalMode",
+    "gee_api_names": [
+      "ee.Image.focalMode"
+    ],
+    "oge_apis": [
+      "Coverage.focalMode"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "焦点众数滤波",
+    "note": "核心语义均为焦点众数滤波",
+    "gee_example": "var observe_zone_smooth = observe_zone.focalMode({kernel: ee.Kernel.circle({radius: 1, units: 'pixels'}), iterations: 1}).rename('observe_zone_smooth');",
+    "oge_example": "observe_zone_smooth = service.getProcess(\"Coverage.focalMode\").execute(observe_zone, \"circle\", 1)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.focal_mode",
+    "gee_api_names": [
+      "ee.Image.focal_mode"
+    ],
+    "oge_apis": [
+      "Coverage.focalMode"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "众值滤波",
+    "note": "核心语义均为众值滤波去碎斑",
+    "gee_example": "var complexitySmooth = complexity.focal_mode({radius: 1, units: 'pixels', kernelType: 'circle'}).rename('complexity_smooth').toInt();",
+    "oge_example": "complexity_smooth = service.getProcess(\"Coverage.focalMode\").execute(complexity, \"circle\", 1)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.gt",
+    "gee_api_names": [
+      "ee.Image.gt"
+    ],
+    "oge_apis": [
+      "Coverage.binarization"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "阈值二值化",
+    "note": "核心语义均为阈值分割生成二值掩膜",
+    "gee_example": "var vegetation_mask = ndvi_scaled.gt(25);",
+    "oge_example": "vegetation_mask = service.getProcess(\"Coverage.binarization\").execute(ndvi_scaled, 25)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.gte",
+    "gee_api_names": [
+      "ee.Image.gte"
+    ],
+    "oge_apis": [
+      "Coverage.binarization"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "阈值二值化",
+    "note": "核心语义均为根据阈值进行二值化处理",
+    "gee_example": "var water_mask = mndwi_scaled.gte(5).rename('water_mask');",
+    "oge_example": "water_mask = service.getProcess(\"Coverage.binarization\").execute(mndwi_scaled, 5)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.max",
+    "gee_api_names": [
+      "ee.Image.max"
+    ],
+    "oge_apis": [
+      "Coverage.maxNum"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "数值取最大值",
+    "note": "核心语义均为与常数取最大值",
+    "gee_example": "var warm_delta = lst_celsius.subtract(15.0).max(0);",
+    "oge_example": "warm_delta = service.getProcess(\"Coverage.maxNum\").execute(warm_delta, 0)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.multiply",
+    "gee_api_names": [
+      "ee.Image.multiply"
+    ],
+    "oge_apis": [
+      "Coverage.multiplyNum"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "数值乘法",
+    "note": "核心语义均为影像乘以常数",
+    "gee_example": "var green_structure_light = green_structure.multiply(0.3);",
+    "oge_example": "green_structure_light = service.getProcess(\"Coverage.multiplyNum\").execute(green_structure, 0.3)",
+    "python_implementation": "",
+    "confidence": 0.97
+  },
+  {
+    "gee_api": "ee.Image.normalizedDifference",
+    "gee_api_names": [
+      "ee.Image.normalizedDifference"
+    ],
+    "oge_apis": [
+      "Coverage.normalizedDifference"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "归一化差值计算",
+    "note": "核心语义均为计算归一化差值指数",
+    "gee_example": "var ndvi = ndvi_input.normalizedDifference(['SR_B5', 'SR_B4']);",
+    "oge_example": "ndvi = service.getProcess(\"Coverage.normalizedDifference\").execute(ndvi_input, [\"SR_B5\", \"SR_B4\"])",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.not",
+    "gee_api_names": [
+      "ee.Image.not"
+    ],
+    "oge_apis": [
+      "Coverage.multiplyNum"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "逻辑取反",
+    "note": "GEE用not()实现逻辑取反，OGE通过乘以-1再加1实现，语义等价",
+    "gee_example": "water_mask.not()",
+    "oge_example": "service.getProcess(\"Coverage.multiplyNum\").execute(water_mask, -1.0)",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Image.pow",
+    "gee_api_names": [
+      "ee.Image.pow"
+    ],
+    "oge_apis": [
+      "Coverage.powNum"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "数值幂运算",
+    "note": "核心语义均为幂运算",
+    "gee_example": "var heat_contrast = warm_delta.pow(2);",
+    "oge_example": "heat_contrast = service.getProcess(\"Coverage.powNum\").execute(warm_delta, 2.0)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.projection",
+    "gee_api_names": [
+      "ee.Image.projection"
+    ],
+    "oge_apis": [
+      "Coverage.projection"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "获取投影信息",
+    "note": "获取影像投影信息，OGE 中使用 Coverage.projection 算子",
+    "gee_example": "var crs = target_band.projection();",
+    "oge_example": "# 获取影像投影\nproj = service.getProcess(\"Coverage.projection\").execute(cov)",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Image.reduceNeighborhood",
+    "gee_api_names": [
+      "ee.Image.reduceNeighborhood"
+    ],
+    "oge_apis": [
+      "Coverage.focalMean"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "邻域均值平滑",
+    "note": "核心语义均为对影像进行圆形邻域均值平滑，GEE的reduceNeighborhood与OGE的focalMean功能等价",
+    "gee_example": "var smooth_dem = original_dem.reduceNeighborhood({reducer: ee.Reducer.mean(), kernel: ee.Kernel.circle({radius: 1, units: 'pixels', normalize: false})}).rename('DEM');",
+    "oge_example": "smooth_dem = service.getProcess(\"Coverage.focalMean\").execute(original_dem, \"circle\", 1)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.reproject",
+    "gee_api_names": [
+      "ee.Image.reproject"
+    ],
+    "oge_apis": [
+      "Coverage.reproject"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "重投影",
+    "note": "核心语义均为将影像转换到指定坐标和分辨率",
+    "gee_example": "var standard_band = target_band.reproject({crs: 'EPSG:3857', scale: 30});",
+    "oge_example": "standard_band = service.getProcess(\"Coverage.reproject\").execute(target_band, 3857, 30)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.select",
+    "gee_api_names": [
+      "ee.Image.select"
+    ],
+    "oge_apis": [
+      "Coverage.selectBands"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "波段选择",
+    "note": "从多波段栅格中选择指定波段。非常重要：单波段产品（如DEM、坡度、坡向等）完全不需要selectBands，直接读取即可使用。只有多波段产品需要提取特定波段时才使用。不要为了\"和GEE对应\"而做不必要的波段选择。",
+    "gee_example": "var target_band = ls8.select(['B3']);",
+    "oge_example": "# 波段选择\n# 从多波段栅格中选择指定波段\n#\n# 参数：\n#   1. 输入栅格 (Coverage)\n#   2. 波段名列表 (list)\n\nresult = service.getProcess(\"Coverage.selectBands\").execute(cov, [\"B4\", \"B3\", \"B2\"])\n\n# ===== 什么时候可以省略 selectBands？（非常重要）\n#\n# 1. 单波段产品 → 完全不需要\n#    比如 DEM 产品（ASTER_GDEM_DEM30、NASADEM 等）本身只有一个 elevation 波段，\n#    直接 getCoverage 读取后就可以用，不需要再 selectBands([\"elevation\"])。\n#\n#    ✅ 正确：\n#    dem = service.getCoverage(coverageID=\"ASTGTM_N32E109\", productID=\"ASTER_GDEM_DEM30\")\n#    slope = service.getProcess(\"Coverage.terrSlope\").execute(dem, 1, 1.0)\n#\n#    ❌ 错误（多余的 selectBands）：\n#    dem = service.getCoverage(coverageID=\"ASTGTM_N32E109\", productID=\"ASTER_GDEM_DEM30\")\n#    dem = service.getProcess(\"Coverage.selectBands\").execute(dem, [\"elevation\"])  # 多余！\n#\n# 2. 后续算子能直接通过波段名引用 → 不需要先选出来\n#    比如 normalizedDifference 可以直接指定波段名，不需要先 selectBands\n#\n# 3. 只有在需要从多波段影像中提取特定波段做后续处理时才使用\n#    比如从 Landsat 多波段影像中提取 B4/B3/B2 做真彩色合成\n",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.subtract",
+    "gee_api_names": [
+      "ee.Image.subtract"
+    ],
+    "oge_apis": [
+      "Coverage.subtract"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像相减运算",
+    "note": "核心语义均为两个影像逐像素相减",
+    "gee_example": "var ndvi_num = nir_band.subtract(red_band);",
+    "oge_example": "ndvi_num = service.getProcess(\"Coverage.subtract\").execute(nir_band, red_band)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.toDouble",
+    "gee_api_names": [
+      "ee.Image.toDouble"
+    ],
+    "oge_apis": [
+      "Coverage.toDouble"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像转双精度",
+    "note": "将栅格转为双精度浮点型。注意：如果输入已经是浮点型，或后续算子会自动处理类型转换，则可以省略toDouble。不要为了\"和GEE对应\"而做不必要的类型转换。",
+    "gee_example": "var landsat_double = landsat.toDouble();",
+    "oge_example": "# 转为双精度浮点型\n# 将栅格数据类型转换为双精度浮点型 (Double)\n#\n# 参数：\n#   1. 输入栅格 (Coverage)\n\nresult = service.getProcess(\"Coverage.toDouble\").execute(cov)\n\n# 注意：\n# 1. 如果后续算子（如 normalizedDifference、reclass 等）会自动处理类型转换，可以省略\n# 2. 如果输入数据已经是浮点型，不需要再转\n# 3. 只有在整数数据参与浮点运算且可能精度不够时才需要显式转换\n",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.toFloat",
+    "gee_api_names": [
+      "ee.Image.toFloat"
+    ],
+    "oge_apis": [
+      "Coverage.toFloat"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "数据类型转换",
+    "note": "核心语义均为将影像数据类型转换为浮点型",
+    "gee_example": "ndvi_input = ndvi_input.toFloat();",
+    "oge_example": "ndvi_input = service.getProcess(\"Coverage.toFloat\").execute(ndvi_input)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Image.updateMask",
+    "gee_api_names": [
+      "ee.Image.updateMask"
+    ],
+    "oge_apis": [
+      "Coverage.updateMask"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "掩膜应用",
+    "note": "核心语义均为应用掩膜",
+    "gee_example": "lst_celsius = lst_celsius.updateMask(clearMask).updateMask(stMask);",
+    "oge_example": "lst_celsius = service.getProcess(\"Coverage.updateMask\").execute(lst_celsius, clearMask)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.ImageCollection.filterBounds",
+    "gee_api_names": [
+      "ee.ImageCollection.filterBounds"
+    ],
+    "oge_apis": [
+      "Service.getCoverageCollection"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像集合筛选",
+    "note": "核心语义均为按空间范围筛选影像集合，GEE的filterBounds与OGE的getCoverageCollection功能等价",
+    "gee_example": "var dem_collection = ee.ImageCollection('COPERNICUS/DEM/GLO30').filterBounds(region).select('DEM');",
+    "oge_example": "dem_collection = service.getCoverageCollection(productID=\"ASTER_GDEM_DEM30\", datetime=[\"2000-01-01 00:00:00,2000-01-01 00:00:00\"], bbox=[108.5, 18.1, 111.0, 20.1])",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.ImageCollection.filterDate",
+    "gee_api_names": [
+      "ee.ImageCollection.filterDate"
+    ],
+    "oge_apis": [
+      "CoverageCollection.filterDate"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像集合日期过滤",
+    "note": "GEE的filterDate用于按日期过滤集合。注意：OGE中通常不需要单独使用此算子——读取集合时直接在getCoverageCollection的datetime参数中指定时间范围即可，一步到位。只有在对已有集合做二次过滤的极少数场景才单独调用。",
+    "gee_example": "var filtered = collection.filterDate('2015-09-01', '2015-10-31');",
+    "oge_example": "# 影像集合日期过滤（注意：通常不需要单独使用！）\n#\n# 重要：在 OGE 中，日期过滤通常在 getCoverageCollection 时直接通过 datetime 参数完成，\n# 不需要先加载集合再单独调用 filterDate。\n#\n# 推荐写法（直接在 getCoverageCollection 中指定时间范围）：\ncov_col = service.getCoverageCollection(\n    productID=\"LC08_L2\",\n    bbox=[108.0, 32.0, 110.0, 34.0],\n    datetime=[\"2020-01-01 00:00:00\", \"2020-12-31 23:59:59\"]\n)\n\n# 如果确实需要对已有集合做二次日期过滤（极少用到）：\n# filtered = service.getProcess(\"CoverageCollection.filterDate\").execute(cov_col, start_date, end_date)\n",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.ImageCollection.fromImages",
+    "gee_api_names": [
+      "ee.ImageCollection.fromImages"
+    ],
+    "oge_apis": [
+      "CoverageCollection.mergeCoverages"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像集合构建",
+    "note": "核心语义均为将多个影像合并为集合",
+    "gee_example": "var coverage_collection = ee.ImageCollection.fromImages([band_1, band_2, band_3]);",
+    "oge_example": "dem1 = service.getCoverage(\n    coverageID=\"n030e110\",\n    productID=\"ALOS_PALSAR_DEM12.5\"\n)\ndem2 = service.getCoverage(\n    coverageID=\"n030e111\",\n    productID=\"ALOS_PALSAR_DEM12.5\"\n)\n\n# =========================\n# 2. 合并并镶嵌为连续 DEM\n# =========================\ndem_collection = service.getProcess(\n    \"CoverageCollection.mergeCoverages\"\n).execute([dem1, dem2], [\"dem1\", \"dem2\"])",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.ImageCollection.mean",
+    "gee_api_names": [
+      "ee.ImageCollection.mean"
+    ],
+    "oge_apis": [
+      "CoverageCollection.mosaic"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "DEM影像集合均值合成",
+    "note": "核心语义均为对影像集合进行均值合成，GEE的mean()与OGE的mosaic(mean)功能等价",
+    "gee_example": "var original_dem = dem_collection.mean().clip(region).rename('DEM');",
+    "oge_example": "original_dem = service.getProcess(\"CoverageCollection.mosaic\").execute(dem_collection, \"mean\")",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.ImageCollection.mosaic",
+    "gee_api_names": [
+      "ee.ImageCollection.mosaic"
+    ],
+    "oge_apis": [
+      "CoverageCollection.mosaic"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像集合镶嵌",
+    "note": "核心语义均为将影像集合镶嵌为单景影像",
+    "gee_example": "var demMosaic = demCollection.mosaic().clip(region);",
+    "oge_example": "dem_mosaic = service.getProcess(\"CoverageCollection.mosaic\").execute(dem_collection)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.ImageCollection.select",
+    "gee_api_names": [
+      "ee.ImageCollection.select"
+    ],
+    "oge_apis": [
+      "Service.getCoverageCollection"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像波段选择",
+    "note": "GEE使用select选择波段，OGE通过productID指定数据产品，功能等价",
+    "gee_example": "var dem_collection = ee.ImageCollection('COPERNICUS/DEM/GLO30').filterBounds(region).select('DEM');",
+    "oge_example": "dem_collection = service.getCoverageCollection(productID=\"ASTER_GDEM_DEM30\", datetime=[\"2000-01-01 00:00:00,2000-01-01 00:00:00\"], bbox=[108.5, 18.1, 111.0, 20.1])",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.ImageCollection.sort",
+    "gee_api_names": [
+      "ee.ImageCollection.sort"
+    ],
+    "oge_apis": [
+      "CoverageCollection.sort"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像集合排序",
+    "note": "GEE的sort用于按属性排序集合。注意：OGE中通常不需要单独使用此算子——知道目标影像就直接getCoverage读取单景，不需要排序取首景的流程。只有在对已有集合做排序展示的极少数场景才单独调用。",
+    "gee_example": "var sorted = collection.sort('CLOUD_COVER');",
+    "oge_example": "# 影像集合排序（注意：通常不需要单独使用！）\n#\n# 重要：在 OGE 中，读取数据时通常直接指定 coverageID 用 getCoverage 读单景，\n# 不需要先读集合再排序再取首景。\n#\n# 推荐写法（直接读单景，不需要排序）：\ncov = service.getCoverage(\n    coverageID=\"LC08_126037_20230513\",\n    productID=\"LC08_L2\"\n)\n\n# 如果确实需要对已有集合排序（极少用到）：\n# sorted_col = service.getProcess(\"CoverageCollection.sort\").execute(cov_col, \"CLOUD_COVER\")\n",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Kernel.fixed",
+    "gee_api_names": [
+      "ee.Kernel.fixed"
+    ],
+    "oge_apis": [
+      "Kernel.prewitt"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "Prewitt核创建",
+    "note": "核心语义均为创建Prewitt卷积核",
+    "gee_example": "var kernel_a = ee.Kernel.fixed(3, 3, [[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]], 1, 1, false);",
+    "oge_example": "kernel_a = service.getProcess(\"Kernel.prewitt\").execute(True, 0.5)",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Kernel.laplacian4",
+    "gee_api_names": [
+      "ee.Kernel.laplacian4"
+    ],
+    "oge_apis": [
+      "Kernel.laplacian4"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "卷积核生成",
+    "note": "核心语义均为生成Laplacian4卷积核",
+    "gee_example": "var kernel_b = ee.Kernel.laplacian4();",
+    "oge_example": "kernel_b = service.getProcess(\"Kernel.laplacian4\").execute()",
+    "python_implementation": "",
+    "confidence": 0.97
+  },
+  {
+    "gee_api": "ee.Kernel.laplacian8",
+    "gee_api_names": [
+      "ee.Kernel.laplacian8"
+    ],
+    "oge_apis": [
+      "Kernel.laplacian4"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "Laplacian核生成",
+    "note": "核心语义均为生成Laplacian边缘检测核，但核大小不同(8邻域vs4邻域)",
+    "gee_example": "var kernel_b = ee.Kernel.laplacian8();",
+    "oge_example": "kernel_b = service.getProcess(\"Kernel.laplacian4\").execute()",
+    "python_implementation": "",
+    "confidence": 0.75
+  },
+  {
+    "gee_api": "ee.Kernel.prewitt",
+    "gee_api_names": [
+      "ee.Kernel.prewitt"
+    ],
+    "oge_apis": [
+      "Kernel.prewitt"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "卷积核生成",
+    "note": "核心语义均为生成Prewitt卷积核",
+    "gee_example": "var kernel_a = ee.Kernel.prewitt();",
+    "oge_example": "kernel_a = service.getProcess(\"Kernel.prewitt\").execute(True, 1.0)",
+    "python_implementation": "",
+    "confidence": 0.97
+  },
+  {
+    "gee_api": "ee.Reducer.mean",
+    "gee_api_names": [
+      "ee.Reducer.mean"
+    ],
+    "oge_apis": [
+      "Reducer.mean"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "均值归约器",
+    "note": "核心语义均为创建均值归约器",
+    "gee_example": "var reducer = ee.Reducer.mean();",
+    "oge_example": "reducer = service.getProcess(\"Reducer.mean\").execute()",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Reducer.median",
+    "gee_api_names": [
+      "ee.Reducer.median"
+    ],
+    "oge_apis": [
+      "Reducer.median"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "中值归约器",
+    "note": "核心语义均为创建中值归约器",
+    "gee_example": "var reducer = ee.Reducer.median();",
+    "oge_example": "reducer = service.getProcess(\"Reducer.median\").execute()",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Reducer.pearsonsCorrelation",
+    "gee_api_names": [
+      "ee.Reducer.pearsonsCorrelation"
+    ],
+    "oge_apis": [
+      "Coverage.geoDetector"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "地理探测器分析",
+    "note": "ee.Reducer.pearsonsCorrelation 在因子解释力场景下对应OGE的Coverage.geoDetector算子。注意：不要手动实现相关系数计算，直接用Coverage.geoDetector。",
+    "gee_example": "sample.reduceColumns({reducer: ee.Reducer.pearsonsCorrelation(), selectors: ['lst', 'elevation_class']})",
+    "oge_example": "\n═══════════════════════════════════════════════════════\n  重要：这是一个整体映射，直接调用，不要拆开！\n═══════════════════════════════════════════════════════\n\nGEE 中的写法（十几行甚至几十行）：\n  - yValid.reduceRegion({ reducer: ee.Reducer.count().combine(ee.Reducer.variance()), ... })\n  - ee.List.sequence(1, 5)\n  - ee.List.iterate(function(c, acc) { ... yValid.updateMask(xValid.eq(c)).reduceRegion(...) ... }, 0)\n  - 手写 q = 1 - withinSS / totalSS 计算\n  → 这些全部加起来，对应 OGE 的一个算子：Coverage.geoDetector\n\nOGE 中的写法（只需要一行调用）：\n\ngeo_result = service.getProcess(\"Coverage.geoDetector\").execute(\n    y_cov,          # 第1参数：因变量栅格 (Coverage)，如 NDVI、LST\n    \"y_name\",       # 第2参数：因变量标识名 (字符串)\n    x_class_cov,    # 第3参数：自变量分类栅格 (Coverage)，如高程分级、坡度分级\n    y_min_value,    # 第4参数：因变量最小值 (数值)，如 -100\n    y_max_value,    # 第5参数：因变量最大值 (数值)，如 100\n    nodata_value    # 第6参数：无效值 (数值)，如 0\n)\n\n# 结果输出用 .log()\ngeo_result.log(\"地理探测器结果\")\n\n═══════════════════════════════════════════════════════\n  绝对禁止：手写 geoDetector 函数、返回假值、用 focal 近似\n═══════════════════════════════════════════════════════\n",
+    "python_implementation": "",
+    "confidence": 0.7
+  },
+  {
+    "gee_api": "ee.Terrain.aspect",
+    "gee_api_names": [
+      "ee.Terrain.aspect"
+    ],
+    "oge_apis": [
+      "Coverage.terrAspect"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "坡向计算",
+    "note": "核心语义均为从DEM计算坡向",
+    "gee_example": "var aspect = ee.Terrain.aspect(dem_clip);",
+    "oge_example": "aspect = service.getProcess(\"Coverage.terrAspect\").execute(dem_clip, 1)",
+    "python_implementation": "",
+    "confidence": 0.98
+  },
+  {
+    "gee_api": "ee.Terrain.hillshade",
+    "gee_api_names": [
+      "ee.Terrain.hillshade"
+    ],
+    "oge_apis": [
+      "Coverage.terrHillshade"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "地形阴影生成",
+    "note": "核心语义均为基于DEM生成山体阴影，参数1和1分别对应太阳方位角和太阳高度角",
+    "gee_example": "var hillshade = ee.Terrain.hillshade(dem_base, 1, 1);",
+    "oge_example": "hillshade = service.getProcess(\"Coverage.terrHillshade\").execute(dem_base, 1, 1)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Terrain.slope",
+    "gee_api_names": [
+      "ee.Terrain.slope"
+    ],
+    "oge_apis": [
+      "Coverage.terrSlope"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "坡度计算",
+    "note": "核心语义均为计算地形坡度",
+    "gee_example": "var slope = ee.Terrain.slope(demMosaic);",
+    "oge_example": "slope = service.getProcess(\"Coverage.terrSlope\").execute(dem_mosaic, 1, 9.5e-06)",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ui.VisParameters",
+    "gee_api_names": [
+      "ui.VisParameters"
+    ],
+    "oge_apis": [
+      "Coverage.styles"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "设置可视化样式",
+    "note": "核心语义均为设置影像的可视化参数",
+    "gee_example": "var vis_params = {palette: ['#1f1f1f', '#5a5a5a', '#9a9a9a', '#d9d9d9', '#ffffff']};",
+    "oge_example": "standard_a.styles(vis_params)",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Image.abs",
+    "gee_api_names": [
+      "ee.Image.abs"
+    ],
+    "oge_apis": [
+      "Coverage.abs"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "求绝对值",
+    "note": "",
+    "gee_example": "var tri = tri_neigh_mean.subtract(dem_base).abs().rename('tri');",
+    "oge_example": "a = service.getProcess(\"Coverage.abs\").execute(b3)",
+    "python_implementation": "",
+    "confidence": 1.0
+  },
+  {
+    "gee_api": "ee.Image.lte",
+    "gee_api_names": [
+      "ee.Image.lte"
+    ],
+    "oge_apis": [
+      "Coverage.binarization"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "阈值二值化（小于等于）",
+    "note": "lte 对应 OGE 的 binarization，operator 为 less",
+    "gee_example": "var low_mask = elevation.lte(1000);",
+    "oge_example": "low_mask = service.getProcess(\"Coverage.binarization\").execute(elevation, 1000, \"less\")",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.or",
+    "gee_api_names": [
+      "ee.Image.or"
+    ],
+    "oge_apis": [
+      "Coverage.or"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "逻辑或运算",
+    "note": "核心语义均为两影像逐像素逻辑或运算，OGE有原生Coverage.or算子",
+    "gee_example": "mask_a.or(mask_b)",
+    "oge_example": "service.getProcess(\"Coverage.add\").execute(mask_a, mask_b)",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Image.rename",
+    "gee_api_names": [
+      "ee.Image.rename"
+    ],
+    "oge_apis": [
+      "Coverage.renameBands"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像重命名（无需显式转换）",
+    "note": "为栅格波段重命名。注意：如果只是为了代码可读性而重命名，且不影响后续算子的波段引用，则可以省略rename步骤。大多数情况下波段名不影响计算结果。",
+    "gee_example": "var dem_smooth = dem.focalMean(2).rename('dem_smooth');",
+    "oge_example": "import oge\n\noge.initialize()\nservice = oge.Service()\n\nls8 = service.getCoverage(coverageID=\"LC08_L1TP_119038_20230104_20230111_02_T1\", productID=\"LC08_C02_L1\")\nls8 = service.getProcess(\"Coverage.rename\").execute(ls8,[\"A1\",\"A2\",\"A3\",\"A4\",\"A5\",\"A6\",\"A7\",\"A8\",\"A9\"])\nbandNames = service.getProcess(\"Coverage.bandNames\").execute(ls8)\nbandNames.log(\"bandNames\")\noge.mapclient.centerMap(120.5, 32.0,7)",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Image.lt",
+    "gee_api_names": [
+      "ee.Image.lt"
+    ],
+    "oge_apis": [
+      "Coverage.binarization"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "阈值二值化（小于）",
+    "note": "lt 对应 OGE 的 binarization，operator 为 less",
+    "gee_example": "var low_mask = elevation.lt(1000);",
+    "oge_example": "low_mask = service.getProcess(\"Coverage.binarization\").execute(elevation, 1000, \"less\")",
+    "python_implementation": "",
+    "confidence": 0.95
+  },
+  {
+    "gee_api": "ee.Image.toInt",
+    "gee_api_names": [
+      "ee.Image.toInt"
+    ],
+    "oge_apis": [
+      "Coverage.toInt"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像类型转换-整型",
+    "note": "将影像波段转换为整型",
+    "gee_example": "var int_img = img.toInt();",
+    "oge_example": "int_img = service.getProcess(\"Coverage.toInt\").execute(img)",
+    "python_implementation": "",
+    "confidence": 0.9
+  },
+  {
+    "gee_api": "ee.Image.eq",
+    "gee_api_names": [
+      "ee.Image.eq"
+    ],
+    "oge_apis": [
+      "Coverage.binarization"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像等于比较",
+    "note": "等于比较返回二值影像，使用二值化算子实现",
+    "gee_example": "var mask = img.eq(0);",
+    "oge_example": "mask = service.getProcess(\"Coverage.binarization\").execute(img, \"==\", value)",
+    "python_implementation": "",
+    "confidence": 0.8
+  },
+  {
+    "gee_api": "ee.Image.bitwiseAnd",
+    "gee_api_names": [
+      "ee.Image.bitwiseAnd"
+    ],
+    "oge_apis": [
+      "Coverage.bitwiseAnd"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像位与运算",
+    "note": "位与运算，用于QA像元质量判断，需确认OGE是否支持",
+    "gee_example": "var clear = qa.bitwiseAnd(1 << 3).eq(0);",
+    "oge_example": "# 影像位与运算\n# 对两个栅格影像的每个像元执行按位与操作\n# 参数：\n#   1. 栅格1 (Coverage)\n#   2. 栅格2 (Coverage)\n\nresult = service.getProcess(\"Coverage.bitwiseAnd\").execute(cov1, cov2)\n\n# 常用于提取 QA 波段中的特定位标志，例如：\n# clear = service.getProcess(\"Coverage.bitwiseAnd\").execute(qa_band, 1 << 3)\n# 然后用 eq 判断是否为0：clear = service.getProcess(\"Coverage.eq\").execute(clear, 0)\n",
+    "python_implementation": "",
+    "confidence": 0.5
+  },
+  {
+    "gee_api": "ee.Image.resample",
+    "gee_api_names": [
+      "ee.Image.resample"
+    ],
+    "oge_apis": [
+      "Coverage.resample"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像重采样",
+    "note": "影像重采样（双线性/立方等），需确认OGE算子名",
+    "gee_example": "var resampled = img.resample(\"bilinear\");",
+    "oge_example": "# 影像重采样\n# 改变影像的空间分辨率或重采样方式\n# 参数：\n#   1. 输入栅格 (Coverage)\n#   2. 重采样方式 (字符串) - 可选: \"near\", \"bilinear\", \"cubic\" 等\n\nresult = service.getProcess(\"Coverage.resample\").execute(cov, \"bilinear\")\n\n# 注意：如果同时需要改变投影和分辨率，优先使用 Coverage.reproject\n",
+    "python_implementation": "",
+    "confidence": 0.6
+  },
+  {
+    "gee_api": "ee.Image.clip",
+    "gee_api_names": [
+      "ee.Image.clip"
+    ],
+    "oge_apis": [
+      "Coverage.clipRasterByMaskLayerByGDAL"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "影像掩膜裁剪",
+    "note": "用矢量图层对栅格进行掩膜裁剪。注意：如果读取的数据范围已经是研究区，或后续算子能自动处理空间范围，则可以省略clip步骤。不要为了\"和GEE对应\"而做不必要的裁剪。",
+    "gee_example": "// GEE: 用几何对象裁剪影像\nvar clipped = img.clip(geometry);",
+    "oge_example": "# 栅格掩膜裁剪\n# 用矢量图层对栅格进行裁剪，保留图层范围内的像元\n#\n# 注意：\n# 1. 如果 getCoverage/getCoverageCollection 读取的数据范围已经是研究区，不需要再 clip\n# 2. 如果数据范围大于研究区，且需要精确限定范围，才使用 clip\n# 3. OGE 中很多算子会自动处理重叠区域，不需要预先裁剪\n# 4. 不要为了\"和GEE对应\"而做不必要的裁剪\n\n# 示例：用 FeatureCollection 裁剪栅格\nfc = service.getProcess(\"FeatureCollection.loadFromGeometry\").execute(geometry, \"{attr: 0}\")\nclipped = service.getProcess(\"Coverage.clipRasterByMaskLayerByGDAL\").execute(\n    cov, fc, \"True\", \"\", \"False\", \"\", \"\", \"False\", \"False\", \"\", \"False\", \"0\", \"\"\n)\n",
+    "python_implementation": "",
+    "confidence": 0.8
+  },
+  {
+    "gee_api": "ee.Reducer.count",
+    "gee_api_names": [
+      "ee.Reducer.count"
+    ],
+    "oge_apis": [
+      "Reducer.count"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "计数归约器",
+    "note": "创建计数归约器，用于统计有效像元数量。OGE 中使用 Reducer.count 算子。",
+    "gee_example": "",
+    "oge_example": "# 创建计数归约器\ncount_reducer = service.getProcess(\"Reducer.count\").execute()",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Reducer.min",
+    "gee_api_names": [
+      "ee.Reducer.min"
+    ],
+    "oge_apis": [
+      "Reducer.min"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "最小值归约器",
+    "note": "创建最小值归约器，用于计算区域最小值。OGE 中使用 Reducer.min 算子。",
+    "gee_example": "",
+    "oge_example": "# 创建最小值归约器\nmin_reducer = service.getProcess(\"Reducer.min\").execute()",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Reducer.variance",
+    "gee_api_names": [
+      "ee.Reducer.variance"
+    ],
+    "oge_apis": [
+      "Reducer.variance"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "方差归约器",
+    "note": "创建方差归约器，用于计算区域方差。OGE 中使用 Reducer.variance 算子。",
+    "gee_example": "",
+    "oge_example": "# 创建方差归约器\nvar_reducer = service.getProcess(\"Reducer.variance\").execute()",
+    "python_implementation": "",
+    "confidence": 0.85
+  },
+  {
+    "gee_api": "ee.Image.reduceRegion",
+    "gee_api_names": [
+      "ee.Image.reduceRegion"
+    ],
+    "oge_apis": [
+      "Coverage.geoDetector"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "区域统计（地理探测器）",
+    "note": "ee.Image.reduceRegion 在因子解释力/地理探测器场景下对应 OGE 的 Coverage.geoDetector 算子。注意：OGE 没有通用的 reduceRegion，区域统计直接使用 Coverage.geoDetector 完成。",
+    "gee_example": "",
+    "oge_example": "\n═══════════════════════════════════════════════════════\n  重要：这是一个整体映射，直接调用，不要拆开！\n═══════════════════════════════════════════════════════\n\nGEE 中的写法（十几行甚至几十行）：\n  - yValid.reduceRegion({ reducer: ee.Reducer.count().combine(ee.Reducer.variance()), ... })\n  - ee.List.sequence(1, 5)\n  - ee.List.iterate(function(c, acc) { ... yValid.updateMask(xValid.eq(c)).reduceRegion(...) ... }, 0)\n  - 手写 q = 1 - withinSS / totalSS 计算\n  → 这些全部加起来，对应 OGE 的一个算子：Coverage.geoDetector\n\nOGE 中的写法（只需要一行调用）：\n\ngeo_result = service.getProcess(\"Coverage.geoDetector\").execute(\n    y_cov,          # 第1参数：因变量栅格 (Coverage)，如 NDVI、LST\n    \"y_name\",       # 第2参数：因变量标识名 (字符串)\n    x_class_cov,    # 第3参数：自变量分类栅格 (Coverage)，如高程分级、坡度分级\n    y_min_value,    # 第4参数：因变量最小值 (数值)，如 -100\n    y_max_value,    # 第5参数：因变量最大值 (数值)，如 100\n    nodata_value    # 第6参数：无效值 (数值)，如 0\n)\n\n# 结果输出用 .log()\ngeo_result.log(\"地理探测器结果\")\n\n═══════════════════════════════════════════════════════\n  绝对禁止：手写 geoDetector 函数、返回假值、用 focal 近似\n═══════════════════════════════════════════════════════\n",
+    "python_implementation": "",
+    "confidence": 0.8
+  },
+  {
+    "gee_api": "ee.Image.where",
+    "gee_api_names": [
+      "ee.Image.where"
+    ],
+    "oge_apis": [
+      "Coverage.reclass"
+    ],
+    "mapping_type": "one_to_one",
+    "mapping_name": "单条件重分类",
+    "note": "单个 where 条件赋值对应 OGE 的 reclass 算子（单区间重分类）",
+    "gee_example": "result = image.where(condition, value)",
+    "oge_example": "# OGE: 直接使用重分类算子\nrules = [\n    (0.0, 100.0, 1.0),\n    (100.0, 200.0, 2.0),\n    (200.0, 500.0, 3.0),\n]\nresult = service.getProcess(\"Coverage.reclass\").execute(img, rules)\n#注意，oge的reclass只能有两个参数img和rules，rules可以[(0.0, 5.0, 1.0), (5.0, 20.0, 2.0), (20.0, 90.0, 3.0)]但不能[0, 12, 22, 35, 90],[1, 2, 3, 4]",
+    "python_implementation": "",
+    "confidence": 0.9
+  }
+]
