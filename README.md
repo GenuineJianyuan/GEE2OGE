@@ -31,10 +31,8 @@ Watch GEE2OGE in action — the demo shows the full stepwise conversion pipeline
 
 <p align="center">
   <a href="images/920.mp4">
-    <img src="images/sceen.png" alt="GEE2OGE Demo Video" width="90%">
+    <img src="images/demo_cover.png" alt="GEE2OGE Demo Video" width="90%">
   </a>
-  <br>
-  <em>👆 Click the image above to play the demo video</em>
 </p>
 
 > **Figure 2.** Live demo of the GEE2OGE web interface. The pipeline executes six steps in sequence — semantic summarization, step-level API requirement identification, cross-platform API alignment, capability-aware workflow compensation, step-level code generation, and workflow-level OGE code generation — to produce a complete, runnable OGE Python script.
