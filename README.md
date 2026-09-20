@@ -25,13 +25,13 @@ GEE2OGE addresses this challenge through a **six-step stepwise-synthesis pipelin
 
 ---
 
-## 🎬 Demo Examples
+## 🎬 Demo
 
 Watch GEE2OGE in action — the demo shows the full stepwise conversion pipeline from GEE JavaScript to OGE Python, including semantic analysis, API mapping, step-code generation, and workflow reconstruction.
 
-[![GEE2OGE Demo](images/demo.gif)](images/920.mp4)
-
-*👆 Click the GIF for the full video (MP4, 115s)*
+<div align="center">
+  <img src="images/demo.gif" alt="GEE2OGE Demo" width="85%">
+</div>
 
 > **Figure 2.** Live demo of the GEE2OGE web interface. The pipeline executes six steps in sequence — semantic summarization, step-level API requirement identification, cross-platform API alignment, capability-aware workflow compensation, step-level code generation, and workflow-level OGE code generation — to produce a complete, runnable OGE Python script.
 
