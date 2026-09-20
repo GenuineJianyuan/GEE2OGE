@@ -29,17 +29,15 @@ GEE2OGE addresses this challenge through a **six-step stepwise-synthesis pipelin
 
 Watch GEE2OGE in action — the demo shows the full stepwise conversion pipeline from GEE JavaScript to OGE Python, including semantic analysis, API mapping, step-code generation, and workflow reconstruction.
 
-<div align="center">
-  <video src="images/920.mp4" poster="images/sceen.png" width="90%" controls loop muted playsinline>
-    <a href="images/920.mp4">
-      <img src="images/sceen.png" alt="Click to play demo video" width="90%">
-    </a>
-  </video>
+<p align="center">
+  <a href="images/920.mp4">
+    <img src="images/sceen.png" alt="GEE2OGE Demo Video" width="90%">
+  </a>
   <br>
-  <sup>💡 If the video doesn't play above, <a href="images/920.mp4">click here to open it</a> · MP4 format</sup>
-</div>
+  <em>👆 Click the image above to play the demo video</em>
+</p>
 
-> **Figure 0.** Live demo of the GEE2OGE web interface. The pipeline executes six steps in sequence — semantic summarization, step-level API requirement identification, cross-platform API alignment, capability-aware workflow compensation, step-level code generation, and workflow-level OGE code generation — to produce a complete, runnable OGE Python script.
+> **Figure 2.** Live demo of the GEE2OGE web interface. The pipeline executes six steps in sequence — semantic summarization, step-level API requirement identification, cross-platform API alignment, capability-aware workflow compensation, step-level code generation, and workflow-level OGE code generation — to produce a complete, runnable OGE Python script.
 
 ---
 
@@ -49,7 +47,7 @@ The figure below shows a side-by-side comparison of a 7-step terrain analysis wo
 
 ![GEE vs OGE Code Comparison](images/gee2oge_code_comparison.png)
 
-> **Figure 2.** Step-by-step GEE-to-OGE migration of a terrain analysis workflow. Colored boxes indicate corresponding steps; the central annotations list the GEE-to-OGE operator mappings used (e.g., `ee.Image + select → Coverage.reduceNeighborhood + Coverage.focalMean`, `ee.Terrain.slope → Coverage.terrSlope.where + Coverage.reclass`).
+> **Figure 3.** Step-by-step GEE-to-OGE migration of a terrain analysis workflow. Colored boxes indicate corresponding steps; the central annotations list the GEE-to-OGE operator mappings used (e.g., `ee.Image + select → Coverage.reduceNeighborhood + Coverage.focalMean`, `ee.Terrain.slope → Coverage.terrSlope.where + Coverage.reclass`).
 
 ---
 
