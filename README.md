@@ -25,6 +25,28 @@ GEE2OGE addresses this challenge through a **six-step stepwise-synthesis pipelin
 
 ---
 
+## 🧩 Prompt Design for Key Steps
+
+Each step in the pipeline uses a structured LLM prompt with four standardized components: **Role**, **Task**, **Output Format**, and **Guidance**. This modular design ensures consistent, high-quality outputs across different analysis stages.
+
+### Step 1: Semantic Abstraction Prompt
+
+<div align="center">
+  <img src="images/step1_semantic_prompt.png" alt="Step 1 Semantic Abstraction Prompt" width="90%">
+</div>
+
+> **Figure 2.** Prompt structure for Step 1 — Semantic Abstraction. The LLM is given the role of a GEE script analysis expert, tasked with extracting the overall purpose and breaking the workflow into sequential functional steps. The output follows a strict JSON schema (file_name, purpose, steps), with 8 guidance rules covering step-by-step thinking, hydrological analysis standardization, concise summaries, and preservation of key geographic information.
+
+### Step 2: Step-level API Requirement Identification Prompt
+
+<div align="center">
+  <img src="images/step2_api_prompt.png" alt="Step 2 API Requirement Prompt" width="90%">
+</div>
+
+> **Figure 3.** Prompt structure for Step 2 — API Requirement Identification. The LLM acts as a GEE API usage expert, mapping each functional step to precise GEE API method names. The output includes step index, step summary, and required APIs per step. The 8-point guidance ensures precise API naming, resolves ambiguous step summaries, and aligns requirements with standard hydrological analysis functions.
+
+---
+
 ## 🎬 Demo
 
 Watch GEE2OGE in action — the demo shows the full stepwise conversion pipeline from GEE JavaScript to OGE Python, including semantic analysis, API mapping, step-code generation, and workflow reconstruction.
@@ -33,7 +55,7 @@ Watch GEE2OGE in action — the demo shows the full stepwise conversion pipeline
   <img src="images/demo.gif" alt="GEE2OGE Demo" width="85%">
 </div>
 
-> **Figure 2.** Live demo of the GEE2OGE web interface. The pipeline executes six steps in sequence — semantic summarization, step-level API requirement identification, cross-platform API alignment, capability-aware workflow compensation, step-level code generation, and workflow-level OGE code generation — to produce a complete, runnable OGE Python script.
+> **Figure 4.** Live demo of the GEE2OGE web interface. The pipeline executes six steps in sequence — semantic summarization, step-level API requirement identification, cross-platform API alignment, capability-aware workflow compensation, step-level code generation, and workflow-level OGE code generation — to produce a complete, runnable OGE Python script.
 
 ---
 
@@ -43,7 +65,7 @@ The figure below shows a side-by-side comparison of a 7-step terrain analysis wo
 
 ![GEE vs OGE Code Comparison](images/gee2oge_code_comparison.png)
 
-> **Figure 3.** Step-by-step GEE-to-OGE migration of a terrain analysis workflow. Colored boxes indicate corresponding steps; the central annotations list the GEE-to-OGE operator mappings used (e.g., `ee.Image + select → Coverage.reduceNeighborhood + Coverage.focalMean`, `ee.Terrain.slope → Coverage.terrSlope.where + Coverage.reclass`).
+> **Figure 5.** Step-by-step GEE-to-OGE migration of a terrain analysis workflow. Colored boxes indicate corresponding steps; the central annotations list the GEE-to-OGE operator mappings used (e.g., `ee.Image + select → Coverage.reduceNeighborhood + Coverage.focalMean`, `ee.Terrain.slope → Coverage.terrSlope.where + Coverage.reclass`).
 
 ---
 
@@ -284,4 +306,5 @@ If you use GEE2OGE in academic work, please cite the corresponding paper once it
 
 ## 📬 Contact
 
-For questions, issues, or collaboration, please contact: [chenwenjie_ws@whu.edu.cn](mailto:chenwenjie_ws@whu.edu.cn)
+For questions, issues, or collaboration, please contact: [jjl1206md
+cmd@whu.edu.cn](mailto:chenwenjie_ws@whu.edu.cn)
