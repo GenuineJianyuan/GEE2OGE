@@ -306,5 +306,4 @@ If you use GEE2OGE in academic work, please cite the corresponding paper once it
 
 ## 📬 Contact
 
-For questions, issues, or collaboration, please contact: [jjl1206md
-cmd@whu.edu.cn](mailto:chenwenjie_ws@whu.edu.cn)
+For questions, issues, or collaboration, please contact: [jjl1206@whu.edu.cn](mailto:chenwenjie_ws@whu.edu.cn)
